@@ -188,23 +188,68 @@
       extension: normalizeExtension(card.getAttribute('extension')),
       coverId: cover?.getAttribute('id') || '',
       isbns: (cover?.getAttribute('isbn') || '').split(',').map(value => value.trim()).filter(Boolean),
+      year: card.getAttribute('year'),
+      language: card.getAttribute('language'),
     };
   }
 
-  function evaluateCard(info, settings, downloadReady, lookup) {
+  function compileFilters(settings, downloadReady, lookup) {
     const selected = new Set(settings.formats);
     const custom = parseCustomFormats(settings.custom);
-    const formatOk = !settings.filterFormat || !hasEffectiveFormatRule(selected, custom) ||
-      matchesFormat(info.extension, selected, custom);
-    const download = classifyDownload({
-      ready: downloadReady,
+    const yearRule = parseYearRule(settings);
+    return {
+      selected,
+      custom,
+      formatActive: settings.filterFormat && hasEffectiveFormatRule(selected, custom),
+      downloadActive: settings.filterDownload,
+      downloadReady,
+      downloadRule: settings.downloadRule,
+      lookup,
+      yearActive: settings.filterYear && yearRule.active,
+      yearRule,
+      includeMissingYear: settings.includeMissingYear,
+    };
+  }
+
+  function evaluateCard(info, context) {
+    const formatOk = !context.formatActive || matchesFormat(info.extension, context.selected, context.custom);
+    const download = context.downloadActive ? classifyDownload({
+      ready: context.downloadReady,
       coverId: info.coverId,
       isbns: info.isbns,
-      lookup,
-    });
-    const downloadOk = !settings.filterDownload || download === 'unknown' ||
-      (settings.downloadRule === 'downloaded' ? download === 'downloaded' : download === 'not-downloaded');
-    return { visible: formatOk && downloadOk, download };
+      lookup: context.lookup,
+    }) : 'unknown';
+    const downloadOk = !context.downloadActive || download === 'unknown' ||
+      (context.downloadRule === 'downloaded' ? download === 'downloaded' : download === 'not-downloaded');
+    const yearOk = !context.yearActive || matchesYear(info.year, context.yearRule, context.includeMissingYear);
+    return { visible: formatOk && downloadOk && yearOk, download };
+  }
+
+  function filterActiveCards(root, context) {
+    const cards = getActiveCards(root);
+    const infos = [];
+    const results = [];
+    let matched = 0;
+    for (const card of cards) {
+      const info = readCardData(card);
+      const result = evaluateCard(info, context);
+      infos.push(info);
+      results.push(result);
+      if (result.visible) matched++;
+    }
+    return { cards, infos, results, matched };
+  }
+
+  function createRefreshScheduler(refresh, enqueue) {
+    let queued = false;
+    return () => {
+      if (queued) return;
+      queued = true;
+      enqueue(() => {
+        queued = false;
+        refresh();
+      });
+    };
   }
 
   function renderFormatBadge(card, extension, show) {
@@ -239,7 +284,8 @@
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
-      getActiveCards, hasBooklistFingerprint, readCardData, evaluateCard, renderFormatBadge,
+      getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
+      createRefreshScheduler, renderFormatBadge,
       parseYearRule, matchesYear,
     };
   }
@@ -279,7 +325,6 @@
     const settings = sanitizeSettings(stored);
     const gate = createDownloadGate();
     let panelRoot = null;
-    let refreshQueued = false;
     let timeoutId = null;
     let retryId = null;
     let shadowRetries = 0;
@@ -297,14 +342,7 @@
       return (typeof unsafeWindow !== 'undefined' ? unsafeWindow : window).ZLibrary;
     }
 
-    function scheduleRefresh() {
-      if (refreshQueued) return;
-      refreshQueued = true;
-      requestAnimationFrame(() => {
-        refreshQueued = false;
-        refresh();
-      });
-    }
+    const scheduleRefresh = createRefreshScheduler(refresh, requestAnimationFrame);
 
     function startDownloadTimer() {
       if (timeoutId || gate.state !== 'waiting') return;
@@ -380,28 +418,29 @@
       if (!panelRoot) return;
       attachObservers();
       const main = document.querySelector('.booklist-main.active');
-      const cards = getActiveCards(document);
+      const library = siteLibrary();
+      const lookup = typeof library?.checkIsDownloaded === 'function'
+        ? library.checkIsDownloaded.bind(library) : null;
+      const context = compileFilters(settings, gate.state === 'ready', lookup);
+      const pass = filterActiveCards(document, context);
+      const { cards } = pass;
       const totalText = document.querySelector('.booklist-header__tabs tab')?.textContent || '';
       const parsedTotal = parseBookTotal(totalText);
       const pageReady = !!main && (cards.length > 0 || parsedTotal === 0);
       if (pageReady) startDownloadTimer();
-      const library = siteLibrary();
-      const lookup = typeof library?.checkIsDownloaded === 'function'
-        ? library.checkIsDownloaded.bind(library) : null;
-      let matched = 0;
       let unknownCards = 0;
       let pendingShadow = 0;
-      for (const card of cards) {
-        const info = readCardData(card);
+      for (let index = 0; index < cards.length; index++) {
+        const card = cards[index];
+        const info = pass.infos[index];
         if (!renderFormatBadge(card, info.extension, settings.showFormat)) pendingShadow++;
-        const result = evaluateCard(info, settings, gate.state === 'ready', lookup);
-        if (result.visible) matched++;
+        const result = pass.results[index];
         if (settings.filterDownload && gate.state === 'ready' && result.download === 'unknown') unknownCards++;
         if (card.classList.contains('zble-hidden') === result.visible) {
           card.classList.toggle('zble-hidden', !result.visible);
         }
       }
-      const stats = computeStats({ loaded: cards.length, matched, total: parsedTotal });
+      const stats = computeStats({ loaded: cards.length, matched: pass.matched, total: parsedTotal });
       renderStats(stats);
       syncDownloadControl();
       const badgeUnavailable = pendingShadow > 0 && shadowRetries >= 20;
@@ -427,7 +466,7 @@
       startupObserver?.disconnect();
       startupObserver = null;
       mainObserver = new MutationObserver(scheduleRefresh);
-      mainObserver.observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['extension'] });
+      mainObserver.observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['extension', 'year', 'language'] });
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
         parentObserver.observe(main.parentElement, { childList: true });

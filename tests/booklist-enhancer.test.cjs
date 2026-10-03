@@ -20,6 +20,9 @@ const {
   evaluateCard,
   parseYearRule,
   matchesYear,
+  compileFilters,
+  filterActiveCards,
+  createRefreshScheduler,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -186,14 +189,69 @@ test('renders one badge without replacing native metadata', () => {
 });
 
 test('reads cover identity and reevaluates active cards after replacement', () => {
-  const first = makeCard({ extension: 'EPUB', coverId: 'cover-7', isbn: 'x, y' }).card;
-  assert.deepEqual(readCardData(first), { extension: 'epub', coverId: 'cover-7', isbns: ['x', 'y'] });
+  const first = makeCard({ extension: 'EPUB', coverId: 'cover-7', isbn: 'x, y', year: '2020', language: 'english' }).card;
+  assert.deepEqual(readCardData(first), { extension: 'epub', coverId: 'cover-7', isbns: ['x', 'y'], year: '2020', language: 'english' });
   const list = makeBooklist(Array(20).fill(first));
   assert.equal(getActiveCards(list).length, 20);
   list.setCards(Array(40).fill(first));
   assert.equal(getActiveCards(list).length, 40);
   list.setCards([first]);
   assert.equal(getActiveCards(list).length, 1);
+});
+
+test('compiled filters intersect format, download and inclusive year once per card', () => {
+  const settings = sanitizeSettings({ filterFormat: true, formats: ['epub'], filterDownload: true,
+    downloadRule: 'downloaded', filterYear: true, yearMin: '2000', yearMax: '2020' });
+  const context = compileFilters(settings, true, id => id === 'yes');
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'yes', isbns: [], year: '2020' }, context).visible, true);
+  assert.equal(evaluateCard({ extension: 'pdf', coverId: 'yes', isbns: [], year: '2020' }, context).visible, false);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'no', isbns: [], year: '2020' }, context).visible, false);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'yes', isbns: [], year: '2021' }, context).visible, false);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'yes', isbns: [], year: '0' }, context).visible, false);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'yes', isbns: [], year: 'garbled' }, context).visible, false);
+});
+
+test('paused year and unknown download leave other active filters working', () => {
+  const settings = sanitizeSettings({ filterFormat: true, formats: ['epub'], filterDownload: true,
+    filterYear: true, yearMin: '2021', yearMax: '2020' });
+  const context = compileFilters(settings, false, null);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'a', isbns: [], year: '0' }, context).visible, true);
+  assert.equal(evaluateCard({ extension: 'pdf', coverId: 'a', isbns: [], year: '0' }, context).visible, false);
+  settings.yearMin = '2000';
+  settings.yearMax = '2020';
+  const valid = compileFilters(settings, false, null);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'a', isbns: [], year: '2020' }, valid).visible, true);
+  assert.equal(evaluateCard({ extension: 'epub', coverId: 'a', isbns: [], year: '0' }, valid).visible, false);
+});
+
+test('filter pass enumerates real cards once and omits the summary element', () => {
+  const cards = [makeCard({ extension: 'epub' }).card, makeCard({ extension: 'pdf' }).card];
+  let enumerations = 0;
+  const root = { querySelectorAll(selector) {
+    assert.equal(selector, '.booklist-main.active .readlist-view > z-bookcard');
+    enumerations++;
+    return cards;
+  } };
+  const context = compileFilters(sanitizeSettings({ filterFormat: true, formats: ['epub'] }), false, null);
+  const pass = filterActiveCards(root, context);
+  assert.equal(enumerations, 1);
+  assert.equal(pass.cards.length, 2);
+  assert.equal(pass.matched, 1);
+  assert.deepEqual(pass.results.map(item => item.visible), [true, false]);
+});
+
+test('same-frame setting changes and appended cards schedule one refresh', () => {
+  const queued = [];
+  let refreshes = 0;
+  const schedule = createRefreshScheduler(() => { refreshes++; }, callback => queued.push(callback));
+  schedule();
+  schedule();
+  schedule();
+  assert.equal(queued.length, 1);
+  queued.shift()();
+  assert.equal(refreshes, 1);
+  schedule();
+  assert.equal(queued.length, 1);
 });
 
 test('recognizes the booklist structure before activating on user-added mirrors', () => {
@@ -253,6 +311,7 @@ test('user-added non-booklist pages stay inert until a booklist appears', () => 
     },
     setTimeout: () => 1,
     clearTimeout() {},
+    requestAnimationFrame() {},
     GM_getValue: () => { settingsReads++; return {}; },
   });
   assert.equal(settingsReads, 0);
@@ -266,9 +325,9 @@ test('user-added non-booklist pages stay inert until a booklist appears', () => 
 test('card filtering is fail-open for an empty format rule and unknown download', () => {
   const info = { extension: 'epub', coverId: '7', isbns: [] };
   const settings = sanitizeSettings({ filterFormat: true, filterDownload: true, formats: [] });
-  assert.deepEqual(evaluateCard(info, settings, false, () => false), { visible: true, download: 'unknown' });
+  assert.deepEqual(evaluateCard(info, compileFilters(settings, false, () => false)), { visible: true, download: 'unknown' });
   settings.formats = ['pdf'];
-  assert.deepEqual(evaluateCard(info, settings, false, () => false), { visible: false, download: 'unknown' });
+  assert.deepEqual(evaluateCard(info, compileFilters(settings, false, () => false)), { visible: false, download: 'unknown' });
   settings.formats = ['epub'];
-  assert.deepEqual(evaluateCard(info, settings, true, () => false), { visible: true, download: 'not-downloaded' });
+  assert.deepEqual(evaluateCard(info, compileFilters(settings, true, () => false)), { visible: true, download: 'not-downloaded' });
 });

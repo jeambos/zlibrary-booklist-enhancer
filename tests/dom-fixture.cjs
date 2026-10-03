@@ -1,4 +1,4 @@
-function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', shadowReady = true } = {}) {
+function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '2024', language = 'chinese', shadowReady = true } = {}) {
   const idle = {
     nativeText: 'Chinese, 2024',
     children: [],
@@ -24,7 +24,7 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', shadowRead
   const card = {
     shadowRoot: shadowReady ? root : null,
     ownerDocument: { createElement(tagName) { return { tagName, textContent: '', className: '', id: '' }; } },
-    getAttribute(name) { return name === 'extension' ? extension : null; },
+    getAttribute(name) { return ({ extension, year, language })[name] ?? null; },
     toggleAttribute(name, value) { value ? attributes.add(name) : attributes.delete(name); },
     hasAttribute(name) { return attributes.has(name); },
   };
