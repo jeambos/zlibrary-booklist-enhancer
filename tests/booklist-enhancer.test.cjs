@@ -18,6 +18,8 @@ const {
   getActiveCards,
   hasBooklistFingerprint,
   evaluateCard,
+  parseYearRule,
+  matchesYear,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -69,10 +71,66 @@ test('invalid saved settings fall back safely and custom-only empty rule is inac
     formats: ['pdf'],
     custom: '',
     downloadRule: 'not-downloaded',
+    showLanguage: true,
+    showYear: true,
+    showFullTitle: false,
+    filterYear: false,
+    yearMin: '',
+    yearMax: '',
+    includeMissingYear: false,
   });
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set()), false);
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set(['djvu'])), true);
   assert.equal(hasEffectiveFormatRule(new Set(['other']), new Set()), true);
+});
+
+test('migrates old preferences and rejects malformed new settings', () => {
+  const settings = sanitizeSettings({
+    showFormat: false, filterFormat: true, filterDownload: true,
+    formats: ['epub'], custom: 'fb2', downloadRule: 'downloaded',
+    showLanguage: false, showYear: false, showFullTitle: true,
+    filterYear: true, yearMin: 2000, yearMax: [], includeMissingYear: true,
+  });
+  assert.equal(settings.showFormat, false);
+  assert.equal(settings.filterFormat, true);
+  assert.equal(settings.filterDownload, true);
+  assert.deepEqual(settings.formats, ['epub']);
+  assert.equal(settings.downloadRule, 'downloaded');
+  assert.equal(settings.showLanguage, false);
+  assert.equal(settings.showYear, false);
+  assert.equal(settings.showFullTitle, true);
+  assert.equal(settings.filterYear, true);
+  assert.equal(settings.yearMin, '');
+  assert.equal(settings.yearMax, '');
+  assert.equal(settings.includeMissingYear, true);
+});
+
+test('year rule validates inclusive closed and one-sided bounds', () => {
+  assert.deepEqual(parseYearRule({ yearMin: '', yearMax: '' }), { active: false, min: null, max: null, error: '' });
+  assert.deepEqual(parseYearRule({ yearMin: '2000', yearMax: '' }), { active: true, min: 2000, max: null, error: '' });
+  assert.deepEqual(parseYearRule({ yearMin: '', yearMax: '2020' }), { active: true, min: null, max: 2020, error: '' });
+  assert.deepEqual(parseYearRule({ yearMin: '2020', yearMax: '2020' }), { active: true, min: 2020, max: 2020, error: '' });
+  for (const value of ['0', '-1', '1.5', 'abc', '10000']) {
+    const rule = parseYearRule({ yearMin: value, yearMax: '' });
+    assert.equal(rule.active, false);
+    assert.ok(rule.error, value);
+  }
+  const conflict = parseYearRule({ yearMin: '2021', yearMax: '2020' });
+  assert.equal(conflict.active, false);
+  assert.ok(conflict.error);
+});
+
+test('year matching includes endpoints and optionally includes missing years', () => {
+  const rule = { active: true, min: 2000, max: 2020, error: '' };
+  assert.equal(matchesYear('2000', rule, false), true);
+  assert.equal(matchesYear('2020', rule, false), true);
+  assert.equal(matchesYear('1999', rule, false), false);
+  for (const year of [null, '', '0', 'unknown']) {
+    assert.equal(matchesYear(year, rule, false), false);
+    assert.equal(matchesYear(year, rule, true), true);
+  }
+  assert.equal(matchesYear('1999', rule, true), false);
+  assert.equal(matchesYear('0', { active: false, min: null, max: null, error: '' }, false), true);
 });
 
 test('download classification is tri-state and uses cover identity', () => {
@@ -150,7 +208,7 @@ test('recognizes the booklist structure before activating on user-added mirrors'
   assert.equal(hasBooklistFingerprint({ querySelector: () => null, querySelectorAll: () => [] }), false);
 });
 
-test('match rules cover the four selected booklist hosts and exclude the retired host', () => {
+test('match rules cover six selected booklist hosts and exclude the retired host', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   const matches = [...script.matchAll(/^\/\/ @match\s+(\S+)\s*$/gm)].map(match => match[1]);
   const hosts = matches.map(pattern => {
@@ -158,8 +216,8 @@ test('match rules cover the four selected booklist hosts and exclude the retired
     assert.ok(parts, `匹配范围必须限定为 HTTPS 书单路径：${pattern}`);
     return parts[1];
   });
-  assert.deepEqual(new Set(hosts), new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la']));
-  assert.equal(hosts.length, 4);
+  assert.deepEqual(new Set(hosts), new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la', 'z-library.im', 'z-lib.fm']));
+  assert.equal(hosts.length, 6);
   assert.equal(hosts.includes('z-library.biz'), false);
 });
 

@@ -7,6 +7,8 @@
 // @match        https://z-library.sk/booklist/*
 // @match        https://1lib.sk/booklist/*
 // @match        https://libb.la/booklist/*
+// @match        https://z-library.im/booklist/*
+// @match        https://z-lib.fm/booklist/*
 // @run-at       document-start
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -26,6 +28,13 @@
     formats: [],
     custom: '',
     downloadRule: 'not-downloaded',
+    showLanguage: true,
+    showYear: true,
+    showFullTitle: false,
+    filterYear: false,
+    yearMin: '',
+    yearMax: '',
+    includeMissingYear: false,
   });
 
   function normalizeExtension(raw) {
@@ -68,7 +77,44 @@
       custom: typeof input.custom === 'string' ? input.custom.slice(0, 1000) : '',
       downloadRule: ['downloaded', 'not-downloaded'].includes(input.downloadRule)
         ? input.downloadRule : DEFAULT_SETTINGS.downloadRule,
+      showLanguage: typeof input.showLanguage === 'boolean' ? input.showLanguage : DEFAULT_SETTINGS.showLanguage,
+      showYear: typeof input.showYear === 'boolean' ? input.showYear : DEFAULT_SETTINGS.showYear,
+      showFullTitle: typeof input.showFullTitle === 'boolean' ? input.showFullTitle : DEFAULT_SETTINGS.showFullTitle,
+      filterYear: typeof input.filterYear === 'boolean' ? input.filterYear : DEFAULT_SETTINGS.filterYear,
+      yearMin: typeof input.yearMin === 'string' ? input.yearMin.slice(0, 20) : '',
+      yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
+      includeMissingYear: typeof input.includeMissingYear === 'boolean'
+        ? input.includeMissingYear : DEFAULT_SETTINGS.includeMissingYear,
     };
+  }
+
+  function parseYearValue(raw) {
+    const text = String(raw ?? '').trim();
+    if (!/^\d+$/.test(text)) return null;
+    const value = Number(text);
+    return Number.isInteger(value) && value >= 1 && value <= 9999 ? value : null;
+  }
+
+  function parseYearRule(settings) {
+    const minText = String(settings.yearMin ?? '').trim();
+    const maxText = String(settings.yearMax ?? '').trim();
+    if (!minText && !maxText) return { active: false, min: null, max: null, error: '' };
+    const min = minText ? parseYearValue(minText) : null;
+    const max = maxText ? parseYearValue(maxText) : null;
+    if ((minText && min === null) || (maxText && max === null)) {
+      return { active: false, min, max, error: '年份须为 1–9999 的整数' };
+    }
+    if (min !== null && max !== null && min > max) {
+      return { active: false, min, max, error: '最小年份不能大于最大年份' };
+    }
+    return { active: true, min, max, error: '' };
+  }
+
+  function matchesYear(rawYear, rule, includeMissingYear) {
+    if (!rule.active) return true;
+    const year = parseYearValue(rawYear);
+    if (year === null) return !!includeMissingYear;
+    return (rule.min === null || year >= rule.min) && (rule.max === null || year <= rule.max);
   }
 
   function parseBookTotal(text) {
@@ -194,6 +240,7 @@
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, evaluateCard, renderFormatBadge,
+      parseYearRule, matchesYear,
     };
   }
 
