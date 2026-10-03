@@ -27,6 +27,9 @@ const {
   renderFullTitle,
   formatRuleSummary,
   bindDeferredTextInput,
+  renderFilterSummary,
+  renderShowMore,
+  formatProgressText,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -351,6 +354,64 @@ test('text inputs debounce and flush on Enter, blur and settings close', () => {
   assert.deepEqual(saved, ['2020', '2021', '2022']);
   element.value = '2023'; handlers.get('input')(); flush();
   assert.deepEqual(saved, ['2020', '2021', '2022', '2023']);
+});
+
+test('summary card is not a bookcard and follows active filters even at zero matches', () => {
+  const list = { children: [], ownerDocument: {
+    createElement(tagName) { return { tagName: tagName.toUpperCase(), className: '', textContent: '',
+      remove() { list.children = list.children.filter(child => child !== this); } }; },
+  }, querySelector(selector) { return selector === '.zble-summary-card'
+    ? this.children.find(child => child.className === 'zble-summary-card') || null : null; },
+  append(child) { this.children = this.children.filter(item => item !== child); this.children.push(child); } };
+  const stats = computeStats({ loaded: 20, matched: 0, total: 774 });
+  renderFilterSummary(list, stats, true, ['年份规则待设置']);
+  assert.equal(list.children.length, 1);
+  assert.equal(list.children[0].tagName, 'DIV');
+  assert.match(list.children[0].textContent, /当前已加载 20 本/);
+  assert.match(list.children[0].textContent, /本工具筛选后 0 本/);
+  assert.match(list.children[0].textContent, /书单共 774 本/);
+  assert.match(list.children[0].textContent, /年份规则待设置/);
+  renderFilterSummary(list, stats, true, []);
+  assert.equal(list.children.length, 1);
+  const appendedBook = { tagName: 'Z-BOOKCARD' };
+  list.append(appendedBook);
+  renderFilterSummary(list, computeStats({ loaded: 21, matched: 1, total: 774 }), true, []);
+  assert.equal(list.children.at(-1).className, 'zble-summary-card');
+  assert.equal(list.children.length, 2);
+  renderFilterSummary(list, stats, false, []);
+  assert.equal(list.children.length, 1);
+});
+
+test('Show more progress uses loaded count and preserves native content and handler', () => {
+  const native = { textContent: 'Show more' };
+  const onclick = () => 'native';
+  function makeMore() { return {
+    onclick, children: [native], ownerDocument: { createElement(tagName) {
+      return { tagName: tagName.toUpperCase(), className: '', textContent: '' }; } },
+    querySelector(selector) { return selector === '.zble-progress'
+      ? this.children.find(child => child.className === 'zble-progress') || null
+      : selector === '.content' ? native : null; },
+    append(child) { this.children.push(child); },
+  }; }
+  const main = { more: makeMore(), querySelector(selector) { return selector === '.page-load-more' ? this.more : null; } };
+  renderShowMore(main, computeStats({ loaded: 20, matched: 8, total: 774 }));
+  assert.equal(main.more.children.length, 2);
+  assert.match(main.more.children[1].textContent, /约展开 0 次，当前约第 1 页，尚未加载约 38 页，书单总长度约 39 页/);
+  renderShowMore(main, computeStats({ loaded: 40, matched: 10, total: 774 }));
+  assert.equal(main.more.children.length, 2);
+  assert.match(main.more.children[1].textContent, /约展开 1 次，当前约第 2 页，尚未加载约 37 页/);
+  native.textContent = 'Loading...';
+  renderShowMore(main, computeStats({ loaded: 47, matched: 10, total: 774 }));
+  assert.equal(native.textContent, 'Loading...');
+  assert.equal(main.more.onclick, onclick);
+  assert.match(main.more.children[1].textContent, /尚未加载约 37 页/);
+  main.more = makeMore();
+  renderShowMore(main, computeStats({ loaded: 0, matched: 0, total: 774 }));
+  assert.equal(main.more.children.length, 2);
+  assert.doesNotMatch(main.more.children[1].textContent, /第 0 页/);
+  main.more = null;
+  assert.doesNotThrow(() => renderShowMore(main, computeStats({ loaded: 0, matched: 0, total: null })));
+  assert.match(formatProgressText(computeStats({ loaded: 47, matched: 5, total: 12 })), /尚未加载约 未知 页，书单总长度约 未知 页/);
 });
 
 test('recognizes the booklist structure before activating on user-added mirrors', () => {

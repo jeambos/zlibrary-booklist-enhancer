@@ -10,7 +10,7 @@
   @media (max-width: 600px) { z-bookcard { flex-basis: calc((100% - 12px)/2); } }
 </style>
 <div class="booklist-header__tabs"><tab>Books (774)</tab></div>
-<div class="booklist-main active"><div class="readlist-view"></div><button class="page-load-more">Show more</button></div>
+<div class="booklist-main active"><div class="readlist-view"></div><div class="page-load-more" role="button" tabindex="0" onclick="loadMoreBooks(this)"><span class="content">Show more</span></div></div>
 <button id="fixture-complete">Simulate positive download map</button>
 <button id="fixture-empty">Simulate ambiguous empty map</button>
 <button id="fixture-add-seven">Add seven cards</button>
@@ -69,7 +69,7 @@
     }
   }
   addCards(20);
-  document.querySelector('.page-load-more').addEventListener('click', () => addCards(20));
+  window.loadMoreBooks = () => addCards(20);
   document.querySelector('#fixture-add-seven').addEventListener('click', () => addCards(7));
   document.querySelector('#fixture-replace-seven').addEventListener('click', () => {
     list.replaceChildren();

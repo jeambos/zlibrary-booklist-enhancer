@@ -271,6 +271,43 @@
     return { format, download, year };
   }
 
+  function renderFilterSummary(list, stats, active, notices = []) {
+    if (!list) return;
+    let summary = list.querySelector('.zble-summary-card');
+    if (!active) { summary?.remove(); return; }
+    if (!summary) {
+      summary = list.ownerDocument.createElement('div');
+      summary.className = 'zble-summary-card';
+      summary.setAttribute?.('role', 'status');
+      list.append(summary);
+    }
+    const total = stats.total === null ? '未知' : String(stats.total);
+    const message = `当前已加载 ${stats.loaded} 本；本工具筛选后 ${stats.matched} 本；书单共 ${total} 本`;
+    const next = notices.length ? `${message}。${notices.join('；')}` : message;
+    if (summary.textContent !== next) summary.textContent = next;
+    if (list.children[list.children.length - 1] !== summary) list.append(summary);
+  }
+
+  function formatProgressText(stats) {
+    const current = stats.loaded === 0 ? '尚无已加载书籍' : `当前约第 ${stats.current} 页`;
+    const remaining = stats.remaining === null ? '未知' : stats.remaining;
+    const pages = stats.pages === null ? '未知' : stats.pages;
+    return `约展开 ${stats.approxExpansions} 次，${current}，尚未加载约 ${remaining} 页，书单总长度约 ${pages} 页`;
+  }
+
+  function renderShowMore(main, stats) {
+    const more = main?.querySelector('.page-load-more');
+    if (!more) return;
+    let progress = more.querySelector('.zble-progress');
+    if (!progress) {
+      progress = more.ownerDocument.createElement('span');
+      progress.className = 'zble-progress';
+      more.append(progress);
+    }
+    const next = formatProgressText(stats);
+    if (progress.textContent !== next) progress.textContent = next;
+  }
+
   function bindDeferredTextInput(element, commit, delay = setTimeout, cancel = clearTimeout) {
     let timer = null;
     let pending = false;
@@ -392,6 +429,7 @@
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
       createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle,
       formatRuleSummary, bindDeferredTextInput,
+      renderFilterSummary, renderShowMore, formatProgressText,
       parseYearRule, matchesYear,
     };
   }
@@ -540,6 +578,13 @@
         }
       }
       const stats = computeStats({ loaded: cards.length, matched: pass.matched, total: parsedTotal });
+      const activeFilter = settings.filterFormat || settings.filterDownload || settings.filterYear;
+      const notices = [];
+      if (settings.filterFormat && !context.formatActive) notices.push('文件格式规则待设置');
+      if (settings.filterDownload && gate.state !== 'ready') notices.push('下载状态筛选暂停');
+      if (settings.filterYear && !context.yearActive) notices.push(context.yearRule.error || '年份规则待设置');
+      renderFilterSummary(main?.querySelector('.readlist-view'), stats, activeFilter, notices);
+      renderShowMore(main, stats);
       const pendingShadow = unavailable.format + unavailable.meta + unavailable.title;
       renderPanelState(context, unknownCards, shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0 });
       if (pendingShadow && shadowRetries < 20 && !retryId) {
@@ -576,7 +621,7 @@
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 200px;min-height:110px;max-width:100%;padding:14px;border:1px solid #8faec3;border-radius:8px;background:#f2f7fb;color:#244357;font:13px/1.6 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
