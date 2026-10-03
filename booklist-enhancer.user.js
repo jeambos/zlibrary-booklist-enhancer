@@ -35,6 +35,7 @@
     yearMin: '',
     yearMax: '',
     includeMissingYear: false,
+    panelDock: null,
   });
 
   function normalizeExtension(raw) {
@@ -85,6 +86,9 @@
       yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
       includeMissingYear: typeof input.includeMissingYear === 'boolean'
         ? input.includeMissingYear : DEFAULT_SETTINGS.includeMissingYear,
+      panelDock: input.panelDock && ['top', 'right', 'bottom', 'left'].includes(input.panelDock.edge) &&
+        Number.isFinite(input.panelDock.offset) && input.panelDock.offset >= 0
+        ? { edge: input.panelDock.edge, offset: input.panelDock.offset } : null,
     };
   }
 
@@ -330,6 +334,40 @@
     return flush;
   }
 
+  function clampPanelPosition(saved, viewport, panelSize) {
+    const maxLeft = Math.max(0, viewport.width - panelSize.width - 8);
+    const maxTop = Math.max(0, viewport.height - panelSize.height - 8);
+    const clamp = (value, max) => Math.min(max, Math.max(0, value));
+    if (saved.edge === 'left') return { left: clamp(8, maxLeft), top: clamp(saved.offset, maxTop) };
+    if (saved.edge === 'right') return { left: maxLeft, top: clamp(saved.offset, maxTop) };
+    if (saved.edge === 'bottom') return { left: clamp(saved.offset, maxLeft), top: maxTop };
+    return { left: clamp(saved.offset, maxLeft), top: clamp(8, maxTop) };
+  }
+
+  function snapPanelPosition(rect, viewport) {
+    const distances = [
+      ['top', Math.abs(rect.top)],
+      ['right', Math.abs(viewport.width - rect.left - rect.width)],
+      ['bottom', Math.abs(viewport.height - rect.top - rect.height)],
+      ['left', Math.abs(rect.left)],
+    ];
+    const edge = distances.reduce((best, item) => item[1] < best[1] ? item : best)[0];
+    const offset = edge === 'left' || edge === 'right' ? rect.top : rect.left;
+    const position = clampPanelPosition({ edge, offset }, viewport, rect);
+    return { edge, offset: edge === 'left' || edge === 'right' ? position.top : position.left, ...position };
+  }
+
+  function resetPanelDock(host, settings, save) {
+    settings.panelDock = null;
+    save();
+    for (const property of ['position', 'margin', 'right', 'left', 'top']) host.style.removeProperty(property);
+    host.scrollTop = 0;
+  }
+
+  function canStartPanelDrag(event) {
+    return !event.target.closest('button') && (event.pointerType !== 'mouse' || event.button === 0);
+  }
+
   function renderFormatBadge(card, extension, show) {
     const root = card.shadowRoot;
     if (!root) return false;
@@ -430,6 +468,7 @@
       createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle,
       formatRuleSummary, bindDeferredTextInput,
       renderFilterSummary, renderShowMore, formatProgressText,
+      snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
       parseYearRule, matchesYear,
     };
   }
@@ -634,7 +673,7 @@
         <style>
           :host{all:initial;position:fixed;z-index:2147483000;right:10px;top:10px;width:min(315px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;box-sizing:border-box;border:1px solid #9baebf;border-radius:10px;background:#fff;color:#172534;box-shadow:0 5px 20px #0003;font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
           @media(max-width:600px){:host{display:block;position:relative;right:auto;top:auto;width:calc(100% - 20px);max-height:70vh;margin:10px auto 14px}}
-          *{box-sizing:border-box}[hidden]{display:none!important}.body{padding:10px 12px}.head{display:flex;align-items:center;justify-content:space-between}.title{font-weight:700;font-size:14px}
+          *{box-sizing:border-box}[hidden]{display:none!important}.body{padding:10px 12px}.head{display:flex;align-items:center;justify-content:space-between;touch-action:none;cursor:grab;user-select:none}.title{font-weight:700;font-size:14px}.head-actions{display:flex;align-items:center;gap:2px}
           button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:#dcecff;color:#075da5}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #075da5;outline-offset:2px}
           .group{border-top:1px solid #e0e7ee;padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:#36546c;font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:#075da5}.summary{color:#526777;font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid #aebdca;border-top-color:#075da5;border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
@@ -642,7 +681,8 @@
           input[type=text],select{width:100%;padding:5px;border:1px solid #90aaba;border-radius:5px;font:inherit;color:inherit;background:#fff}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:#4c5d6c;margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:#075da5}.error{color:#9d311f}
         </style>
         <div class="body">
-          <div class="head"><span class="title">书单增强</span><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button></div>
+          <div class="head"><span class="title">书单增强</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true">∨</button></div></div>
+          <div id="zble-content">
           <div class="group"><div class="group-title">信息显示</div>
             <label class="row"><input id="zble-show-switch" type="checkbox"><span>固定显示文件格式标签</span></label>
             <label class="row"><input id="zble-language-switch" type="checkbox"><span>语言</span></label>
@@ -677,7 +717,9 @@
             <div class="year-grid"><label>最小年份<input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label>最大年份<input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div>
             <div class="hint">输入后停顿约 250 毫秒自动生效，也可按回车；允许只填写一端。</div>
             <label class="row"><input id="zble-missing-year" type="checkbox"><span>显示年份缺失的书籍</span></label>
+            <button id="zble-reset-position" type="button" style="font-size:12px;border:1px solid #90aaba;background:#fff;margin:6px 0;padding:4px 8px">重置浮窗位置</button>
             <div class="hint">其他镜像：在 Tampermonkey 的本脚本设置中手动添加 User matches，例如 <code>https://your-mirror.example/booklist/*</code>（替换为实际域名）。脚本无法自行修改匹配规则。<a href="https://www.tampermonkey.net/faq.php?q=Q103" target="_blank" rel="noopener noreferrer">操作说明</a></div>
+          </div>
           </div>
         </div>`;
 
@@ -718,12 +760,78 @@
       }
       const gear = panelRoot.querySelector('#zble-gear');
       const settingsPanel = panelRoot.querySelector('#zble-settings');
+      const content = panelRoot.querySelector('#zble-content');
+      const collapse = panelRoot.querySelector('#zble-collapse');
+      const head = panelRoot.querySelector('.head');
+      function viewport() { return { width: window.innerWidth, height: window.innerHeight }; }
+      function place(left, top) {
+        host.style.position = 'fixed';
+        host.style.margin = '0';
+        host.style.right = 'auto';
+        host.style.left = `${left}px`;
+        host.style.top = `${top}px`;
+      }
+      function applySavedDock() {
+        if (!settings.panelDock) return;
+        const rect = host.getBoundingClientRect();
+        const position = clampPanelPosition(settings.panelDock, viewport(), rect);
+        place(position.left, position.top);
+      }
+      function setCollapsed(collapsed) {
+        content.hidden = collapsed;
+        collapse.textContent = collapsed ? '∧' : '∨';
+        collapse.setAttribute('aria-label', collapsed ? '展开面板' : '折叠面板');
+        collapse.setAttribute('title', collapsed ? '展开面板' : '折叠面板');
+        collapse.setAttribute('aria-expanded', String(!collapsed));
+        requestAnimationFrame(applySavedDock);
+      }
+      collapse.addEventListener('click', () => setCollapsed(!content.hidden));
       gear.addEventListener('click', () => {
+        if (content.hidden) setCollapsed(false);
         const opening = gear.getAttribute('aria-expanded') !== 'true';
         if (!opening) for (const flush of flushInputs) flush();
         gear.setAttribute('aria-expanded', String(opening));
         settingsPanel.hidden = !opening;
+        requestAnimationFrame(applySavedDock);
       });
+      panelRoot.querySelector('#zble-reset-position').addEventListener('click', () => {
+        resetPanelDock(host, settings, saveSettings);
+      });
+      let drag = null;
+      head.addEventListener('pointerdown', event => {
+        if (!canStartPanelDrag(event)) return;
+        const rect = host.getBoundingClientRect();
+        drag = { x: event.clientX, y: event.clientY, left: rect.left, top: rect.top,
+          width: rect.width, height: rect.height, moved: false };
+        head.setPointerCapture?.(event.pointerId);
+      });
+      head.addEventListener('pointermove', event => {
+        if (!drag) return;
+        const dx = event.clientX - drag.x;
+        const dy = event.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) < 5) return;
+        drag.moved = true;
+        event.preventDefault();
+        const size = viewport();
+        place(Math.min(Math.max(0, drag.left + dx), Math.max(0, size.width - drag.width)),
+          Math.min(Math.max(0, drag.top + dy), Math.max(0, size.height - drag.height)));
+      });
+      function finishDrag(event) {
+        if (!drag) return;
+        if (drag.moved) {
+          const rect = host.getBoundingClientRect();
+          const dock = snapPanelPosition(rect, viewport());
+          settings.panelDock = { edge: dock.edge, offset: dock.offset };
+          saveSettings();
+          place(dock.left, dock.top);
+        }
+        drag = null;
+        if (head.hasPointerCapture?.(event.pointerId)) head.releasePointerCapture(event.pointerId);
+      }
+      head.addEventListener('pointerup', finishDrag);
+      head.addEventListener('pointercancel', finishDrag);
+      window.addEventListener('resize', applySavedDock);
+      requestAnimationFrame(applySavedDock);
       scheduleRefresh();
     }
 

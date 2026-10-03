@@ -30,6 +30,10 @@ const {
   renderFilterSummary,
   renderShowMore,
   formatProgressText,
+  snapPanelPosition,
+  clampPanelPosition,
+  resetPanelDock,
+  canStartPanelDrag,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -88,6 +92,7 @@ test('invalid saved settings fall back safely and custom-only empty rule is inac
     yearMin: '',
     yearMax: '',
     includeMissingYear: false,
+    panelDock: null,
   });
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set()), false);
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set(['djvu'])), true);
@@ -113,6 +118,52 @@ test('migrates old preferences and rejects malformed new settings', () => {
   assert.equal(settings.yearMin, '');
   assert.equal(settings.yearMax, '');
   assert.equal(settings.includeMissingYear, true);
+  assert.equal(settings.panelDock, null);
+  assert.equal(Object.hasOwn(settings, 'panelCollapsed'), false);
+});
+
+test('panel dock preference accepts only known edges and finite offsets', () => {
+  assert.deepEqual(sanitizeSettings({ panelDock: { edge: 'left', offset: 85 } }).panelDock,
+    { edge: 'left', offset: 85 });
+  assert.equal(sanitizeSettings({ panelDock: { edge: 'diagonal', offset: 85 } }).panelDock, null);
+  assert.equal(sanitizeSettings({ panelDock: { edge: 'left', offset: Infinity } }).panelDock, null);
+});
+
+test('panel snaps to each nearest edge and stays inside a resized viewport', () => {
+  const viewport = { width: 1000, height: 700 };
+  assert.deepEqual(snapPanelPosition({ left: 10, top: 250, width: 300, height: 200 }, viewport),
+    { edge: 'left', offset: 250, left: 8, top: 250 });
+  assert.deepEqual(snapPanelPosition({ left: 400, top: 5, width: 300, height: 200 }, viewport),
+    { edge: 'top', offset: 400, left: 400, top: 8 });
+  assert.deepEqual(snapPanelPosition({ left: 690, top: 200, width: 300, height: 200 }, viewport),
+    { edge: 'right', offset: 200, left: 692, top: 200 });
+  assert.deepEqual(snapPanelPosition({ left: 400, top: 490, width: 300, height: 200 }, viewport),
+    { edge: 'bottom', offset: 400, left: 400, top: 492 });
+  assert.deepEqual(clampPanelPosition({ edge: 'right', offset: 900 },
+    { width: 375, height: 667 }, { width: 315, height: 500 }), { left: 52, top: 159 });
+  assert.deepEqual(clampPanelPosition({ edge: 'bottom', offset: 900 },
+    { width: 280, height: 240 }, { width: 315, height: 500 }), { left: 0, top: 0 });
+});
+
+test('resetting dock also returns panel scroll to its accessible header', () => {
+  const removed = [];
+  const host = { scrollTop: 400, style: { removeProperty(name) { removed.push(name); } } };
+  const settings = { panelDock: { edge: 'bottom', offset: 100 } };
+  let saved = 0;
+  resetPanelDock(host, settings, () => { saved++; });
+  assert.equal(settings.panelDock, null);
+  assert.equal(host.scrollTop, 0);
+  assert.equal(saved, 1);
+  assert.deepEqual(removed, ['position', 'margin', 'right', 'left', 'top']);
+});
+
+test('header buttons and nonprimary mouse clicks cannot start a panel drag', () => {
+  const title = { closest() { return null; } };
+  const button = { closest(selector) { return selector === 'button' ? this : null; } };
+  assert.equal(canStartPanelDrag({ target: title, pointerType: 'mouse', button: 0 }), true);
+  assert.equal(canStartPanelDrag({ target: button, pointerType: 'mouse', button: 0 }), false);
+  assert.equal(canStartPanelDrag({ target: title, pointerType: 'mouse', button: 2 }), false);
+  assert.equal(canStartPanelDrag({ target: title, pointerType: 'touch', button: 0 }), true);
 });
 
 test('year rule validates inclusive closed and one-sided bounds', () => {
