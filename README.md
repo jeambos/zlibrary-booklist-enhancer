@@ -1,9 +1,20 @@
 # Z-Library 书单增强
 
-安装 [booklist-enhancer.user.js](./booklist-enhancer.user.js) 后，脚本默认只匹配用户确认的四个 HTTPS 入口的书单路径：官方入口 `z-lib.sk`、`z-library.sk`、`1lib.sk`，以及官方提供的用户镜像 `libb.la`。`z-library.biz` 不再匹配。这四个入口的书单页和登录后功能尚未逐一实测；域名也可能变化。
+当前脚本为 `2.0.0-dev`：[booklist-enhancer.user.js](./booklist-enhancer.user.js)。它只处理当前已加载的书单条目，不自动加载、下载图书，也不保存或恢复浏览断点。`-dev` 表示尚未通过真实站点的脚本管理器端到端验收。
 
-其他镜像请自行确认其可信性，然后在 Tampermonkey 中打开本脚本的设置，找到 **User matches**，添加该镜像的精确规则，例如 `https://your-mirror.example/booklist/*`，并将示例域名替换为实际域名。保存后刷新镜像书单页。脚本无法自行修改 `@match`，也不会自动扩大匹配范围。请参阅 [Tampermonkey 的 User matches 说明](https://www.tampermonkey.net/faq.php?q=Q103)。不建议为方便而添加 `https://*/booklist/*`：它会让脚本在任何 HTTPS 网站的相同路径上启动。
+## 安装与更新
 
-对用户添加的站点，脚本会先检查书单结构；不符合时不显示界面，也不改页面内容。这个检查只判断页面结构，**不验证域名的真实性或镜像的安全性**。页面加载后最多等待 30 秒供书单结构出现。下载状态筛选在记录未得到可靠确认时会暂停；空下载记录与请求失败目前无法区分。
+先安装 Tampermonkey，再新建用户脚本，把 `booklist-enhancer.user.js` 的**完整内容**粘贴进去并保存；已有旧版脚本时请替换旧脚本，不要同时启用两份。刷新书单页即可运行。此脚本没有自动更新地址；本地文件改动不会自动同步到脚本管理器，更新时也要重新粘贴完整内容。旧版显示和筛选偏好会尽量迁移，书籍与加载进度不会存储。
 
-当前脚本的功能、限制和测试边界见 [现行设计](./DESIGN.md) 与 [现行测试记录](./TEST_PLAN.md)。下一版的待审阅文档为 [v2 设计规格](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-design.md) 和 [v2 测试方案](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-test-plan.md)；其中的功能尚未写入当前脚本。
+脚本内置六个 HTTPS 书单匹配域名：`z-lib.sk`、`z-library.sk`、`1lib.sk`、`libb.la`、`z-library.im`、`z-lib.fm`；均仅匹配 `/booklist/*`。`.biz` 不在范围内。其他镜像须先自行核实可信性，再到 Tampermonkey 的本脚本设置中添加精确 [User matches](https://www.tampermonkey.net/faq.php?q=Q103)，例如 `https://your-mirror.example/booklist/*`。脚本不能自行修改 `@match`；结构检测也不能证明镜像安全。不建议使用 `https://*/booklist/*` 这种跨站通配匹配。六个域名不等于均已完成登录后兼容测试。
+
+## 使用
+
+- “信息显示”可固定显示文件格式标签，分别显示或隐藏语言、出版年份，并选择是否展开超长书名。
+- “筛选器”可按格式、下载状态、出版年份取交集。第一次使用没有预选格式；开启空规则不会隐藏全部书籍。齿轮中的设置即时生效；文本输入停顿约 250 毫秒自动应用，也可按回车。年份缺失默认排除，可单独允许；年份上下限冲突时该项暂停并提示。
+- 有筛选器开关开启时，最后一张书卡后出现 X/Y/T 统计卡：当前已加载、本工具筛选后、书单总数。站点原有 Show more 后附加约展开次数及剩余页数，按约 20 本一批估算，**不是实际点击次数或阅读断点**。站点移除按钮后，页数进度也消失。
+- 标题栏的向上 V 折叠面板；齿轮展开设置。拖动标题栏可移动面板并吸附到边缘，设置中可重置位置。
+
+下载状态来自站点异步记录。尚未确认时，该筛选器置灰并暂停；30 秒后提示刷新或检查登录。站点的空下载记录与请求失败无法可靠区分，因此脚本只在取得非空记录后启用下载筛选，避免把“未知”误判为“未下载”。其他显示和筛选功能仍可使用。
+
+实现依据见 [v2 设计规格](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-design.md)，已做与未做的验证见 [v2 测试记录](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-test-plan.md)。根目录的 [旧版设计](./DESIGN.md) 和 [旧版测试记录](./TEST_PLAN.md) 仅供追溯，不代表 v2 当前行为。

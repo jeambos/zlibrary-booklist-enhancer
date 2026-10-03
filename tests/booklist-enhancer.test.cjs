@@ -490,6 +490,11 @@ test('match rules cover six selected booklist hosts and exclude the retired host
   assert.equal(hosts.includes('z-library.biz'), false);
 });
 
+test('v2 userscript metadata identifies the implementation as a development build', () => {
+  const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
+  assert.match(script, /^\/\/ @version\s+2\.0\.0-dev\s*$/m);
+});
+
 test('user-added non-booklist pages stay inert until a booklist appears', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   let siteReady = false;

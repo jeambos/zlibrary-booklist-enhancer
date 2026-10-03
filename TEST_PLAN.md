@@ -1,6 +1,6 @@
 # Z-Library 书单增强：测试方案
 
-状态：当前 `1.0.2-dev` 脚本的部分执行记录。下一版尚未执行的验收方案见 [v2 测试方案](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-test-plan.md)。本文保留现行版验收矩阵；未验证项不能视为通过。先前对原型运行的 `node --check` 只覆盖语法，不能证明功能、时序或站点兼容。
+状态：**历史文档**，保留 `1.0.2-dev` 的部分执行记录和旧版验收矩阵，不代表当前 `2.0.0-dev` 已通过。当前结果见 [v2 测试记录](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-test-plan.md)。先前对原型运行的 `node --check` 只覆盖语法，不能证明功能、时序或站点兼容。
 
 ## 测试分层与夹具
 

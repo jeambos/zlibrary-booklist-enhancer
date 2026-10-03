@@ -1,6 +1,6 @@
 # Z-Library 书单增强：设计草案
 
-状态：当前 `1.0.2-dev` 脚本的设计基线。下一版提案另见 [v2 设计规格](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-design.md)；其中的功能尚未实现。旧原型已删除，现行 `booklist-enhancer.user.js` 已从零编写；其验证情况见 `TEST_PLAN.md` 的执行记录。
+状态：**历史文档**，记录 `1.0.2-dev` 的设计基线，不描述当前 `2.0.0-dev` 的全部行为。当前实现见 [v2 设计规格](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-design.md)，当前验证见 [v2 测试记录](./docs/superpowers/specs/2026-10-03-booklist-enhancer-v2-test-plan.md)。旧原型已删除，用户脚本曾从零编写。
 
 ## 目标与边界
 

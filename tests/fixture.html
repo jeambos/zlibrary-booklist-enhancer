@@ -5,7 +5,7 @@
 <style>
   body { margin: 20px; font: 14px system-ui; }
   .readlist-view { display: flex; flex-wrap: wrap; gap: 12px; max-width: 900px; }
-  z-bookcard { display: block; flex: 0 0 calc((100% - 36px)/4); min-height: 95px; border: 1px solid #bbb; padding: 8px; }
+  z-bookcard { box-sizing: border-box; display: block; flex: 0 0 calc((100% - 36px)/4); min-height: 95px; border: 1px solid #bbb; padding: 8px; }
   .page-load-more { margin: 20px; }
   @media (max-width: 600px) { z-bookcard { flex-basis: calc((100% - 12px)/2); } }
 </style>

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Z-Library 书单增强
 // @namespace    local.booklist-enhancer
-// @version      1.0.2-dev
-// @description  常显文件格式并筛选当前已加载的书单条目
+// @version      2.0.0-dev
+// @description  增强书单信息显示、筛选与当前加载进度
 // @match        https://z-lib.sk/booklist/*
 // @match        https://z-library.sk/booklist/*
 // @match        https://1lib.sk/booklist/*
