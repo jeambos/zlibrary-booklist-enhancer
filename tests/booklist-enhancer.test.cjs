@@ -23,6 +23,8 @@ const {
   compileFilters,
   filterActiveCards,
   createRefreshScheduler,
+  renderCardMeta,
+  renderFullTitle,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -186,6 +188,55 @@ test('renders one badge without replacing native metadata', () => {
   partial.root.querySelectorAll = originalQuery;
   assert.equal(renderFormatBadge(partial.card, 'pdf', true), true);
   assert.equal(partial.idle.children[0].textContent, 'PDF');
+});
+
+test('language and year metadata toggles restore exact desktop and mobile originals', () => {
+  const { card, idle, mobileIdle } = makeCard();
+  renderFormatBadge(card, 'pdf', true);
+  assert.equal(renderCardMeta(card, { showLanguage: false, showYear: true }), true);
+  assert.equal(idle.textNode.nodeValue, '2024');
+  assert.equal(mobileIdle.textNode.nodeValue, '2024');
+  assert.equal(renderCardMeta(card, { showLanguage: true, showYear: false }), true);
+  assert.equal(idle.textNode.nodeValue, 'Chinese');
+  assert.equal(mobileIdle.textNode.nodeValue, 'ch');
+  assert.equal(renderCardMeta(card, { showLanguage: false, showYear: false }), true);
+  assert.equal(idle.textNode.nodeValue, '');
+  assert.equal(mobileIdle.textNode.nodeValue, '');
+  assert.equal(renderCardMeta(card, { showLanguage: true, showYear: true }), true);
+  assert.equal(idle.textNode.nodeValue, 'Chinese, 2024');
+  assert.equal(mobileIdle.textNode.nodeValue, 'ch, 2024');
+  assert.equal(idle.children.length, 1);
+});
+
+test('missing year, late shadow and unsupported metadata remain safe', () => {
+  const missing = makeCard({ year: '0' });
+  assert.equal(renderCardMeta(missing.card, { showLanguage: false, showYear: true }), true);
+  assert.equal(missing.idle.textNode.nodeValue, '');
+  const late = makeCard({ shadowReady: false });
+  assert.equal(renderCardMeta(late.card, { showLanguage: false, showYear: true }), false);
+  late.card.shadowRoot = late.root;
+  assert.equal(renderCardMeta(late.card, { showLanguage: false, showYear: true }), true);
+  const unsupported = makeCard();
+  unsupported.idle.textNode.nodeValue = 'unrecognized layout';
+  assert.equal(renderCardMeta(unsupported.card, { showLanguage: false, showYear: true }), false);
+  assert.equal(unsupported.idle.textNode.nodeValue, 'unrecognized layout');
+  const replacement = makeCard();
+  assert.equal(renderCardMeta(replacement.card, { showLanguage: false, showYear: true }), true);
+  assert.equal(replacement.idle.textNode.nodeValue, '2024');
+});
+
+test('full-title style is scoped and reversible without altering text or link', () => {
+  const { card, root, title } = makeCard();
+  const original = { text: title.textContent, href: title.href };
+  assert.equal(renderFullTitle(card, true), true);
+  assert.equal(card.hasAttribute('data-zble-full-title'), true);
+  assert.equal(root.querySelector('#zble-title-style') !== null, true);
+  assert.equal(renderFullTitle(card, false), true);
+  assert.equal(card.hasAttribute('data-zble-full-title'), false);
+  assert.equal(title.textContent, original.text);
+  assert.equal(title.href, original.href);
+  const late = makeCard({ shadowReady: false });
+  assert.equal(renderFullTitle(late.card, true), false);
 });
 
 test('reads cover identity and reevaluates active cards after replacement', () => {

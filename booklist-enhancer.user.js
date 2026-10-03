@@ -280,12 +280,76 @@
     return true;
   }
 
+  const originalMeta = new WeakMap();
+
+  function renderCardMeta(card, { showLanguage, showYear }) {
+    const root = card.shadowRoot;
+    if (!root) return false;
+    const idles = ['.meta.desktop .idle', '.meta.mobile .idle']
+      .map(selector => root.querySelector(selector)).filter(Boolean);
+    if (!idles.length) return false;
+    const year = parseYearValue(card.getAttribute('year'));
+    const updates = [];
+    for (const idle of idles) {
+      const node = [...idle.childNodes].find(child => child.nodeType === 3 && child.nodeValue.trim());
+      if (!node) {
+        const previous = originalMeta.get(idle);
+        if (previous?.node && [...idle.childNodes].includes(previous.node)) {
+          updates.push(previous);
+          continue;
+        }
+        return false;
+      }
+      let saved = originalMeta.get(idle);
+      if (!saved || saved.node !== node || node.nodeValue !== saved.lastRendered) {
+        const original = node.nodeValue;
+        const trimmed = original.trim();
+        let languageText = trimmed;
+        let yearText = '';
+        if (year !== null) {
+          const suffix = `, ${year}`;
+          if (trimmed === String(year)) {
+            languageText = '';
+            yearText = String(year);
+          } else if (trimmed.endsWith(suffix)) {
+            languageText = trimmed.slice(0, -suffix.length);
+            yearText = String(year);
+          } else return false;
+        }
+        saved = { node, original, languageText, yearText, lastRendered: original };
+        originalMeta.set(idle, saved);
+      }
+      updates.push(saved);
+    }
+    for (const saved of updates) {
+      const next = showLanguage && showYear ? saved.original
+        : [showLanguage ? saved.languageText : '', showYear ? saved.yearText : ''].filter(Boolean).join(', ');
+      if (saved.node.nodeValue !== next) saved.node.nodeValue = next;
+      saved.lastRendered = next;
+    }
+    return true;
+  }
+
+  function renderFullTitle(card, enabled) {
+    const root = card.shadowRoot;
+    if (!root?.querySelector('.book-info .title')) return false;
+    let style = root.querySelector('#zble-title-style');
+    if (!style) {
+      style = card.ownerDocument.createElement('style');
+      style.id = 'zble-title-style';
+      style.textContent = ':host([data-zble-full-title]) .book-info .title{max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important}';
+      root.append(style);
+    }
+    card.toggleAttribute('data-zble-full-title', !!enabled);
+    return true;
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
-      createRefreshScheduler, renderFormatBadge,
+      createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle,
       parseYearRule, matchesYear,
     };
   }
@@ -434,6 +498,8 @@
         const card = cards[index];
         const info = pass.infos[index];
         if (!renderFormatBadge(card, info.extension, settings.showFormat)) pendingShadow++;
+        if (!renderCardMeta(card, settings)) pendingShadow++;
+        if (!renderFullTitle(card, settings.showFullTitle)) pendingShadow++;
         const result = pass.results[index];
         if (settings.filterDownload && gate.state === 'ready' && result.download === 'unknown') unknownCards++;
         if (card.classList.contains('zble-hidden') === result.visible) {

@@ -4,9 +4,10 @@
 <title>Booklist enhancer local fixture</title>
 <style>
   body { margin: 20px; font: 14px system-ui; }
-  .readlist-view { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 900px; }
-  z-bookcard { display: block; min-height: 95px; border: 1px solid #bbb; padding: 8px; }
+  .readlist-view { display: flex; flex-wrap: wrap; gap: 12px; max-width: 900px; }
+  z-bookcard { display: block; flex: 0 0 calc((100% - 36px)/4); min-height: 95px; border: 1px solid #bbb; padding: 8px; }
   .page-load-more { margin: 20px; }
+  @media (max-width: 600px) { z-bookcard { flex-basis: calc((100% - 12px)/2); } }
 </style>
 <div class="booklist-header__tabs"><tab>Books (774)</tab></div>
 <div class="booklist-main active"><div class="readlist-view"></div><button class="page-load-more">Show more</button></div>
@@ -36,9 +37,17 @@
       cover.setAttribute('id', this.dataset.bookId);
       cover.setAttribute('isbn', this.dataset.isbn || '');
       const meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.innerHTML = '<span class="idle">Chinese, 2024</span><span class="hover">PDF, 1 MB</span>';
-      root.append(cover, meta);
+      meta.className = 'meta desktop';
+      meta.innerHTML = `<span class="idle">Chinese${this.getAttribute('year') === '0' ? '' : ', ' + this.getAttribute('year')}</span><span class="hover">PDF, 1 MB</span>`;
+      const mobile = document.createElement('div');
+      mobile.className = 'meta mobile';
+      mobile.innerHTML = `<span class="idle">ch${this.getAttribute('year') === '0' ? '' : ', ' + this.getAttribute('year')}</span>`;
+      const info = document.createElement('div');
+      info.className = 'book-info';
+      info.innerHTML = '<div class="title"><slot name="title"></slot></div>';
+      const nativeStyle = document.createElement('style');
+      nativeStyle.textContent = '.book-info .title{max-height:40px;overflow:hidden;line-height:20px}.meta{margin-top:7px}.mobile{display:none}@media(max-width:600px){.desktop{display:none}.mobile{display:block}}';
+      root.append(nativeStyle, cover, info, meta, mobile);
     }
   });
   const list = document.querySelector('.readlist-view');
@@ -47,8 +56,14 @@
     for (let i = 0; i < n; i++) {
       const card = document.createElement('z-bookcard');
       card.setAttribute('extension', next % 2 ? 'pdf' : 'epub');
+      card.setAttribute('language', 'chinese');
+      card.setAttribute('year', next % 7 ? '2024' : '0');
       card.dataset.bookId = String(next);
       card.dataset.isbn = `isbn-${next}`;
+      const title = document.createElement('span');
+      title.slot = 'title';
+      title.textContent = next === 1 ? 'A very long original book title that continues across many lines to exercise the expanded-title layout without changing the card width or neighboring links. Repeat this phrase to reach roughly six lines of text in the fixture.' : `Book ${next}`;
+      card.append(title);
       list.append(card);
       next++;
     }

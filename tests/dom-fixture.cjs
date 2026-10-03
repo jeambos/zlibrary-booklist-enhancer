@@ -1,12 +1,17 @@
 function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '2024', language = 'chinese', shadowReady = true } = {}) {
-  const idle = {
-    nativeText: 'Chinese, 2024',
-    children: [],
-    querySelector(selector) {
-      return selector === '.zble-format' ? this.children.find(child => child.className === 'zble-format') || null : null;
-    },
-    append(child) { this.children.push(child); },
-  };
+  function makeIdle(nativeText) {
+    const textNode = { nodeType: 3, nodeValue: nativeText };
+    return {
+      nativeText, textNode, childNodes: [textNode], children: [],
+      querySelector(selector) {
+        return selector === '.zble-format' ? this.children.find(child => child.className === 'zble-format') || null : null;
+      },
+      append(child) { this.children.push(child); this.childNodes.push(child); },
+    };
+  }
+  const idle = makeIdle(year === '0' ? 'Chinese' : `Chinese, ${year}`);
+  const mobileIdle = makeIdle(year === '0' ? 'ch' : `ch, ${year}`);
+  const title = { textContent: 'A very long original book title', href: '/book/123' };
   const cover = {
     getAttribute(name) { return ({ id: coverId, isbn })[name] ?? null; },
   };
@@ -15,9 +20,13 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '20
     querySelector(selector) {
       if (selector === 'z-cover') return cover;
       if (selector === '#zble-format-style') return this.children.find(child => child.id === 'zble-format-style') || null;
+      if (selector === '#zble-title-style') return this.children.find(child => child.id === 'zble-title-style') || null;
+      if (selector === '.meta.desktop .idle') return idle;
+      if (selector === '.meta.mobile .idle') return mobileIdle;
+      if (selector === '.book-info .title') return title;
       return null;
     },
-    querySelectorAll(selector) { return selector === '.meta .idle' ? [idle] : []; },
+    querySelectorAll(selector) { return selector === '.meta .idle' ? [idle, mobileIdle] : []; },
     append(child) { this.children.push(child); },
   };
   const attributes = new Set();
@@ -28,7 +37,7 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '20
     toggleAttribute(name, value) { value ? attributes.add(name) : attributes.delete(name); },
     hasAttribute(name) { return attributes.has(name); },
   };
-  return { card, root, idle, cover };
+  return { card, root, idle, mobileIdle, title, cover };
 }
 
 function makeBooklist(cards = []) {
