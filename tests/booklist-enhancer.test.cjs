@@ -295,6 +295,14 @@ test('full-title style is scoped and reversible without altering text or link', 
   assert.equal(renderFullTitle(late.card, true), false);
 });
 
+test('full-title mode releases the native fixed book-info height', () => {
+  const { card, root } = makeCard();
+  renderFullTitle(card, true);
+  const css = root.querySelector('#zble-title-style').textContent;
+  assert.match(css, /\.book-info\s*\{[^}]*height:\s*auto\s*!important/);
+  assert.match(css, /\.book-info\s*\{[^}]*min-height:\s*88px/);
+});
+
 test('reads cover identity and reevaluates active cards after replacement', () => {
   const first = makeCard({ extension: 'EPUB', coverId: 'cover-7', isbn: 'x, y', year: '2020', language: 'english' }).card;
   assert.deepEqual(readCardData(first), { extension: 'epub', coverId: 'cover-7', isbns: ['x', 'y'], year: '2020', language: 'english' });
@@ -433,6 +441,17 @@ test('summary card is not a bookcard and follows active filters even at zero mat
   assert.equal(list.children.length, 1);
 });
 
+test('summary card adopts the current bookcard flex width and minimum height', () => {
+  const list = { children: [], ownerDocument: { createElement() { return { className: '', textContent: '', style: {} }; } },
+    querySelector() { return this.children.find(child => child.className === 'zble-summary-card') || null; },
+    append(child) { this.children = this.children.filter(item => item !== child); this.children.push(child); } };
+  renderFilterSummary(list, computeStats({ loaded: 20, matched: 0, total: 774 }), true, [],
+    { flex: '0 0 25%', height: 320 });
+  assert.equal(list.children[0].style.flex, '0 0 25%');
+  assert.equal(list.children[0].style.minHeight, '320px');
+  assert.match(list.children[0].textContent, /当前已加载 20 本\n本工具筛选后 0 本\n书单共 774 本/);
+});
+
 test('Show more progress uses loaded count and preserves native content and handler', () => {
   const native = { textContent: 'Show more' };
   const onclick = () => 'native';
@@ -490,9 +509,9 @@ test('match rules cover six selected booklist hosts and exclude the retired host
   assert.equal(hosts.includes('z-library.biz'), false);
 });
 
-test('v2 userscript metadata identifies the implementation as a development build', () => {
+test('v2 userscript metadata identifies the updated implementation as a development build', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
-  assert.match(script, /^\/\/ @version\s+2\.0\.0-dev\s*$/m);
+  assert.match(script, /^\/\/ @version\s+2\.0\.1-dev\s*$/m);
 });
 
 test('user-added non-booklist pages stay inert until a booklist appears', () => {

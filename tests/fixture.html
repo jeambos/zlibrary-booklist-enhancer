@@ -5,7 +5,7 @@
 <style>
   body { margin: 20px; font: 14px system-ui; }
   .readlist-view { display: flex; flex-wrap: wrap; gap: 12px; max-width: 900px; }
-  z-bookcard { box-sizing: border-box; display: block; flex: 0 0 calc((100% - 36px)/4); min-height: 95px; border: 1px solid #bbb; padding: 8px; }
+  z-bookcard { box-sizing: border-box; display: block; flex: 0 0 calc((100% - 36px)/4); min-height: 320px; border: 1px solid #bbb; padding: 8px; }
   .page-load-more { margin: 20px; }
   @media (max-width: 600px) { z-bookcard { flex-basis: calc((100% - 12px)/2); } }
 </style>
@@ -46,7 +46,7 @@
       info.className = 'book-info';
       info.innerHTML = '<div class="title"><slot name="title"></slot></div>';
       const nativeStyle = document.createElement('style');
-      nativeStyle.textContent = '.book-info .title{max-height:40px;overflow:hidden;line-height:20px}.meta{margin-top:7px}.mobile{display:none}@media(max-width:600px){.desktop{display:none}.mobile{display:block}}';
+      nativeStyle.textContent = '.book-info{height:88px;overflow:hidden}.book-info .title{max-height:40px;overflow:hidden;line-height:20px}.meta{margin-top:7px}.mobile{display:none}@media(max-width:600px){.desktop{display:none}.mobile{display:block}}';
       root.append(nativeStyle, cover, info, meta, mobile);
     }
   });
@@ -62,7 +62,7 @@
       card.dataset.isbn = `isbn-${next}`;
       const title = document.createElement('span');
       title.slot = 'title';
-      title.textContent = next === 1 ? 'A very long original book title that continues across many lines to exercise the expanded-title layout without changing the card width or neighboring links. Repeat this phrase to reach roughly six lines of text in the fixture.' : `Book ${next}`;
+      title.textContent = next === 1 ? 'A very long original book title that continues across many lines to exercise the expanded-title layout without changing the card width or neighboring links. '.repeat(5) : `Book ${next}`;
       card.append(title);
       list.append(card);
       next++;

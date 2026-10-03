@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Z-Library 书单增强
 // @namespace    local.booklist-enhancer
-// @version      2.0.0-dev
+// @version      2.0.1-dev
 // @description  增强书单信息显示、筛选与当前加载进度
 // @match        https://z-lib.sk/booklist/*
 // @match        https://z-library.sk/booklist/*
@@ -275,7 +275,7 @@
     return { format, download, year };
   }
 
-  function renderFilterSummary(list, stats, active, notices = []) {
+  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null) {
     if (!list) return;
     let summary = list.querySelector('.zble-summary-card');
     if (!active) { summary?.remove(); return; }
@@ -286,9 +286,14 @@
       list.append(summary);
     }
     const total = stats.total === null ? '未知' : String(stats.total);
-    const message = `当前已加载 ${stats.loaded} 本；本工具筛选后 ${stats.matched} 本；书单共 ${total} 本`;
-    const next = notices.length ? `${message}。${notices.join('；')}` : message;
+    const message = `当前已加载 ${stats.loaded} 本\n本工具筛选后 ${stats.matched} 本\n书单共 ${total} 本`;
+    const next = notices.length ? `${message}\n${notices.join('；')}` : message;
     if (summary.textContent !== next) summary.textContent = next;
+    if (cardMetrics && summary.style) {
+      if (summary.style.flex !== cardMetrics.flex) summary.style.flex = cardMetrics.flex;
+      const minHeight = `${cardMetrics.height}px`;
+      if (summary.style.minHeight !== minHeight) summary.style.minHeight = minHeight;
+    }
     if (list.children[list.children.length - 1] !== summary) list.append(summary);
   }
 
@@ -453,7 +458,7 @@
     if (!style) {
       style = card.ownerDocument.createElement('style');
       style.id = 'zble-title-style';
-      style.textContent = ':host([data-zble-full-title]) .book-info .title{max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important}';
+      style.textContent = ':host([data-zble-full-title]) .book-info{height:auto!important;min-height:88px;overflow:visible!important}:host([data-zble-full-title]) .book-info .title{max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important}';
       root.append(style);
     }
     card.toggleAttribute('data-zble-full-title', !!enabled);
@@ -516,6 +521,7 @@
     let parentObserver = null;
     let startupObserver = null;
     let classObservers = [];
+    let lastCardMetrics = null;
 
     function saveSettings() {
       try { GM_setValue(STORAGE_KEY, { ...settings, formats: [...settings.formats] }); } catch { /* Session still works. */ }
@@ -602,8 +608,13 @@
       const parsedTotal = parseBookTotal(totalText);
       const pageReady = !!main && (cards.length > 0 || parsedTotal === 0);
       if (pageReady) startDownloadTimer();
+      const list = main?.querySelector('.readlist-view');
+      const previousSummary = list?.querySelector('.zble-summary-card');
+      if (previousSummary) previousSummary.style.minHeight = '0px';
       let unknownCards = 0;
       const unavailable = { format: 0, meta: 0, title: 0 };
+      let lastVisibleCard = null;
+      let fallbackMetrics = null;
       for (let index = 0; index < cards.length; index++) {
         const card = cards[index];
         const info = pass.infos[index];
@@ -611,6 +622,11 @@
         if (!renderCardMeta(card, settings)) unavailable.meta++;
         if (!renderFullTitle(card, settings.showFullTitle)) unavailable.title++;
         const result = pass.results[index];
+        if (result.visible) lastVisibleCard = card;
+        if (!fallbackMetrics && !card.classList.contains('zble-hidden')) {
+          const rect = card.getBoundingClientRect();
+          if (rect.width && rect.height) fallbackMetrics = { flex: getComputedStyle(card).flex, height: rect.height };
+        }
         if (settings.filterDownload && gate.state === 'ready' && result.download === 'unknown') unknownCards++;
         if (card.classList.contains('zble-hidden') === result.visible) {
           card.classList.toggle('zble-hidden', !result.visible);
@@ -622,7 +638,11 @@
       if (settings.filterFormat && !context.formatActive) notices.push('文件格式规则待设置');
       if (settings.filterDownload && gate.state !== 'ready') notices.push('下载状态筛选暂停');
       if (settings.filterYear && !context.yearActive) notices.push(context.yearRule.error || '年份规则待设置');
-      renderFilterSummary(main?.querySelector('.readlist-view'), stats, activeFilter, notices);
+      if (lastVisibleCard) {
+        const rect = lastVisibleCard.getBoundingClientRect();
+        if (rect.width && rect.height) lastCardMetrics = { flex: getComputedStyle(lastVisibleCard).flex, height: rect.height };
+      } else if (fallbackMetrics) lastCardMetrics = fallbackMetrics;
+      renderFilterSummary(list, stats, activeFilter, notices, lastCardMetrics);
       renderShowMore(main, stats);
       const pendingShadow = unavailable.format + unavailable.meta + unavailable.title;
       renderPanelState(context, unknownCards, shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0 });
@@ -640,6 +660,7 @@
       for (const observer of classObservers) observer.disconnect();
       classObservers = [];
       observedMain = main;
+      lastCardMetrics = null;
       if (!main) return;
       startupObserver?.disconnect();
       startupObserver = null;
@@ -660,7 +681,7 @@
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 200px;min-height:110px;max-width:100%;padding:14px;border:1px solid #8faec3;border-radius:8px;background:#f2f7fb;color:#244357;font:13px/1.6 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:24px;border:0;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:16px/1.6 system-ui,sans-serif;white-space:pre-line;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;box-shadow:0 2px 10px #0006}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -671,17 +692,18 @@
       panelRoot = host.attachShadow({ mode: 'open' });
       panelRoot.innerHTML = `
         <style>
-          :host{all:initial;position:fixed;z-index:2147483000;right:10px;top:10px;width:min(315px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;box-sizing:border-box;border:1px solid #9baebf;border-radius:10px;background:#fff;color:#172534;box-shadow:0 5px 20px #0003;font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+          :host{all:initial;--zble-bg:#fff;--zble-text:#172534;--zble-border:#9baebf;--zble-accent-bg:#dcecff;--zble-accent:#075da5;--zble-line:#e0e7ee;--zble-group:#36546c;--zble-muted:#526777;--zble-spinner:#aebdca;--zble-settings-bg:#f0f6fb;--zble-settings-border:#b5cede;--zble-settings-title:#174f78;--zble-field-border:#90aaba;--zble-field-bg:#fff;--zble-hint:#4c5d6c;--zble-error:#9d311f;position:fixed;z-index:2147483000;right:10px;top:10px;width:min(315px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;box-sizing:border-box;border:1px solid var(--zble-border);border-radius:10px;background:var(--zble-bg);color:var(--zble-text);color-scheme:light;box-shadow:0 5px 20px #0003;font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+          @media(prefers-color-scheme:dark){:host{--zble-bg:#1b2430;--zble-text:#eef3f8;--zble-border:#586e80;--zble-accent-bg:#25445d;--zble-accent:#9bd3ff;--zble-line:#3e5262;--zble-group:#c2def0;--zble-muted:#bbcbd7;--zble-spinner:#7f96a8;--zble-settings-bg:#253545;--zble-settings-border:#577083;--zble-settings-title:#b7ddff;--zble-field-border:#7595aa;--zble-field-bg:#172330;--zble-hint:#cfdae2;--zble-error:#ffb0a3;color-scheme:dark;box-shadow:0 5px 20px #0008}}
           @media(max-width:600px){:host{display:block;position:relative;right:auto;top:auto;width:calc(100% - 20px);max-height:70vh;margin:10px auto 14px}}
           *{box-sizing:border-box}[hidden]{display:none!important}.body{padding:10px 12px}.head{display:flex;align-items:center;justify-content:space-between;touch-action:none;cursor:grab;user-select:none}.title{font-weight:700;font-size:14px}.head-actions{display:flex;align-items:center;gap:2px}
-          button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:#dcecff;color:#075da5}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #075da5;outline-offset:2px}
-          .group{border-top:1px solid #e0e7ee;padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:#36546c;font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:#075da5}.summary{color:#526777;font-size:11px;margin-left:2px;overflow-wrap:anywhere}
-          .spin{display:inline-block;width:13px;height:13px;border:2px solid #aebdca;border-top-color:#075da5;border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
-          .settings{background:#f0f6fb;border:1px solid #b5cede;border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:#174f78;margin-bottom:8px}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
-          input[type=text],select{width:100%;padding:5px;border:1px solid #90aaba;border-radius:5px;font:inherit;color:inherit;background:#fff}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:#4c5d6c;margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:#075da5}.error{color:#9d311f}
+          button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:var(--zble-accent-bg);color:var(--zble-accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--zble-accent);outline-offset:2px}.chevron{display:block;width:18px;height:18px;transition:transform .15s ease}#zble-collapse[aria-expanded="false"] .chevron{transform:rotate(180deg)}@media(prefers-reduced-motion:reduce){.chevron{transition:none}}
+          .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
+          .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
+          .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
+          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}
         </style>
         <div class="body">
-          <div class="head"><span class="title">书单增强</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true">∨</button></div></div>
+          <div class="head"><span class="title">书单增强</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
           <div id="zble-content">
           <div class="group"><div class="group-title">信息显示</div>
             <label class="row"><input id="zble-show-switch" type="checkbox"><span>固定显示文件格式标签</span></label>
@@ -717,7 +739,7 @@
             <div class="year-grid"><label>最小年份<input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label>最大年份<input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div>
             <div class="hint">输入后停顿约 250 毫秒自动生效，也可按回车；允许只填写一端。</div>
             <label class="row"><input id="zble-missing-year" type="checkbox"><span>显示年份缺失的书籍</span></label>
-            <button id="zble-reset-position" type="button" style="font-size:12px;border:1px solid #90aaba;background:#fff;margin:6px 0;padding:4px 8px">重置浮窗位置</button>
+            <button id="zble-reset-position" class="reset-position" type="button">重置浮窗位置</button>
             <div class="hint">其他镜像：在 Tampermonkey 的本脚本设置中手动添加 User matches，例如 <code>https://your-mirror.example/booklist/*</code>（替换为实际域名）。脚本无法自行修改匹配规则。<a href="https://www.tampermonkey.net/faq.php?q=Q103" target="_blank" rel="noopener noreferrer">操作说明</a></div>
           </div>
           </div>
@@ -779,7 +801,6 @@
       }
       function setCollapsed(collapsed) {
         content.hidden = collapsed;
-        collapse.textContent = collapsed ? '∧' : '∨';
         collapse.setAttribute('aria-label', collapsed ? '展开面板' : '折叠面板');
         collapse.setAttribute('title', collapsed ? '展开面板' : '折叠面板');
         collapse.setAttribute('aria-expanded', String(!collapsed));
