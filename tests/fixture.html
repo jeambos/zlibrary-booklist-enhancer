@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>Booklist enhancer local fixture</title>
+<style>
+  body { margin: 20px; font: 14px system-ui; }
+  .readlist-view { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 900px; }
+  z-bookcard { display: block; min-height: 95px; border: 1px solid #bbb; padding: 8px; }
+  .page-load-more { margin: 20px; }
+</style>
+<div class="booklist-header__tabs"><tab>Books (774)</tab></div>
+<div class="booklist-main active"><div class="readlist-view"></div><button class="page-load-more">Show more</button></div>
+<button id="fixture-complete">Simulate positive download map</button>
+<button id="fixture-empty">Simulate ambiguous empty map</button>
+<button id="fixture-add-seven">Add seven cards</button>
+<button id="fixture-replace-seven">Replace with seven cards</button>
+<script>
+  window.GM_getValue = (key, fallback) => {
+    const raw = sessionStorage.getItem(`gm:${key}`);
+    return raw === null ? fallback : JSON.parse(raw);
+  };
+  window.GM_setValue = (key, value) => sessionStorage.setItem(`gm:${key}`, JSON.stringify(value));
+  window.unsafeWindow = window;
+  window.ZLibrary = {
+    _: { downloaded: { byId: {}, byIsbn: {} } },
+    checkIsDownloaded(id, ...isbns) {
+      const map = this._.downloaded;
+      return Object.hasOwn(map.byId, id) || isbns.some(isbn => Object.hasOwn(map.byIsbn, isbn));
+    },
+  };
+  customElements.define('z-bookcard', class extends HTMLElement {
+    connectedCallback() {
+      if (this.shadowRoot) return;
+      const root = this.attachShadow({ mode: 'open' });
+      const cover = document.createElement('z-cover');
+      cover.setAttribute('id', this.dataset.bookId);
+      cover.setAttribute('isbn', this.dataset.isbn || '');
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = '<span class="idle">Chinese, 2024</span><span class="hover">PDF, 1 MB</span>';
+      root.append(cover, meta);
+    }
+  });
+  const list = document.querySelector('.readlist-view');
+  let next = 1;
+  function addCards(n) {
+    for (let i = 0; i < n; i++) {
+      const card = document.createElement('z-bookcard');
+      card.setAttribute('extension', next % 2 ? 'pdf' : 'epub');
+      card.dataset.bookId = String(next);
+      card.dataset.isbn = `isbn-${next}`;
+      list.append(card);
+      next++;
+    }
+  }
+  addCards(20);
+  document.querySelector('.page-load-more').addEventListener('click', () => addCards(20));
+  document.querySelector('#fixture-add-seven').addEventListener('click', () => addCards(7));
+  document.querySelector('#fixture-replace-seven').addEventListener('click', () => {
+    list.replaceChildren();
+    addCards(7);
+  });
+  document.querySelector('#fixture-complete').addEventListener('click', () => {
+    ZLibrary._.downloaded = { byId: { 1: 1 }, byIsbn: {} };
+    document.dispatchEvent(new Event('marksLoaded'));
+  });
+  document.querySelector('#fixture-empty').addEventListener('click', () => {
+    ZLibrary._.downloaded = { byId: {}, byIsbn: {} };
+    document.dispatchEvent(new Event('marksLoaded'));
+  });
+</script>
+<script src="/booklist-enhancer.user.js"></script>
+</html>
