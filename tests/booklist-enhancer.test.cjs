@@ -25,6 +25,8 @@ const {
   createRefreshScheduler,
   renderCardMeta,
   renderFullTitle,
+  formatRuleSummary,
+  bindDeferredTextInput,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -303,6 +305,52 @@ test('same-frame setting changes and appended cards schedule one refresh', () =>
   assert.equal(refreshes, 1);
   schedule();
   assert.equal(queued.length, 1);
+});
+
+test('rule summaries show effective format, download wait and year conflicts', () => {
+  const settings = sanitizeSettings({ formats: ['epub'], downloadRule: 'not-downloaded',
+    yearMin: '2010', yearMax: '2020' });
+  assert.deepEqual(formatRuleSummary(settings, 'ready', parseYearRule(settings)), {
+    format: '（epub）', download: '（仅未下载）', year: '（2010–2020）',
+  });
+  assert.equal(formatRuleSummary(settings, 'waiting', parseYearRule(settings)).download, '（仅未下载；等待下载状态）');
+  settings.formats = [];
+  settings.yearMin = '';
+  settings.yearMax = '';
+  assert.equal(formatRuleSummary(settings, 'ready', parseYearRule(settings)).format, '（请手动设置）');
+  assert.equal(formatRuleSummary(settings, 'ready', parseYearRule(settings)).year, '（请手动设置）');
+  settings.yearMin = '2021';
+  settings.yearMax = '2020';
+  assert.equal(formatRuleSummary(settings, 'ready', parseYearRule(settings)).year, '（设置冲突）');
+  settings.yearMin = '';
+  assert.equal(formatRuleSummary(settings, 'ready', parseYearRule(settings)).year, '（≤2020）');
+  settings.yearMin = '2020';
+  settings.includeMissingYear = true;
+  assert.equal(formatRuleSummary(settings, 'ready', parseYearRule(settings)).year, '（2020；含年份缺失）');
+});
+
+test('text inputs debounce and flush on Enter, blur and settings close', () => {
+  const handlers = new Map();
+  const element = { value: '', addEventListener(name, listener) { handlers.set(name, listener); } };
+  const timers = new Map();
+  let nextTimer = 0;
+  const saved = [];
+  const flush = bindDeferredTextInput(element, value => saved.push(value),
+    callback => { const id = ++nextTimer; timers.set(id, callback); return id; },
+    id => timers.delete(id));
+  element.value = '20'; handlers.get('input')();
+  element.value = '2020'; handlers.get('input')();
+  assert.deepEqual(saved, []);
+  assert.equal(timers.size, 1);
+  [...timers.values()][0]();
+  assert.deepEqual(saved, ['2020']);
+  element.value = '2021'; handlers.get('input')();
+  handlers.get('keydown')({ key: 'Enter', preventDefault() {} });
+  assert.deepEqual(saved, ['2020', '2021']);
+  element.value = '2022'; handlers.get('input')(); handlers.get('blur')();
+  assert.deepEqual(saved, ['2020', '2021', '2022']);
+  element.value = '2023'; handlers.get('input')(); flush();
+  assert.deepEqual(saved, ['2020', '2021', '2022', '2023']);
 });
 
 test('recognizes the booklist structure before activating on user-added mirrors', () => {
