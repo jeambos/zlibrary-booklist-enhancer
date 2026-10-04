@@ -16,6 +16,7 @@
 <button id="fixture-add-seven">Add seven cards</button>
 <button id="fixture-replace-seven">Replace with seven cards</button>
 <script>
+  history.replaceState(null, '', '/booklist/fixture');
   window.GM_getValue = (key, fallback) => {
     const raw = sessionStorage.getItem(`gm:${key}`);
     return raw === null ? fallback : JSON.parse(raw);
@@ -44,9 +45,9 @@
       mobile.innerHTML = `<span class="idle">ch${this.getAttribute('year') === '0' ? '' : ', ' + this.getAttribute('year')}</span>`;
       const info = document.createElement('div');
       info.className = 'book-info';
-      info.innerHTML = '<div class="title"><slot name="title"></slot></div>';
+      info.innerHTML = '<div class="title"><slot name="title"></slot></div><div class="author"><a href="/author/123">A very long original author name that keeps going across several lines for layout verification</a></div>';
       const nativeStyle = document.createElement('style');
-      nativeStyle.textContent = '.book-info{height:88px;overflow:hidden}.book-info .title{max-height:40px;overflow:hidden;line-height:20px}.meta{margin-top:7px}.mobile{display:none}@media(max-width:600px){.desktop{display:none}.mobile{display:block}}';
+      nativeStyle.textContent = '.book-info{height:88px;overflow:hidden}.book-info .title{max-height:40px;overflow:hidden;line-height:20px}.book-info .author{max-height:20px;overflow:hidden;line-height:20px}.meta{margin-top:7px}.mobile{display:none}@media(max-width:600px){.desktop{display:none}.mobile{display:block}}';
       root.append(nativeStyle, cover, info, meta, mobile);
     }
   });

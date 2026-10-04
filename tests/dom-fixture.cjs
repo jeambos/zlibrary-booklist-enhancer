@@ -12,6 +12,7 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '20
   const idle = makeIdle(year === '0' ? 'Chinese' : `Chinese, ${year}`);
   const mobileIdle = makeIdle(year === '0' ? 'ch' : `ch, ${year}`);
   const title = { textContent: 'A very long original book title', href: '/book/123' };
+  const author = { textContent: 'A very long original author name', href: '/author/123' };
   const cover = {
     getAttribute(name) { return ({ id: coverId, isbn })[name] ?? null; },
   };
@@ -21,9 +22,11 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '20
       if (selector === 'z-cover') return cover;
       if (selector === '#zble-format-style') return this.children.find(child => child.id === 'zble-format-style') || null;
       if (selector === '#zble-title-style') return this.children.find(child => child.id === 'zble-title-style') || null;
+      if (selector === '#zble-author-style') return this.children.find(child => child.id === 'zble-author-style') || null;
       if (selector === '.meta.desktop .idle') return idle;
       if (selector === '.meta.mobile .idle') return mobileIdle;
       if (selector === '.book-info .title') return title;
+      if (selector === '.book-info .author' || selector === '.book-info .author, .book-info .authors, .book-info .book-author') return author;
       return null;
     },
     querySelectorAll(selector) { return selector === '.meta .idle' ? [idle, mobileIdle] : []; },
@@ -37,7 +40,7 @@ function makeCard({ extension = 'pdf', coverId = '123', isbn = 'a,b', year = '20
     toggleAttribute(name, value) { value ? attributes.add(name) : attributes.delete(name); },
     hasAttribute(name) { return attributes.has(name); },
   };
-  return { card, root, idle, mobileIdle, title, cover };
+  return { card, root, idle, mobileIdle, title, author, cover };
 }
 
 function makeBooklist(cards = []) {

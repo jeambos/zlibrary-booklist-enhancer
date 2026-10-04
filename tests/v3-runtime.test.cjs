@@ -26,10 +26,10 @@ test('late injection and fingerprint arrival start the booklist once', () => {
   assert.equal(runtime.settingsReads, 0);
   assert.equal(runtime.activeObservers, 1);
   runtime.setFingerprint(true);
-  assert.equal(runtime.settingsReads, 1);
+  assert.equal(runtime.settingsReads, 2); // global and per-host settings
   assert.equal(runtime.activeObservers, 0);
   runtime.setFingerprint(true);
-  assert.equal(runtime.settingsReads, 1);
+  assert.equal(runtime.settingsReads, 2);
   assert.equal(runtime.document.listenerCount('marksLoaded'), 1);
 });
 

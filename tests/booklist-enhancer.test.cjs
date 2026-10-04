@@ -25,6 +25,7 @@ const {
   createRefreshScheduler,
   renderCardMeta,
   renderFullTitle,
+  renderFullAuthor,
   formatRuleSummary,
   bindDeferredTextInput,
   renderFilterSummary,
@@ -78,6 +79,11 @@ test('all supported languages provide each tool-generated translation key', () =
   assert.equal(translate('en', 'notice.close', { seconds: 10 }), 'Close · 10s');
   assert.equal(translate('en', 'notice.close', { seconds: '<b>' }), 'Close · <b>s');
   assert.equal(translate('ko', 'not.a.key'), '');
+  const source = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
+  for (const match of source.matchAll(/data-i18n="([^"]+)"|translate\(locale,\s*'([^']+)'/g)) {
+    const key = match[1] || match[2];
+    assert.ok(TRANSLATION_KEYS.includes(key), `missing key ${key}`);
+  }
 });
 
 test('per-host preferences reject paths, prototypes and malformed records', () => {
@@ -579,6 +585,43 @@ test('v3 userscript metadata identifies the updated implementation as a developm
   assert.match(script, /^\/\/ @name\s+Z-lib Booklist Enhancer\s*$/m);
 });
 
+test('author expansion preserves text and link and stays independent of title expansion', () => {
+  const { card, root, author } = makeCard();
+  assert.equal(renderFullAuthor(card, true), true);
+  assert.equal(card.hasAttribute('data-zble-full-author'), true);
+  assert.equal(author.textContent, 'A very long original author name');
+  assert.equal(author.href, '/author/123');
+  assert.equal(renderFullTitle(card, true), true);
+  assert.equal(card.hasAttribute('data-zble-full-author'), true);
+  assert.equal(card.hasAttribute('data-zble-full-title'), true);
+  assert.match(root.querySelector('#zble-author-style').textContent, /min-height:88px/);
+  assert.equal(renderFullAuthor(card, false), true);
+  assert.equal(card.hasAttribute('data-zble-full-title'), true);
+});
+
+test('localized summary and progress preserve counts and unknown total', () => {
+  const stats = computeStats({ loaded: 40, matched: 0, total: null });
+  const list = { children: [], ownerDocument: { createElement() { return {
+    className: '', textContent: '', style: {}, setAttribute() {}, remove() {},
+  }; } }, querySelector(selector) { return selector === '.zble-summary-card' ? this.children[0] || null : null; },
+    append(node) { this.children = [node]; } };
+  renderFilterSummary(list, stats, true, [], null, 'en');
+  assert.match(list.children[0].textContent, /Loaded books 40/);
+  assert.match(list.children[0].textContent, /After filtering 0/);
+  assert.match(list.children[0].textContent, /Booklist total Unknown/);
+  assert.match(formatProgressText(stats, 'en'), /40|2/);
+});
+
+test('panel groups, language selector, notice setting and author control are present in order', () => {
+  const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
+  const filters = script.indexOf('data-i18n="section.filters"');
+  const info = script.indexOf('data-i18n="section.info"');
+  const automation = script.indexOf('data-i18n="section.automation"');
+  assert.ok(filters > 0 && filters < info && info < automation);
+  for (const token of ['id="zble-ui-language"', 'value="auto"', 'id="zble-show-notice"',
+    'id="zble-author-switch"', 'refreshPanelLocale(', 'data-zble-full-author']) assert.ok(script.includes(token), token);
+});
+
 test('user-added non-booklist pages stay inert until a booklist appears', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   let siteReady = false;
@@ -618,7 +661,7 @@ test('user-added non-booklist pages stay inert until a booklist appears', () => 
   assert.equal(disconnects, 0);
   siteReady = true;
   observerCallback();
-  assert.equal(settingsReads, 1);
+  assert.equal(settingsReads, 2); // global settings plus per-host notice/bulk preferences
   assert.equal(disconnects, 1);
 });
 

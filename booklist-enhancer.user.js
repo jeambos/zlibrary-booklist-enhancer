@@ -90,6 +90,7 @@
     'summary.unknown': ['Unknown', '未知', '未知', 'Inconnu', 'Unbekannt', 'Неизвестно', '不明', '알 수 없음', 'Desconocido', 'Desconhecido'],
     'progress.empty': ['No books loaded yet', '尚无已加载书籍', '尚無已載入書籍', 'Aucun livre chargé', 'Noch keine Bücher geladen', 'Книги ещё не загружены', 'まだ読み込みなし', '아직 로드된 책 없음', 'Aún no hay libros cargados', 'Nenhum livro carregado'],
     'progress.text': ['About {expansions} expansions; around page {current}; about {remaining} pages left; about {pages} pages total', '约展开 {expansions} 次，当前约第 {current} 页，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '約展開 {expansions} 次，目前約第 {current} 頁，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Environ {expansions} chargements ; page {current} ; {remaining} pages restantes ; {pages} pages au total', 'Etwa {expansions} Erweiterungen; Seite {current}; noch {remaining} Seiten; insgesamt {pages} Seiten', 'Примерно {expansions} раскрытий; страница {current}; осталось {remaining} стр.; всего {pages} стр.', '約 {expansions} 回展開、現在約 {current} ページ、残り約 {remaining} ページ、全 {pages} ページ', '약 {expansions}회 더 보기, 현재 약 {current}페이지, 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Unas {expansions} ampliaciones; página {current}; quedan {remaining} páginas; {pages} en total', 'Cerca de {expansions} expansões; página {current}; faltam {remaining} páginas; {pages} no total'],
+    'progress.zero': ['No books loaded; about {remaining} pages left; about {pages} pages total', '尚无已加载书籍，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '尚無已載入書籍，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Aucun livre chargé ; {remaining} pages restantes ; {pages} pages au total', 'Noch keine Bücher geladen; {remaining} Seiten übrig; insgesamt {pages} Seiten', 'Книги ещё не загружены; осталось {remaining} стр.; всего {pages} стр.', 'まだ本を読み込んでいません。残り約 {remaining} ページ、全 {pages} ページ', '아직 로드된 책 없음; 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Aún no hay libros; quedan {remaining} páginas; {pages} en total', 'Nenhum livro carregado; faltam {remaining} páginas; {pages} no total'],
     'auto.showMore': ['Click Show more 5 times', '连点 5 次 Show more', '連點 5 次 Show more', 'Cliquer 5 fois sur Show more', 'Show more 5-mal klicken', 'Нажать Show more 5 раз', 'Show more を5回押す', 'Show more 5회 클릭', 'Pulsar Show more 5 veces', 'Clicar Show more 5 vezes'],
     'auto.openAll': ['Open all books in current view', '打开当前视图的所有图书页面', '開啟目前檢視的所有圖書頁面', 'Ouvrir tous les livres affichés', 'Alle Bücher der aktuellen Ansicht öffnen', 'Открыть все книги текущего вида', '現在表示中の本をすべて開く', '현재 화면의 모든 책 열기', 'Abrir todos los libros visibles', 'Abrir todos os livros visíveis'],
     'auto.favorite': ['Add visible books to favorites', '批量加入收藏', '批次加入收藏', 'Ajouter les livres visibles aux favoris', 'Sichtbare Bücher zu Favoriten hinzufügen', 'Добавить видимые книги в избранное', '表示中の本をお気に入りに追加', '보이는 책을 즐겨찾기에 추가', 'Añadir libros visibles a favoritos', 'Adicionar livros visíveis aos favoritos'],
@@ -99,6 +100,29 @@
     'auto.secondWarning': ['Opened pages cannot be closed in bulk. You accept the risks. Continue?', '已打开的页面无法批量撤销。风险由你承担，确认执行？', '已開啟的頁面無法批次撤銷。風險由你承擔，確定執行？', 'Les pages ouvertes ne peuvent pas être fermées en lot. Vous acceptez les risques ?', 'Geöffnete Seiten lassen sich nicht gesammelt schließen. Risiko übernehmen?', 'Открытые страницы нельзя закрыть разом. Вы принимаете риск?', '開いたページは一括で閉じられません。リスクを承知で続行しますか？', '열린 페이지를 일괄로 닫을 수 없습니다. 위험을 감수하고 계속하시겠습니까?', 'Las páginas abiertas no pueden cerrarse en lote. ¿Acepta los riesgos?', 'As páginas abertas não podem ser fechadas em lote. Aceita os riscos?'],
     'auto.cancel': ['Cancel', '取消', '取消', 'Annuler', 'Abbrechen', 'Отмена', 'キャンセル', '취소', 'Cancelar', 'Cancelar'],
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
+    'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
+    'rule.conflict': ['Conflicting settings', '设置冲突', '設定衝突', 'Paramètres contradictoires', 'Widersprüchliche Einstellungen', 'Конфликт настроек', '設定が競合', '설정 충돌', 'Configuración contradictoria', 'Configurações conflitantes'],
+    'rule.waiting': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'Attente des téléchargements', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
+    'rule.unconfirmed': ['Download status unconfirmed', '下载状态未确认', '下載狀態未確認', 'État des téléchargements non confirmé', 'Downloadstatus unbestätigt', 'Статус загрузки не подтверждён', 'ダウンロード状態を確認できません', '다운로드 상태 미확인', 'Estado de descarga no confirmado', 'Status de download não confirmado'],
+    'rule.missingYear': ['include missing year', '含年份缺失', '含缺少年份', 'inclure les années manquantes', 'fehlendes Jahr einschließen', 'включая без года', '年不明を含む', '연도 없음 포함', 'incluir sin año', 'incluir ano ausente'],
+    'hint.formatEmpty': ['Select formats; no books are hidden yet.', '请选择筛选格式；当前不隐藏条目', '請選擇格式；目前不隱藏條目', 'Choisissez des formats ; aucun livre n’est masqué.', 'Formate wählen; noch keine Bücher ausgeblendet.', 'Выберите форматы; книги пока не скрыты.', '形式を選択してください。まだ非表示にはしません。', '형식을 선택하세요. 아직 책을 숨기지 않습니다.', 'Elija formatos; aún no se ocultan libros.', 'Selecione formatos; nenhum livro está oculto.'],
+    'hint.invalidCustom': ['Invalid custom formats were ignored.', '部分自定义格式无效，已忽略', '部分自訂格式無效，已忽略', 'Formats personnalisés invalides ignorés.', 'Ungültige eigene Formate ignoriert.', 'Неверные форматы пропущены.', '無効なカスタム形式を無視しました。', '잘못된 사용자 형식을 무시했습니다.', 'Se ignoraron formatos personalizados no válidos.', 'Formatos personalizados inválidos ignorados.'],
+    'hint.yearEmpty': ['Set a year bound; no year filtering yet.', '请设置最小或最大年份；当前不按年份隐藏条目', '請設定最小或最大年份；目前不依年份隱藏', 'Indiquez une borne ; aucun filtrage par année.', 'Jahresgrenze festlegen; noch kein Jahresfilter.', 'Задайте границу года; фильтр пока не действует.', '年の範囲を指定してください。まだ絞り込みません。', '연도 경계를 설정하세요. 아직 필터링하지 않습니다.', 'Defina un límite; aún no se filtra por año.', 'Defina um limite; ainda sem filtro por ano.'],
+    'hint.downloadWaiting': ['Waiting for download status; filter paused.', '等待下载状态加载中；下载筛选暂停', '等待下載狀態載入；篩選暫停', 'Attente des téléchargements ; filtre en pause.', 'Warte auf Downloadstatus; Filter pausiert.', 'Ожидание статуса; фильтр приостановлен.', 'ダウンロード状態を待機中。フィルター停止中。', '다운로드 상태 대기 중; 필터 일시 중지.', 'Esperando descargas; filtro en pausa.', 'Aguardando downloads; filtro pausado.'],
+    'hint.downloadAmbiguous': ['Empty site records and request failure cannot be distinguished; filter paused.', '站点空记录与请求失败无法区分；下载筛选暂停', '無法區分空紀錄與請求失敗；篩選暫停', 'Impossible de distinguer une liste vide d’un échec ; filtre en pause.', 'Leere Daten und Anfragefehler nicht unterscheidbar; Filter pausiert.', 'Пустые данные и сбой запроса неразличимы; фильтр остановлен.', '空の記録か通信失敗か不明です。フィルター停止中。', '빈 기록과 요청 실패를 구분할 수 없어 필터를 중지합니다.', 'No se distingue lista vacía de error; filtro en pausa.', 'Não é possível distinguir lista vazia de falha; filtro pausado.'],
+    'hint.downloadTimeout': ['Status unconfirmed after 30 seconds; refresh or check login.', '下载状态 30 秒内未确认；请刷新页面或检查是否已登录', '30 秒內未確認下載狀態；請重新整理或檢查登入', 'État non confirmé après 30 s ; actualisez ou vérifiez la connexion.', 'Status nach 30 s unbestätigt; neu laden oder Anmeldung prüfen.', 'Статус не подтверждён за 30 с; обновите страницу или проверьте вход.', '30 秒後も未確認です。再読み込みかログイン確認を。', '30초 동안 확인되지 않았습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado sin confirmar tras 30 s; actualice o compruebe sesión.', 'Status não confirmado após 30 s; atualize ou confira o login.'],
+    'hint.downloadFailed': ['Status unavailable; refresh or check login.', '下载状态不可判定；请刷新页面或检查是否已登录', '無法判定下載狀態；請重新整理或檢查登入', 'État indisponible ; actualisez ou vérifiez la connexion.', 'Status nicht verfügbar; neu laden oder Anmeldung prüfen.', 'Статус недоступен; обновите страницу или проверьте вход.', '状態を確認できません。再読み込みかログイン確認を。', '상태를 확인할 수 없습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado no disponible; actualice o compruebe sesión.', 'Status indisponível; atualize ou confira o login.'],
+    'hint.downloadUnknown': ['Some statuses are unknown; those books remain visible.', '部分条目的下载状态未知，已保留显示', '部分書籍下載狀態未知，仍會顯示', 'Certains états sont inconnus ; livres conservés.', 'Einige Status unbekannt; Bücher bleiben sichtbar.', 'Часть статусов неизвестна; книги остаются видимыми.', '一部の状態は不明のため、表示を維持します。', '일부 상태를 알 수 없어 계속 표시합니다.', 'Algunos estados son desconocidos; se mantienen visibles.', 'Alguns status são desconhecidos; livros permanecem visíveis.'],
+    'hint.structure': ['Some card details were not found; the site layout may have changed.', '部分卡片信息位置未找到；页面结构可能已变', '部分卡片資訊找不到；頁面結構可能已變', 'Détails introuvables ; la page a peut-être changé.', 'Kartendetails fehlen; Seitenlayout könnte geändert sein.', 'Данные карточек не найдены; вёрстка могла измениться.', 'カード情報が見つかりません。ページ構造が変わった可能性があります。', '일부 카드 정보를 찾지 못했습니다. 페이지 구조가 바뀌었을 수 있습니다.', 'Faltan detalles; quizá cambió el diseño.', 'Detalhes não encontrados; o layout pode ter mudado.'],
+    'hint.unknownFormat': ['Unknown format', '未知格式', '未知格式', 'Format inconnu', 'Unbekanntes Format', 'Неизвестный формат', '形式不明', '알 수 없는 형식', 'Formato desconocido', 'Formato desconhecido'],
+    'hint.yearPending': ['Year rule pending', '年份规则待设置', '年份規則待設定', 'Règle d’année en attente', 'Jahresregel fehlt', 'Правило года не задано', '年の条件が未設定', '연도 규칙 미설정', 'Regla de año pendiente', 'Regra de ano pendente'],
+    'hint.formatPending': ['Format rule pending', '文件格式规则待设置', '格式規則待設定', 'Règle de format en attente', 'Formatregel fehlt', 'Правило формата не задано', '形式条件が未設定', '형식 규칙 미설정', 'Regla de formato pendiente', 'Regra de formato pendente'],
+    'hint.downloadPaused': ['Download filter paused', '下载状态筛选暂停', '下載狀態篩選暫停', 'Filtre de téléchargement en pause', 'Downloadfilter pausiert', 'Фильтр загрузки остановлен', 'ダウンロード絞り込み停止中', '다운로드 필터 일시 중지', 'Filtro de descarga en pausa', 'Filtro de download pausado'],
+    'action.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
+    'action.collapse': ['Collapse panel', '折叠面板', '收合面板', 'Réduire le panneau', 'Panel einklappen', 'Свернуть панель', 'パネルを閉じる', '패널 접기', 'Contraer panel', 'Recolher painel'],
+    'action.expand': ['Expand panel', '展开面板', '展開面板', 'Développer le panneau', 'Panel ausklappen', 'Развернуть панель', 'パネルを開く', '패널 펼치기', 'Expandir panel', 'Expandir painel'],
+    'action.waitDownload': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'Attente des téléchargements', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
+    'action.downloadUnconfirmed': ['Download status unconfirmed', '下载状态未确认', '下載狀態未確認', 'État non confirmé', 'Status unbestätigt', 'Статус не подтверждён', '状態未確認', '상태 미확인', 'Estado no confirmado', 'Status não confirmado'],
   };
   const TRANSLATION_KEYS = Object.keys(MESSAGES);
   const TRANSLATIONS = Object.fromEntries(LOCALES.map((locale, index) => [locale,
@@ -440,26 +464,30 @@
     };
   }
 
-  function formatRuleSummary(settings, gateState, yearRule) {
+  function formatRuleSummary(settings, gateState, yearRule, locale = 'zh-CN') {
+    const zh = locale.startsWith('zh');
+    const wrap = value => zh ? `（${value}）` : `(${value})`;
+    const separator = zh ? '；' : '; ';
     const custom = parseCustomFormats(settings.custom);
     const selected = settings.formats.filter(value => value !== 'custom');
     const formatValues = [...selected, ...(settings.formats.includes('custom') ? [...custom] : [])];
-    const format = formatValues.length ? `（${formatValues.join('、')}）` : '（请手动设置）';
-    const downloadName = settings.downloadRule === 'downloaded' ? '仅已下载' : '仅未下载';
-    const waitName = gateState === 'ready' ? '' : gateState === 'waiting' ? '；等待下载状态' : '；下载状态未确认';
-    const download = `（${downloadName}${waitName}）`;
-    let year = '（请手动设置）';
-    if (yearRule.error) year = '（设置冲突）';
+    const format = wrap(formatValues.length ? formatValues.join(zh ? '、' : ', ') : translate(locale, 'rule.manual'));
+    const downloadName = translate(locale, settings.downloadRule === 'downloaded' ? 'setting.onlyDownloaded' : 'setting.onlyUndownloaded');
+    const waitName = gateState === 'ready' ? '' : gateState === 'waiting'
+      ? `${separator}${translate(locale, 'rule.waiting')}` : `${separator}${translate(locale, 'rule.unconfirmed')}`;
+    const download = wrap(`${downloadName}${waitName}`);
+    let year = wrap(translate(locale, 'rule.manual'));
+    if (yearRule.error) year = wrap(translate(locale, 'rule.conflict'));
     else if (yearRule.active) {
       const range = yearRule.min !== null && yearRule.max !== null
         ? (yearRule.min === yearRule.max ? String(yearRule.min) : `${yearRule.min}–${yearRule.max}`)
         : (yearRule.min !== null ? `≥${yearRule.min}` : `≤${yearRule.max}`);
-      year = `（${range}${settings.includeMissingYear ? '；含年份缺失' : ''}）`;
+      year = wrap(`${range}${settings.includeMissingYear ? `${separator}${translate(locale, 'rule.missingYear')}` : ''}`);
     }
     return { format, download, year };
   }
 
-  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null) {
+  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN') {
     if (!list) return;
     let summary = list.querySelector('.zble-summary-card');
     if (!active) { summary?.remove(); return; }
@@ -469,9 +497,10 @@
       summary.setAttribute?.('role', 'status');
       list.append(summary);
     }
-    const total = stats.total === null ? '未知' : String(stats.total);
-    const message = `当前已加载 ${stats.loaded} 本\n本工具筛选后 ${stats.matched} 本\n书单共 ${total} 本`;
-    const next = notices.length ? `${message}\n${notices.join('；')}` : message;
+    const total = stats.total === null ? translate(locale, 'summary.unknown') : String(stats.total);
+    const unit = locale.startsWith('zh') ? ' 本' : '';
+    const message = `${translate(locale, 'summary.loaded')} ${stats.loaded}${unit}\n${translate(locale, 'summary.matched')} ${stats.matched}${unit}\n${translate(locale, 'summary.total')} ${total}${unit}`;
+    const next = notices.length ? `${message}\n${notices.join(locale.startsWith('zh') ? '；' : '; ')}` : message;
     if (summary.textContent !== next) summary.textContent = next;
     if (cardMetrics && summary.style) {
       if (summary.style.flex !== cardMetrics.flex) summary.style.flex = cardMetrics.flex;
@@ -481,14 +510,15 @@
     if (list.children[list.children.length - 1] !== summary) list.append(summary);
   }
 
-  function formatProgressText(stats) {
-    const current = stats.loaded === 0 ? '尚无已加载书籍' : `当前约第 ${stats.current} 页`;
-    const remaining = stats.remaining === null ? '未知' : stats.remaining;
-    const pages = stats.pages === null ? '未知' : stats.pages;
-    return `约展开 ${stats.approxExpansions} 次，${current}，尚未加载约 ${remaining} 页，书单总长度约 ${pages} 页`;
+  function formatProgressText(stats, locale = 'zh-CN') {
+    const remaining = stats.remaining === null ? translate(locale, 'summary.unknown') : stats.remaining;
+    const pages = stats.pages === null ? translate(locale, 'summary.unknown') : stats.pages;
+    if (stats.loaded === 0) return translate(locale, 'progress.zero', { remaining, pages });
+    return translate(locale, 'progress.text', { expansions: stats.approxExpansions,
+      current: stats.current, remaining, pages });
   }
 
-  function renderShowMore(main, stats) {
+  function renderShowMore(main, stats, locale = 'zh-CN') {
     const more = main?.querySelector('.page-load-more');
     if (!more) return;
     let progress = more.querySelector('.zble-progress');
@@ -497,7 +527,7 @@
       progress.className = 'zble-progress';
       more.append(progress);
     }
-    const next = formatProgressText(stats);
+    const next = formatProgressText(stats, locale);
     if (progress.textContent !== next) progress.textContent = next;
   }
 
@@ -557,7 +587,7 @@
     return !event.target.closest('button') && (event.pointerType !== 'mouse' || event.button === 0);
   }
 
-  function renderFormatBadge(card, extension, show) {
+  function renderFormatBadge(card, extension, show, locale = 'zh-CN') {
     const root = card.shadowRoot;
     if (!root) return false;
     const targets = [...root.querySelectorAll('.meta .idle')];
@@ -569,7 +599,7 @@
       style.textContent = '.zble-format{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:4px;background:#245e9b;color:#fff;font-size:11px;font-weight:700;line-height:1.5;vertical-align:middle}:host(:not([data-zble-show-format])) .zble-format{display:none}';
       root.append(style);
     }
-    const label = extension ? extension.toUpperCase() : '未知格式';
+    const label = extension ? extension.toUpperCase() : translate(locale, 'hint.unknownFormat');
     for (const idle of targets) {
       let badge = idle.querySelector('.zble-format');
       if (!badge) {
@@ -649,12 +679,26 @@
     return true;
   }
 
+  function renderFullAuthor(card, enabled) {
+    const root = card.shadowRoot;
+    if (!root?.querySelector('.book-info .author, .book-info .authors, .book-info .book-author')) return false;
+    let style = root.querySelector('#zble-author-style');
+    if (!style) {
+      style = card.ownerDocument.createElement('style');
+      style.id = 'zble-author-style';
+      style.textContent = ':host([data-zble-full-author]) .book-info{height:auto!important;min-height:88px;overflow:visible!important}:host([data-zble-full-author]) .book-info .author,:host([data-zble-full-author]) .book-info .authors,:host([data-zble-full-author]) .book-info .book-author{max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important;white-space:normal!important}';
+      root.append(style);
+    }
+    card.toggleAttribute('data-zble-full-author', !!enabled);
+    return true;
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
-      createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle,
+      createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
@@ -714,7 +758,8 @@
             sessionStore, noticeSeenInDocument)) {
           let saved;
           try { saved = GM_getValue('zble-settings-v2', {}); } catch { saved = {}; }
-          const locale = resolveLocale(sanitizeSettings(saved).uiLanguage, navigator?.languages);
+          const locale = resolveLocale(sanitizeSettings(saved).uiLanguage,
+            typeof navigator === 'undefined' ? [] : navigator.languages);
           notice = createNotice({ locale, host, now: Date.now, sessionStore,
             sitePrefs: prefs, onDisable() {
               prefs[host] = { welcomeEnabled: false, bulkOpenEnabled: prefs[host]?.bulkOpenEnabled === true };
@@ -742,6 +787,9 @@
     let stored;
     try { stored = GM_getValue(STORAGE_KEY, {}); } catch { stored = {}; }
     const settings = sanitizeSettings(stored);
+    let locale = resolveLocale(settings.uiLanguage, typeof navigator === 'undefined' ? [] : navigator.languages);
+    const sitePrefs = loadSitePrefs();
+    const currentHost = window.location?.hostname?.toLowerCase() || '';
     const gate = createDownloadGate();
     let panelRoot = null;
     let timeoutId = null;
@@ -755,6 +803,7 @@
     let lastCardMetrics = null;
     let panelResize = null;
     let disposed = false;
+    let lastPanelData = null;
 
     function isCurrentBooklist() {
       return !disposed && (window.location?.pathname || '/booklist/') === initialPathname &&
@@ -812,24 +861,63 @@
     }
 
     function renderPanelState(context, unknownCards, unavailable) {
-      const summaries = formatRuleSummary(settings, gate.state, context.yearRule);
+      const summaries = formatRuleSummary(settings, gate.state, context.yearRule, locale);
       for (const name of ['format', 'download', 'year']) {
         setText(`#zble-${name}-summary`, summaries[name]);
       }
       setText('#zble-format-hint', settings.filterFormat && !context.formatActive
-        ? '请选择筛选格式；当前不隐藏条目'
-        : invalidCustomFormats(settings.custom).length ? '部分自定义格式无效，已忽略' : '');
+        ? translate(locale, 'hint.formatEmpty')
+        : invalidCustomFormats(settings.custom).length ? translate(locale, 'hint.invalidCustom') : '');
       setText('#zble-year-hint', settings.filterYear
-        ? (context.yearRule.error || (!context.yearRule.active ? '请设置最小或最大年份；当前不按年份隐藏条目' : '')) : '');
+        ? (context.yearRule.error ? translate(locale, 'rule.conflict')
+          : !context.yearRule.active ? translate(locale, 'hint.yearEmpty') : '') : '');
       const downloadMessage = gate.state === 'waiting'
-        ? (gate.ambiguous ? '站点空记录与请求失败无法区分；下载筛选暂停' : '等待下载状态加载中；下载筛选暂停')
-        : gate.state === 'timed-out' ? '下载状态 30 秒内未确认；请刷新页面或检查是否已登录'
-          : gate.state === 'failed' ? '下载状态不可判定；请刷新页面或检查是否已登录'
-            : unknownCards ? '部分条目的下载状态未知，已保留显示' : '';
+        ? translate(locale, gate.ambiguous ? 'hint.downloadAmbiguous' : 'hint.downloadWaiting')
+        : gate.state === 'timed-out' ? translate(locale, 'hint.downloadTimeout')
+          : gate.state === 'failed' ? translate(locale, 'hint.downloadFailed')
+            : unknownCards ? translate(locale, 'hint.downloadUnknown') : '';
       setText('#zble-download-hint', downloadMessage);
-      setText('#zble-info-hint', unavailable.format || unavailable.meta || unavailable.title
-        ? '部分卡片信息位置未找到；页面结构可能已变' : '');
+      setText('#zble-info-hint', unavailable.format || unavailable.meta || unavailable.title || unavailable.author
+        ? translate(locale, 'hint.structure') : '');
       syncDownloadControl();
+    }
+
+    function translatedNotices(context) {
+      const notices = [];
+      if (settings.filterFormat && !context.formatActive) notices.push(translate(locale, 'hint.formatPending'));
+      if (settings.filterDownload && gate.state !== 'ready') notices.push(translate(locale, 'hint.downloadPaused'));
+      if (settings.filterYear && !context.yearActive) notices.push(translate(locale,
+        context.yearRule.error ? 'rule.conflict' : 'hint.yearPending'));
+      return notices;
+    }
+
+    function refreshPanelLocale(nextLocale = locale) {
+      locale = nextLocale;
+      if (!panelRoot) return;
+      for (const node of panelRoot.querySelectorAll('[data-i18n]')) {
+        const value = translate(locale, node.dataset.i18n);
+        if (node.textContent !== value) node.textContent = value;
+      }
+      const gear = panelRoot.querySelector('#zble-gear');
+      const collapse = panelRoot.querySelector('#zble-collapse');
+      for (const [node, key] of [[gear, 'action.settings'],
+        [collapse, panelRoot.querySelector('#zble-content').hidden ? 'action.expand' : 'action.collapse'],
+        [panelRoot.querySelector('#zble-wait-icon'), 'action.waitDownload'],
+        [panelRoot.querySelector('#zble-warn-icon'), 'action.downloadUnconfirmed']]) {
+        node?.setAttribute('aria-label', translate(locale, key));
+        if (node === gear || node === collapse) node?.setAttribute('title', translate(locale, key));
+      }
+      for (const [selector, key] of [['#zble-custom', 'setting.custom'], ['#zble-year-min', 'setting.minYear'],
+        ['#zble-year-max', 'setting.maxYear']]) panelRoot.querySelector(selector)?.setAttribute('aria-label', translate(locale, key));
+      panelRoot.querySelector('#zble-custom')?.setAttribute('placeholder', translate(locale, 'setting.customPlaceholder'));
+      for (const selector of ['#zble-year-min', '#zble-year-max'])
+        panelRoot.querySelector(selector)?.setAttribute('placeholder', translate(locale, 'setting.yearPlaceholder'));
+      if (lastPanelData) {
+        const { context, unknownCards, unavailable, stats, activeFilter, list, main } = lastPanelData;
+        renderPanelState(context, unknownCards, unavailable);
+        renderFilterSummary(list, stats, activeFilter, translatedNotices(context), lastCardMetrics, locale);
+        renderShowMore(main, stats, locale);
+      }
     }
 
     function refresh() {
@@ -851,15 +939,16 @@
       const previousSummary = list?.querySelector('.zble-summary-card');
       if (previousSummary) previousSummary.style.minHeight = '0px';
       let unknownCards = 0;
-      const unavailable = { format: 0, meta: 0, title: 0 };
+      const unavailable = { format: 0, meta: 0, title: 0, author: 0 };
       let lastVisibleCard = null;
       let fallbackMetrics = null;
       for (let index = 0; index < cards.length; index++) {
         const card = cards[index];
         const info = pass.infos[index];
-        if (!renderFormatBadge(card, info.extension, settings.showFormat)) unavailable.format++;
+        if (!renderFormatBadge(card, info.extension, settings.showFormat, locale)) unavailable.format++;
         if (!renderCardMeta(card, settings)) unavailable.meta++;
         if (!renderFullTitle(card, settings.showFullTitle)) unavailable.title++;
+        if (!renderFullAuthor(card, settings.showFullAuthor) && settings.showFullAuthor) unavailable.author++;
         const result = pass.results[index];
         if (result.visible) lastVisibleCard = card;
         if (!fallbackMetrics && !card.classList.contains('zble-hidden')) {
@@ -873,18 +962,17 @@
       }
       const stats = computeStats({ loaded: cards.length, matched: pass.matched, total: parsedTotal });
       const activeFilter = settings.filterFormat || settings.filterDownload || settings.filterYear;
-      const notices = [];
-      if (settings.filterFormat && !context.formatActive) notices.push('文件格式规则待设置');
-      if (settings.filterDownload && gate.state !== 'ready') notices.push('下载状态筛选暂停');
-      if (settings.filterYear && !context.yearActive) notices.push(context.yearRule.error || '年份规则待设置');
+      const notices = translatedNotices(context);
       if (lastVisibleCard) {
         const rect = lastVisibleCard.getBoundingClientRect();
         if (rect.width && rect.height) lastCardMetrics = { flex: getComputedStyle(lastVisibleCard).flex, height: rect.height };
       } else if (fallbackMetrics) lastCardMetrics = fallbackMetrics;
-      renderFilterSummary(list, stats, activeFilter, notices, lastCardMetrics);
-      renderShowMore(main, stats);
-      const pendingShadow = unavailable.format + unavailable.meta + unavailable.title;
-      renderPanelState(context, unknownCards, shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0 });
+      renderFilterSummary(list, stats, activeFilter, notices, lastCardMetrics, locale);
+      renderShowMore(main, stats, locale);
+      const pendingShadow = unavailable.format + unavailable.meta + unavailable.title + unavailable.author;
+      const shownUnavailable = shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0, author: 0 };
+      renderPanelState(context, unknownCards, shownUnavailable);
+      lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main };
       if (pendingShadow && shadowRetries < 20 && !retryId) {
         shadowRetries++;
         retryId = setTimeout(() => { retryId = null; scheduleRefresh(); }, 250);
@@ -920,7 +1008,7 @@
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:24px;border:0;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:16px/1.6 system-ui,sans-serif;white-space:pre-line;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;box-shadow:0 2px 10px #0006}}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:28px 22px;border:1px solid var(--card-border-color,#d3dce5);border-top:4px solid #2d79b8;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:600 17px/1.75 system-ui,sans-serif;white-space:pre-line;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -950,44 +1038,49 @@
           input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}
         </style>
         <div class="body">
-          <div class="head"><span class="title">书单增强</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
+          <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
           <div id="zble-content">
-          <div class="group"><div class="group-title">信息显示</div>
-            <label class="row"><input id="zble-show-switch" type="checkbox"><span>固定显示文件格式标签</span></label>
-            <label class="row"><input id="zble-language-switch" type="checkbox"><span>语言</span></label>
-            <label class="row"><input id="zble-year-show-switch" type="checkbox"><span>年份</span></label>
-            <label class="row"><input id="zble-title-switch" type="checkbox"><span>完整显示超长书名</span></label>
-            <div id="zble-info-hint" class="hint error" role="status"></div>
-          </div>
-          <div class="group"><div class="group-title">筛选器</div>
-            <label class="row"><input id="zble-format-switch" type="checkbox"><span>只显示指定文件格式 <span id="zble-format-summary" class="summary"></span></span></label>
+          <div class="group"><div class="group-title" data-i18n="section.filters">筛选器</div>
+            <label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label>
             <div id="zble-format-hint" class="hint error" role="status"></div>
-            <label class="row"><input id="zble-download-switch" type="checkbox"><span>只显示指定下载状态 <span id="zble-download-summary" class="summary"></span></span><span id="zble-wait-icon" class="spin" aria-label="等待下载状态"></span><span id="zble-warn-icon" hidden aria-label="下载状态未确认">⚠️</span></label>
+            <label class="row"><input id="zble-download-switch" type="checkbox"><span><span data-i18n="control.filterDownload">只显示指定下载状态</span> <span id="zble-download-summary" class="summary"></span></span><span id="zble-wait-icon" class="spin" aria-label="等待下载状态"></span><span id="zble-warn-icon" hidden aria-label="下载状态未确认">⚠️</span></label>
             <div id="zble-download-hint" class="hint error" role="status"></div>
-            <label class="row"><input id="zble-year-filter-switch" type="checkbox"><span>只显示指定年份的书籍 <span id="zble-year-summary" class="summary"></span></span></label>
+            <label class="row"><input id="zble-year-filter-switch" type="checkbox"><span><span data-i18n="control.filterYear">只显示指定年份的书籍</span> <span id="zble-year-summary" class="summary"></span></span></label>
             <div id="zble-year-hint" class="hint error" role="status"></div>
           </div>
+          <div class="group"><div class="group-title" data-i18n="section.info">信息显示</div>
+            <label class="row"><input id="zble-show-switch" type="checkbox"><span data-i18n="control.formatBadge">固定显示文件格式标签</span></label>
+            <label class="row"><input id="zble-language-switch" type="checkbox"><span data-i18n="control.language">语言</span></label>
+            <label class="row"><input id="zble-year-show-switch" type="checkbox"><span data-i18n="control.year">年份</span></label>
+            <label class="row"><input id="zble-title-switch" type="checkbox"><span data-i18n="control.fullTitle">完整显示超长书名</span></label>
+            <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
+            <div id="zble-info-hint" class="hint error" role="status"></div>
+          </div>
+          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"></div></div>
           <div id="zble-settings" class="settings" hidden>
-            <div class="settings-title">筛选规则设置</div>
-            <div class="setting-label">筛选文件格式（可多选）</div>
+            <div class="settings-title" data-i18n="section.settings">设置</div>
+            <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
+            <select id="zble-ui-language"><option value="auto" data-i18n="setting.autoLanguage">跟随浏览器/系统</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="pt-BR">Português (Brasil)</option></select>
+            <div class="setting-label" data-i18n="setting.formats">筛选文件格式（可多选）</div>
             <div class="grid">
               <label><input type="checkbox" data-format="pdf"> PDF</label>
               <label><input type="checkbox" data-format="epub"> EPUB</label>
               <label><input type="checkbox" data-format="azw3"> AZW3</label>
               <label><input type="checkbox" data-format="mobi"> MOBI</label>
-              <label><input type="checkbox" data-format="other"> 其他全部</label>
-              <label><input type="checkbox" data-format="custom"> 自定义</label>
+              <label><input type="checkbox" data-format="other"> <span data-i18n="setting.other">其他全部</span></label>
+              <label><input type="checkbox" data-format="custom"> <span data-i18n="setting.custom">自定义</span></label>
             </div>
             <input id="zble-custom" type="text" aria-label="自定义文件格式" placeholder="如 djvu, txt; fb2">
-            <div class="hint">自定义格式用逗号或分号分隔；停顿后自动生效，也可按回车。其他全部包含未知格式。</div>
-            <label class="setting-label" for="zble-download-rule">下载状态规则</label>
-            <select id="zble-download-rule"><option value="not-downloaded">仅未下载</option><option value="downloaded">仅已下载</option></select>
-            <div class="setting-label">出版年份范围（含端点）</div>
-            <div class="year-grid"><label>最小年份<input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label>最大年份<input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div>
-            <div class="hint">输入后停顿约 250 毫秒自动生效，也可按回车；允许只填写一端。</div>
-            <label class="row"><input id="zble-missing-year" type="checkbox"><span>显示年份缺失的书籍</span></label>
-            <button id="zble-reset-position" class="reset-position" type="button">重置浮窗位置</button>
-            <div class="hint">其他镜像：在 Tampermonkey 的本脚本设置中手动添加 User matches，例如 <code>https://your-mirror.example/booklist/*</code>（替换为实际域名）。脚本无法自行修改匹配规则。<a href="https://www.tampermonkey.net/faq.php?q=Q103" target="_blank" rel="noopener noreferrer">操作说明</a></div>
+            <div class="hint" data-i18n="setting.customHint">自定义格式用逗号或分号分隔。</div>
+            <label class="setting-label" for="zble-download-rule" data-i18n="setting.downloadRule">下载状态规则</label>
+            <select id="zble-download-rule"><option value="not-downloaded" data-i18n="setting.onlyUndownloaded">仅未下载</option><option value="downloaded" data-i18n="setting.onlyDownloaded">仅已下载</option></select>
+            <div class="setting-label" data-i18n="setting.yearRange">出版年份范围（含端点）</div>
+            <div class="year-grid"><label><span data-i18n="setting.minYear">最小年份</span><input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label><span data-i18n="setting.maxYear">最大年份</span><input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div>
+            <div class="hint" data-i18n="setting.yearHint">输入后停顿或按回车生效；可只填一端。</div>
+            <label class="row"><input id="zble-missing-year" type="checkbox"><span data-i18n="setting.missingYear">显示年份缺失的书籍</span></label>
+            <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
+            <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
+            <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
           </div>
           </div>
         </div>`;
@@ -995,6 +1088,7 @@
       const immediate = [
         ['#zble-show-switch', 'showFormat'], ['#zble-language-switch', 'showLanguage'],
         ['#zble-year-show-switch', 'showYear'], ['#zble-title-switch', 'showFullTitle'],
+        ['#zble-author-switch', 'showFullAuthor'],
         ['#zble-format-switch', 'filterFormat'], ['#zble-download-switch', 'filterDownload'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
       ];
@@ -1003,6 +1097,22 @@
         input.checked = settings[key];
         input.addEventListener('change', () => { settings[key] = input.checked; saveSettings(); scheduleRefresh(); });
       }
+      const languageSelect = panelRoot.querySelector('#zble-ui-language');
+      languageSelect.value = settings.uiLanguage;
+      languageSelect.addEventListener('change', () => {
+        settings.uiLanguage = languageSelect.value;
+        saveSettings();
+        refreshPanelLocale(resolveLocale(settings.uiLanguage,
+          typeof navigator === 'undefined' ? [] : navigator.languages));
+      });
+      const noticeInput = panelRoot.querySelector('#zble-show-notice');
+      noticeInput.checked = sitePrefs[currentHost]?.welcomeEnabled !== false;
+      noticeInput.closest('label').hidden = !KNOWN_HOSTS.has(currentHost);
+      noticeInput.addEventListener('change', () => {
+        sitePrefs[currentHost] = { welcomeEnabled: noticeInput.checked,
+          bulkOpenEnabled: sitePrefs[currentHost]?.bulkOpenEnabled === true };
+        saveSitePrefs(sitePrefs);
+      });
       for (const input of panelRoot.querySelectorAll('[data-format]')) {
         input.checked = settings.formats.includes(input.dataset.format);
         input.addEventListener('change', () => {
@@ -1048,8 +1158,9 @@
       }
       function setCollapsed(collapsed) {
         content.hidden = collapsed;
-        collapse.setAttribute('aria-label', collapsed ? '展开面板' : '折叠面板');
-        collapse.setAttribute('title', collapsed ? '展开面板' : '折叠面板');
+        const action = translate(locale, collapsed ? 'action.expand' : 'action.collapse');
+        collapse.setAttribute('aria-label', action);
+        collapse.setAttribute('title', action);
         collapse.setAttribute('aria-expanded', String(!collapsed));
         requestAnimationFrame(applySavedDock);
       }
@@ -1101,6 +1212,7 @@
       panelResize = applySavedDock;
       window.addEventListener('resize', panelResize);
       requestAnimationFrame(applySavedDock);
+      refreshPanelLocale();
       scheduleRefresh();
     }
 
@@ -1135,9 +1247,10 @@
       if (panelResize) window.removeEventListener?.('resize', panelResize);
       for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
         card.classList.remove('zble-hidden');
-        renderFormatBadge(card, card.getAttribute('extension'), false);
+        renderFormatBadge(card, card.getAttribute('extension'), false, locale);
         renderCardMeta(card, { showLanguage: true, showYear: true });
         renderFullTitle(card, false);
+        renderFullAuthor(card, false);
       }
       initialMain?.querySelector('.zble-summary-card')?.remove();
       initialMain?.querySelector('.zble-progress')?.remove();
