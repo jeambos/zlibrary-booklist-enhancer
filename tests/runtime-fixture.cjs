@@ -81,7 +81,7 @@ function makeRuntime({ hostname = 'mirror.example', pathname = '/booklist/1', to
   }
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   const context = {
-    document, window, MutationObserver: Observer,
+    document, window, MutationObserver: Observer, AbortController,
     setTimeout: () => 1, clearTimeout() {}, requestAnimationFrame() {},
     setInterval(callback) { const id = intervals.size + 1; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },

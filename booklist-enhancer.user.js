@@ -100,6 +100,11 @@
     'auto.secondWarning': ['Opened pages cannot be closed in bulk. You accept the risks. Continue?', '已打开的页面无法批量撤销。风险由你承担，确认执行？', '已開啟的頁面無法批次撤銷。風險由你承擔，確定執行？', 'Les pages ouvertes ne peuvent pas être fermées en lot. Vous acceptez les risques ?', 'Geöffnete Seiten lassen sich nicht gesammelt schließen. Risiko übernehmen?', 'Открытые страницы нельзя закрыть разом. Вы принимаете риск?', '開いたページは一括で閉じられません。リスクを承知で続行しますか？', '열린 페이지를 일괄로 닫을 수 없습니다. 위험을 감수하고 계속하시겠습니까?', 'Las páginas abiertas no pueden cerrarse en lote. ¿Acepta los riesgos?', 'As páginas abertas não podem ser fechadas em lote. Aceita os riscos?'],
     'auto.cancel': ['Cancel', '取消', '取消', 'Annuler', 'Abbrechen', 'Отмена', 'キャンセル', '취소', 'Cancelar', 'Cancelar'],
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
+    'auto.showMoreStatus': ['Show more: {completed}/5 batches, {added} new books.', 'Show more：已完成 {completed}/5 轮，新增 {added} 本。', 'Show more：完成 {completed}/5 輪，新增 {added} 本。', 'Show more : {completed}/5 lots, {added} livres ajoutés.', 'Show more: {completed}/5 Runden, {added} neue Bücher.', 'Show more: {completed}/5 этапов, добавлено {added} книг.', 'Show more：{completed}/5 回、{added} 冊追加。', 'Show more: {completed}/5회, {added}권 추가.', 'Show more: {completed}/5 tandas, {added} libros nuevos.', 'Show more: {completed}/5 lotes, {added} livros novos.'],
+    'auto.showMoreEnd': ['Reached the end of the list.', '已到达书单末尾。', '已到達書單末尾。', 'Fin de la liste atteinte.', 'Listenende erreicht.', 'Достигнут конец списка.', 'リストの末尾に到達しました。', '목록 끝에 도달했습니다.', 'Se llegó al final de la lista.', 'Fim da lista alcançado.'],
+    'auto.showMoreTimeout': ['Stopped: this batch did not finish within 20 seconds.', '已停止：本轮 20 秒内未加载完成。', '已停止：本輪 20 秒內未載入完成。', 'Arrêt : ce lot n’a pas fini en 20 secondes.', 'Gestoppt: Runde nicht in 20 Sekunden abgeschlossen.', 'Остановлено: этап не завершился за 20 секунд.', '停止：20 秒以内に読み込みが完了しませんでした。', '중지: 20초 안에 로드되지 않았습니다.', 'Se detuvo: el lote no terminó en 20 segundos.', 'Parou: o lote não terminou em 20 segundos.'],
+    'auto.showMoreUnavailable': ['Stopped: Show more is unavailable.', '已停止：Show more 不可用。', '已停止：Show more 無法使用。', 'Arrêt : Show more indisponible.', 'Gestoppt: Show more nicht verfügbar.', 'Остановлено: Show more недоступна.', '停止：Show more が利用できません。', '중지: Show more를 사용할 수 없습니다.', 'Se detuvo: Show more no está disponible.', 'Parou: Show more indisponível.'],
+    'auto.showMoreError': ['Stopped after an error.', '发生错误，已停止。', '發生錯誤，已停止。', 'Arrêt après une erreur.', 'Nach Fehler gestoppt.', 'Остановлено из-за ошибки.', 'エラーで停止しました。', '오류로 중지했습니다.', 'Se detuvo por un error.', 'Parou após um erro.'],
     'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
     'rule.conflict': ['Conflicting settings', '设置冲突', '設定衝突', 'Paramètres contradictoires', 'Widersprüchliche Einstellungen', 'Конфликт настроек', '設定が競合', '설정 충돌', 'Configuración contradictoria', 'Configurações conflitantes'],
     'rule.waiting': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'Attente des téléchargements', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
@@ -336,6 +341,79 @@
     } catch { /* Storage blocked: dedupe within this document only. */ }
     documentSeen.add(host);
     return true;
+  }
+
+  function classifyBatchProgress({ before, now, buttonExists, quietMs, elapsedMs }) {
+    if (elapsedMs >= 20000) return 'timeout';
+    if (quietMs < 750) return 'wait';
+    if (!buttonExists) return 'end';
+    return now - before >= PAGE_SIZE ? 'next' : 'wait';
+  }
+
+  async function runShowMoreFive({ getCards, findButton, observe, clock = {
+    now: () => Date.now(), setTimeout: (callback, delay) => setTimeout(callback, delay),
+    clearTimeout: id => clearTimeout(id),
+  }, onProgress = () => {}, isSourceAlive = () => true, signal = null }) {
+    let completed = 0;
+    let added = 0;
+    const result = reason => ({ completed, added, reason });
+    for (let round = 0; round < 5; round++) {
+      if (signal?.aborted || !isSourceAlive()) return result('source-gone');
+      const button = findButton();
+      if (!button || button.disabled || button.hidden || button.getAttribute?.('aria-disabled') === 'true' ||
+          ('isConnected' in button && !button.isConnected) ||
+          (button.getClientRects && button.getClientRects().length === 0)) return result('button-unavailable');
+      const beforeCards = new Set(getCards());
+      const startedAt = clock.now();
+      const outcome = await new Promise(resolve => {
+        let timer = null;
+        let unsubscribe = null;
+        let finished = false;
+        let seenNew = 0;
+        let changedAt = startedAt;
+        function finish(reason) {
+          if (finished) return;
+          finished = true;
+          if (timer !== null) clock.clearTimeout(timer);
+          if (typeof unsubscribe === 'function') unsubscribe();
+          else unsubscribe?.disconnect?.();
+          signal?.removeEventListener?.('abort', aborted);
+          resolve({ reason, seenNew });
+        }
+        function aborted() { finish('source-gone'); }
+        function check() {
+          if (finished) return;
+          if (signal?.aborted || !isSourceAlive()) { finish('source-gone'); return; }
+          const now = clock.now();
+          const newCount = getCards().filter(card => !beforeCards.has(card)).length;
+          if (newCount !== seenNew) { seenNew = newCount; changedAt = now; }
+          const buttonExists = !!findButton();
+          const quietMs = now - changedAt;
+          const elapsedMs = now - startedAt;
+          const state = classifyBatchProgress({ before: 0, now: newCount, buttonExists, quietMs, elapsedMs });
+          if (state !== 'wait') { finish(state); return; }
+          if (timer !== null) clock.clearTimeout(timer);
+          const untilDeadline = Math.max(1, 20000 - elapsedMs);
+          const untilQuiet = Math.max(1, 750 - quietMs);
+          timer = clock.setTimeout(check, newCount >= PAGE_SIZE || !buttonExists
+            ? Math.min(untilQuiet, untilDeadline) : untilDeadline);
+        }
+        try {
+          unsubscribe = observe(check);
+          signal?.addEventListener?.('abort', aborted, { once: true });
+          button.click();
+          check();
+        } catch (error) {
+          console.error('Z-lib Booklist Enhancer: Show more task failed', error);
+          finish('error');
+        }
+      });
+      added += outcome.seenNew;
+      if (outcome.reason === 'next' || outcome.reason === 'end') completed++;
+      onProgress(result(outcome.reason));
+      if (outcome.reason !== 'next') return result(outcome.reason);
+    }
+    return result('complete');
   }
 
   function createNotice({ locale, host, now, sessionStore, sitePrefs, onDisable }) {
@@ -704,7 +782,7 @@
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
-      classifyPage, noticeRemainingSeconds, shouldShowNotice,
+      classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress, runShowMoreFive,
     };
   }
 
@@ -804,6 +882,9 @@
     let panelResize = null;
     let disposed = false;
     let lastPanelData = null;
+    let showMoreTask = null;
+    let autoStatus = null;
+    const automationAbort = new AbortController();
 
     function isCurrentBooklist() {
       return !disposed && (window.location?.pathname || '/booklist/') === initialPathname &&
@@ -891,6 +972,15 @@
       return notices;
     }
 
+    function renderAutoStatus() {
+      if (!autoStatus) return;
+      const suffix = autoStatus.reason === 'end' ? translate(locale, 'auto.showMoreEnd')
+        : autoStatus.reason === 'timeout' ? translate(locale, 'auto.showMoreTimeout')
+          : autoStatus.reason === 'button-unavailable' ? translate(locale, 'auto.showMoreUnavailable')
+            : ['error', 'source-gone'].includes(autoStatus.reason) ? translate(locale, 'auto.showMoreError') : '';
+      setText('#zble-auto-status', `${translate(locale, 'auto.showMoreStatus', autoStatus)} ${suffix}`.trim());
+    }
+
     function refreshPanelLocale(nextLocale = locale) {
       locale = nextLocale;
       if (!panelRoot) return;
@@ -918,6 +1008,7 @@
         renderFilterSummary(list, stats, activeFilter, translatedNotices(context), lastCardMetrics, locale);
         renderShowMore(main, stats, locale);
       }
+      renderAutoStatus();
     }
 
     function refresh() {
@@ -1035,7 +1126,7 @@
           .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
           .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
-          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}
+          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}
         </style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
@@ -1056,7 +1147,7 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"></div></div>
+          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore">连点 5 次 Show more</button><div id="zble-auto-status" class="hint" role="status"></div></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="section.settings">设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -1120,6 +1211,32 @@
           saveSettings(); scheduleRefresh();
         });
       }
+      const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
+      showMoreButton.addEventListener('click', () => {
+        if (showMoreTask || !isCurrentBooklist()) return;
+        showMoreButton.disabled = true;
+        const mainForTask = document.querySelector('.booklist-main.active');
+        const listForTask = mainForTask?.querySelector('.readlist-view');
+        showMoreTask = runShowMoreFive({
+          getCards: () => listForTask ? [...listForTask.querySelectorAll(':scope > z-bookcard')] : [],
+          findButton: () => mainForTask?.querySelector('.page-load-more'),
+          observe(callback) {
+            const observer = new MutationObserver(callback);
+            observer.observe(mainForTask, { childList: true, subtree: true });
+            return () => observer.disconnect();
+          },
+          isSourceAlive: isCurrentBooklist,
+          signal: automationAbort.signal,
+          onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
+        }).then(result => {
+          autoStatus = result;
+          renderAutoStatus();
+          return result;
+        }).finally(() => {
+          showMoreTask = null;
+          if (!disposed) showMoreButton.disabled = false;
+        });
+      });
       const downloadRule = panelRoot.querySelector('#zble-download-rule');
       downloadRule.value = settings.downloadRule;
       downloadRule.addEventListener('change', () => {
@@ -1236,6 +1353,7 @@
     return { dispose() {
       if (disposed) return;
       disposed = true;
+      automationAbort.abort();
       document.removeEventListener?.('DOMContentLoaded', init);
       document.removeEventListener('marksLoaded', onMarksLoaded);
       clearTimeout(timeoutId);

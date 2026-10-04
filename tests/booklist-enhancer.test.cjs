@@ -647,6 +647,7 @@ test('user-added non-booklist pages stay inert until a booklist appears', () => 
   runInNewContext(script, {
     document,
     window: { location: { hostname: 'mirror.example', pathname: '/booklist/1' }, addEventListener() {} },
+    AbortController,
     MutationObserver: class {
       constructor(callback) { observerCallback = callback; }
       observe() {}

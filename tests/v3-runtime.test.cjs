@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { classifyPage, noticeRemainingSeconds, shouldShowNotice } = require('../booklist-enhancer.user.js');
+const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
+  classifyBatchProgress, runShowMoreFive } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
 test('routes known non-booklist pages to notice and waits silently for mirror fingerprint', () => {
@@ -151,4 +152,131 @@ test('visibility change catches a delayed notice timer and host reset permits a 
   fresh.advance(200);
   fresh.document.dispatch('visibilitychange');
   assert.equal(fresh.notice.removed, true);
+});
+
+test('batch classifier waits for twenty new cards and a quiet window', () => {
+  assert.equal(classifyBatchProgress({ before: 20, now: 39, buttonExists: true,
+    quietMs: 750, elapsedMs: 5000 }), 'wait');
+  assert.equal(classifyBatchProgress({ before: 20, now: 40, buttonExists: true,
+    quietMs: 200, elapsedMs: 5000 }), 'wait');
+  assert.equal(classifyBatchProgress({ before: 20, now: 40, buttonExists: true,
+    quietMs: 750, elapsedMs: 5000 }), 'next');
+  assert.equal(classifyBatchProgress({ before: 20, now: 27, buttonExists: false,
+    quietMs: 750, elapsedMs: 5000 }), 'end');
+  assert.equal(classifyBatchProgress({ before: 20, now: 39, buttonExists: true,
+    quietMs: 100, elapsedMs: 20000 }), 'timeout');
+});
+
+test('five-click runner waits for actual card additions and disconnects observers', async () => {
+  let cards = Array.from({ length: 20 }, (_, i) => ({ i }));
+  let clicks = 0;
+  let observerCallback = null;
+  let disconnects = 0;
+  let now = 0;
+  const timers = new Map();
+  let nextTimer = 1;
+  const clock = {
+    now: () => now,
+    setTimeout(callback, delay) { const id = nextTimer++; timers.set(id, { at: now + delay, callback }); return id; },
+    clearTimeout(id) { timers.delete(id); },
+  };
+  const button = { click() {
+    clicks++;
+    cards = [...cards, ...Array.from({ length: 20 }, (_, i) => ({ i: clicks * 20 + i }))];
+    observerCallback?.();
+  } };
+  const task = runShowMoreFive({ getCards: () => cards, findButton: () => button,
+    observe(callback) { observerCallback = callback; return () => { observerCallback = null; disconnects++; }; }, clock });
+  for (let step = 0; step < 5; step++) {
+    await Promise.resolve();
+    now += 750;
+    for (const [id, timer] of [...timers]) if (timer.at <= now) { timers.delete(id); timer.callback(); }
+    await Promise.resolve();
+  }
+  const result = await task;
+  assert.equal(clicks, 5);
+  assert.equal(result.completed, 5);
+  assert.equal(result.added, 100);
+  assert.equal(disconnects, 5);
+  assert.equal(timers.size, 0);
+});
+
+test('partial 19-card batch does not click again; final seven-card batch ends safely', async () => {
+  let cards = Array.from({ length: 20 }, (_, i) => ({ i }));
+  let clicks = 0;
+  let callback = null;
+  let buttonPresent = true;
+  let now = 0;
+  let nextId = 1;
+  const timers = new Map();
+  const clock = {
+    now: () => now,
+    setTimeout(fn, ms) { const id = nextId++; timers.set(id, { at: now + ms, fn }); return id; },
+    clearTimeout(id) { timers.delete(id); },
+  };
+  const advance = async ms => {
+    now += ms;
+    for (const [id, task] of [...timers]) if (task.at <= now) { timers.delete(id); task.fn(); }
+    await Promise.resolve();
+  };
+  const button = { click() {
+    clicks++;
+    if (clicks === 1) cards.push(...Array.from({ length: 19 }, (_, i) => ({ i: 20 + i })));
+    else { cards.push(...Array.from({ length: 7 }, (_, i) => ({ i: 40 + i }))); buttonPresent = false; }
+    callback?.();
+  } };
+  const task = runShowMoreFive({ getCards: () => cards, findButton: () => buttonPresent ? button : null,
+    observe(fn) { callback = fn; return () => { callback = null; }; }, clock });
+  await advance(5000);
+  assert.equal(clicks, 1);
+  cards.push({ i: 39 });
+  callback();
+  await advance(750);
+  assert.equal(clicks, 2);
+  await advance(750);
+  assert.deepEqual(await task, { completed: 2, added: 27, reason: 'end' });
+  assert.equal(timers.size, 0);
+});
+
+test('partial batch times out at 20 seconds and never triggers a second click', async () => {
+  let clicks = 0;
+  let now = 0;
+  let callback = null;
+  const timers = new Map();
+  const clock = { now: () => now, setTimeout(fn, ms) { timers.set(1, { at: now + ms, fn }); return 1; },
+    clearTimeout(id) { timers.delete(id); } };
+  let cards = Array.from({ length: 20 }, (_, i) => ({ i }));
+  const task = runShowMoreFive({ getCards: () => cards, findButton: () => ({ click() {
+    clicks++;
+    cards = [...cards, { i: 20 }];
+    callback?.();
+  } }), observe(fn) { callback = fn; return () => { callback = null; }; }, clock });
+  now = 20000;
+  const timer = timers.get(1); timers.delete(1); timer.fn();
+  const result = await task;
+  assert.equal(result.reason, 'timeout');
+  assert.equal(result.added, 1);
+  assert.equal(clicks, 1);
+});
+
+test('Show more task stops on click exception or source-page abort', async () => {
+  const cards = Array.from({ length: 20 }, (_, i) => ({ i }));
+  let disconnected = 0;
+  const errorResult = await runShowMoreFive({ getCards: () => cards,
+    findButton: () => ({ click() { throw new Error('site click failed'); } }),
+    observe() { return () => { disconnected++; }; },
+    clock: { now: () => 0, setTimeout() { throw Error('unexpected timer'); }, clearTimeout() {} } });
+  assert.equal(errorResult.reason, 'error');
+  assert.equal(disconnected, 1);
+  const controller = new AbortController();
+  let callback;
+  let clicked = 0;
+  const abortTask = runShowMoreFive({ getCards: () => cards,
+    findButton: () => ({ click() { clicked++; } }),
+    observe(fn) { callback = fn; return () => { callback = null; disconnected++; }; },
+    clock: { now: () => 0, setTimeout() { return 1; }, clearTimeout() {} }, signal: controller.signal });
+  controller.abort();
+  assert.equal((await abortTask).reason, 'source-gone');
+  assert.equal(clicked, 1);
+  assert.equal(callback, null);
 });
