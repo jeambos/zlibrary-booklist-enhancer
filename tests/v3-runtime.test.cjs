@@ -274,6 +274,7 @@ test('five-click runner waits for actual card additions and disconnects observer
   let clicks = 0;
   let observerCallback = null;
   let disconnects = 0;
+  const progress = [];
   let now = 0;
   const timers = new Map();
   let nextTimer = 1;
@@ -288,7 +289,8 @@ test('five-click runner waits for actual card additions and disconnects observer
     observerCallback?.();
   } };
   const task = runShowMoreFive({ getCards: () => cards, findButton: () => button,
-    observe(callback) { observerCallback = callback; return () => { observerCallback = null; disconnects++; }; }, clock });
+    observe(callback) { observerCallback = callback; return () => { observerCallback = null; disconnects++; }; },
+    clock, onProgress: item => progress.push(item) });
   for (let step = 0; step < 5; step++) {
     await Promise.resolve();
     now += 750;
@@ -299,6 +301,7 @@ test('five-click runner waits for actual card additions and disconnects observer
   assert.equal(clicks, 5);
   assert.equal(result.completed, 5);
   assert.equal(result.added, 100);
+  assert.ok(progress.filter(item => item.reason === 'next').every(item => item.phase === 'running'));
   assert.equal(disconnects, 5);
   assert.equal(timers.size, 0);
 });

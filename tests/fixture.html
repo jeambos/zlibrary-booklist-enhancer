@@ -15,6 +15,8 @@
 <button id="fixture-empty">Simulate ambiguous empty map</button>
 <button id="fixture-add-seven">Add seven cards</button>
 <button id="fixture-replace-seven">Replace with seven cards</button>
+<button id="fixture-stall-next">Stall the next Show more click</button>
+<button id="fixture-css-lock">Apply CSS-only lock to Show more</button>
 <script>
   history.replaceState(null, '', '/booklist/fixture');
   window.GM_getValue = (key, fallback) => {
@@ -73,7 +75,20 @@
     }
   }
   addCards(20);
-  window.loadMoreBooks = () => addCards(20);
+  let stallNext = false;
+  window.loadMoreBooks = button => {
+    if (stallNext) {
+      stallNext = false;
+      button.setAttribute('aria-disabled', 'true');
+      return;
+    }
+    if (button.getAttribute('aria-disabled') === 'true' || button.style.pointerEvents === 'none') return;
+    addCards(20);
+  };
+  document.querySelector('#fixture-stall-next').addEventListener('click', () => { stallNext = true; });
+  document.querySelector('#fixture-css-lock').addEventListener('click', () => {
+    document.querySelector('.page-load-more').style.pointerEvents = 'none';
+  });
   document.querySelector('#fixture-add-seven').addEventListener('click', () => addCards(7));
   document.querySelector('#fixture-replace-seven').addEventListener('click', () => {
     list.replaceChildren();

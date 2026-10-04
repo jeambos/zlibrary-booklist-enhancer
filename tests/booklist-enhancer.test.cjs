@@ -111,6 +111,8 @@ test('Show more action label uses running warning and cumulative attempts withou
     '连点 5 次 Show more [已点 10 次]');
   assert.equal(formatShowMoreAction('zh-CN', { phase: null, attempted: 10, failed: 2 }),
     '连点 5 次 Show more [已点 10 次，失败 2 次]');
+  assert.equal(formatShowMoreAction('en', { phase: null, attempted: 6, failed: 1 }),
+    'Click Show more 5 times [clicks 6, failures 1]');
 });
 
 test('native Show more availability gates automatic retry while a stalled button permits only manual reset', () => {
