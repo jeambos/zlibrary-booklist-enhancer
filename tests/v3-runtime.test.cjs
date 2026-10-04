@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
   classifyBatchProgress, classifyShowMoreIdle, runShowMoreFive, createShowMoreStallTracker,
-  attemptShowMoreReset, collectOpenTargets, canOpenAll,
+  attemptShowMoreReset, collectOpenTargets, canOpenAll, bulkClickDecision,
   confirmBulkOpen, runOpenAll } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
@@ -406,6 +406,15 @@ test('bulk gate requires host opt-in, ready filters, known download and tab API'
     openTabAvailable: false }).reason, 'api-unavailable');
   assert.equal(canOpenAll({ enabled: true, filtersReady: true, unknownDownloads: 0,
     openTabAvailable: true }).allowed, true);
+});
+
+test('unauthorized bulk-open click leads only to an information dialog before other gates', () => {
+  assert.equal(bulkClickDecision({ enabled: false, gate: { allowed: false, reason: 'filters-pending' },
+    targetCount: 0 }), 'enable-info');
+  assert.equal(bulkClickDecision({ enabled: true, gate: { allowed: false, reason: 'filters-pending' },
+    targetCount: 0 }), 'blocked');
+  assert.equal(bulkClickDecision({ enabled: true, gate: { allowed: true }, targetCount: 0 }), 'empty');
+  assert.equal(bulkClickDecision({ enabled: true, gate: { allowed: true }, targetCount: 3 }), 'confirm');
 });
 
 test('bulk confirmation cancels on either warning or changed snapshot before any open', async () => {

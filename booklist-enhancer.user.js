@@ -113,6 +113,7 @@
     'auto.secondWarning': ['Opened pages cannot be closed in bulk. You accept the risks. Continue?', '已打开的页面无法批量撤销。风险由你承担，确认执行？', '已開啟的頁面無法批次撤銷。風險由你承擔，確定執行？', 'Les pages ouvertes ne peuvent pas être fermées en lot. Vous acceptez les risques ?', 'Geöffnete Seiten lassen sich nicht gesammelt schließen. Risiko übernehmen?', 'Открытые страницы нельзя закрыть разом. Вы принимаете риск?', '開いたページは一括で閉じられません。リスクを承知で続行しますか？', '열린 페이지를 일괄로 닫을 수 없습니다. 위험을 감수하고 계속하시겠습니까?', 'Las páginas abiertas no pueden cerrarse en lote. ¿Acepta los riesgos?', 'As páginas abertas não podem ser fechadas em lote. Aceita os riscos?'],
     'auto.cancel': ['Cancel', '取消', '取消', 'Annuler', 'Abbrechen', 'Отмена', 'キャンセル', '취소', 'Cancelar', 'Cancelar'],
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
+    'auto.close': ['Close', '关闭', '關閉', 'Fermer', 'Schließen', 'Закрыть', '閉じる', '닫기', 'Cerrar', 'Fechar'],
     'auto.showMoreStatus': ['Show more: {completed}/5 batches, {added} new books.', 'Show more：已完成 {completed}/5 轮，新增 {added} 本。', 'Show more：完成 {completed}/5 輪，新增 {added} 本。', 'Show more : {completed}/5 lots, {added} livres ajoutés.', 'Show more: {completed}/5 Runden, {added} neue Bücher.', 'Show more: {completed}/5 этапов, добавлено {added} книг.', 'Show more：{completed}/5 回、{added} 冊追加。', 'Show more: {completed}/5회, {added}권 추가.', 'Show more: {completed}/5 tandas, {added} libros nuevos.', 'Show more: {completed}/5 lotes, {added} livros novos.'],
     'auto.showMoreEnd': ['Reached the end of the list.', '已到达书单末尾。', '已到達書單末尾。', 'Fin de la liste atteinte.', 'Listenende erreicht.', 'Достигнут конец списка.', 'リストの末尾に到達しました。', '목록 끝에 도달했습니다.', 'Se llegó al final de la lista.', 'Fim da lista alcançado.'],
     'auto.showMoreTimeout': ['Stopped: no new books for 10 seconds.', '已停止：连续 10 秒没有新增书籍。', '已停止：連續 10 秒沒有新增書籍。', 'Arrêt : aucun nouveau livre depuis 10 secondes.', 'Gestoppt: 10 Sekunden lang keine neuen Bücher.', 'Остановлено: нет новых книг 10 секунд.', '停止：10 秒間、新しい本が追加されませんでした。', '중지: 10초 동안 새 책이 추가되지 않았습니다.', 'Detenido: 10 segundos sin libros nuevos.', 'Parou: 10 segundos sem novos livros.'],
@@ -557,6 +558,12 @@
     if (!filtersReady) return { allowed: false, reason: 'filters-pending' };
     if (unknownDownloads > 0) return { allowed: false, reason: 'unknown-downloads' };
     return { allowed: true, reason: 'ready' };
+  }
+
+  function bulkClickDecision({ enabled, gate, targetCount }) {
+    if (!enabled) return 'enable-info';
+    if (!gate.allowed) return 'blocked';
+    return targetCount > 0 ? 'confirm' : 'empty';
   }
 
   async function confirmBulkOpen({ urls, getCurrentTargets, getDomainEnabled, showDialog,
@@ -1045,7 +1052,7 @@
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
       classifyShowMoreIdle, formatShowMoreAction, runShowMoreFive,
       createShowMoreStallTracker, attemptShowMoreReset, showMoreControlState,
-      collectOpenTargets, canOpenAll, confirmBulkOpen, runOpenAll,
+      collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll,
     };
   }
 
@@ -1155,7 +1162,9 @@
     let autoLastFailed = false;
     let bulkBusy = false;
     let bulkStatus = null;
+    let bulkLastFailed = false;
     let bulkMessageKey = '';
+    let resetMessageKey = '';
     let hasOpenedOnThisPage = false;
     const automationAbort = new AbortController();
 
@@ -1310,12 +1319,13 @@
       if (!button) return;
       const gateResult = currentBulkGate();
       const targets = gateResult.allowed ? currentOpenTargets() : [];
-      button.disabled = bulkBusy || !!showMoreTask || !gateResult.allowed || targets.length === 0;
+      button.disabled = bulkBusy || !!showMoreTask || !isCurrentBooklist();
+      button.dataset.state = bulkBusy ? 'running' : bulkLastFailed ? 'failed' : '';
       const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
         'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
       setText('#zble-open-hint', gateResult.allowed
         ? (targets.length ? '' : translate(locale, 'auto.bulkEmpty'))
-        : translate(locale, reasons[gateResult.reason]));
+        : gateResult.reason === 'disabled' ? '' : translate(locale, reasons[gateResult.reason]));
     }
 
     function renderBulkStatus() {
@@ -1332,7 +1342,7 @@
         const root = host.attachShadow({ mode: 'open' });
         root.innerHTML = `<style>
           :host{all:initial;position:fixed;inset:0;z-index:2147483002;display:grid;place-items:center;padding:16px;background:#0008;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
-          *{box-sizing:border-box}.dialog{width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #347aad;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere}
+          *{box-sizing:border-box}[hidden]{display:none!important}.dialog{width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #347aad;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere}
           h2{font-size:17px;margin:0 0 12px}p{margin:0 0 18px}.actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px}button{font:inherit;padding:7px 12px;border:1px solid #6b99bc;border-radius:6px;background:#f0f6fb;color:#143a59;cursor:pointer}button:last-child{background:#1667a7;color:#fff;border-color:#1667a7}button:focus-visible{outline:3px solid #4da3ea;outline-offset:2px}
           @media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#74b4e7}button{background:#263d50;color:#eef3f8;border-color:#78a5c6}button:last-child{background:#1b6a9c}}
           @media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}button:focus-visible{outline-color:Highlight}}
@@ -1340,10 +1350,12 @@
         const cancel = root.querySelector('#zble-bulk-cancel');
         const confirm = root.querySelector('#zble-bulk-confirm');
         root.querySelector('#zble-bulk-title').textContent = translate(locale, 'auto.openAll');
-        root.querySelector('#zble-bulk-message').textContent = step === 1
-          ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
-          : translate(locale, 'auto.secondWarning');
-        cancel.textContent = translate(locale, 'auto.cancel');
+        root.querySelector('#zble-bulk-message').textContent = step === 0
+          ? translate(locale, 'auto.bulkDisabled') : step === 1
+            ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
+            : translate(locale, 'auto.secondWarning');
+        cancel.textContent = translate(locale, step === 0 ? 'auto.close' : 'auto.cancel');
+        confirm.hidden = step === 0;
         confirm.textContent = translate(locale, 'auto.continue');
         document.body.append(host);
         let settled = false;
@@ -1360,7 +1372,7 @@
         confirm.addEventListener('click', () => finish(true));
         root.addEventListener('keydown', event => {
           if (event.key === 'Escape') { event.preventDefault(); finish(false); }
-          if (event.key === 'Tab') {
+          if (event.key === 'Tab' && step !== 0) {
             if (event.shiftKey && root.activeElement === cancel) { event.preventDefault(); confirm.focus(); }
             else if (!event.shiftKey && root.activeElement === confirm) { event.preventDefault(); cancel.focus(); }
           }
@@ -1406,6 +1418,7 @@
         renderShowMore(main, stats, locale);
       }
       renderAutoStatus();
+      setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
       renderBulkStatus();
       syncBulkControl();
       syncShowMoreControls();
@@ -1533,7 +1546,7 @@
           .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
           .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.configure{font-size:14px;line-height:1;padding:5px;flex:none}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
-          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}
+          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}}@media(forced-colors:active){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}}
         </style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 3a6 6 0 0 1-8 7.6L6 17.6 3.4 21 3 18l7-7A6 6 0 0 1 17 3l-3 3 4 4z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
@@ -1627,7 +1640,8 @@
           stillEligible: () => showMoreTracker.check().resetEligible });
         if (!result.attempted) return;
         showMoreTracker.consumeReset();
-        setText('#zble-reset-hint', translate(locale, result.interactive ? 'auto.resetCaution' : 'auto.resetFailed'));
+        resetMessageKey = result.interactive ? 'auto.resetCaution' : 'auto.resetFailed';
+        setText('#zble-reset-hint', translate(locale, resetMessageKey));
         syncShowMoreControls();
       });
       showMoreTracker.check();
@@ -1669,12 +1683,19 @@
       });
       const openAllButton = panelRoot.querySelector('#zble-open-all');
       openAllButton.addEventListener('click', async () => {
-        if (bulkBusy || showMoreTask || !isCurrentBooklist() || !currentBulkGate().allowed) return;
+        if (bulkBusy || showMoreTask || !isCurrentBooklist()) return;
+        const gate = currentBulkGate();
+        const decision = bulkClickDecision({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
+          gate, targetCount: gate.allowed ? currentOpenTargets().length : 0 });
+        if (decision === 'enable-info') { await showBulkDialog(0, { count: 0, repeat: false }); return; }
+        if (decision !== 'confirm') { syncBulkControl(); return; }
         const urls = currentOpenTargets();
         if (!urls.length) { syncBulkControl(); return; }
         bulkBusy = true;
+        bulkLastFailed = false;
         openAllButton.disabled = true;
         syncShowMoreControls();
+        syncBulkControl();
         bulkMessageKey = '';
         renderBulkStatus();
         try {
@@ -1694,9 +1715,11 @@
             isSourceAlive: isCurrentBooklist,
             onProgress(progress) { bulkStatus = progress; renderBulkStatus(); } });
           if (result.attempted > 0) hasOpenedOnThisPage = true;
+          bulkLastFailed = result.failed > 0;
           bulkStatus = result;
           renderBulkStatus();
         } catch {
+          bulkLastFailed = true;
           bulkMessageKey = 'auto.showMoreError';
           renderBulkStatus();
         } finally {
