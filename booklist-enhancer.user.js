@@ -434,6 +434,7 @@
       let url;
       try { url = new URL(card.getAttribute?.('href') || '', source); } catch { continue; }
       if (!['http:', 'https:'].includes(url.protocol) || url.origin !== source.origin ||
+          url.username || url.password ||
           !/^\/book\/[^/]+/.test(url.pathname)) continue;
       url.hash = '';
       const value = url.href;
@@ -607,6 +608,16 @@
     return { cards, infos, results, matched };
   }
 
+  function mutationNeedsRefresh(records) {
+    const toolNode = node => node?.classList?.contains('zble-summary-card') ||
+      node?.classList?.contains('zble-progress');
+    return records.some(record => {
+      if (record.type !== 'childList') return true;
+      if (record.target.closest?.('.zble-summary-card, .zble-progress')) return false;
+      return [...record.addedNodes, ...record.removedNodes].some(node => !toolNode(node));
+    });
+  }
+
   function createRefreshScheduler(refresh, enqueue) {
     let queued = false;
     return () => {
@@ -617,6 +628,10 @@
         refresh();
       });
     };
+  }
+
+  function createPanelResizeHandler(applyDock, schedule) {
+    return () => { applyDock(); schedule(); };
   }
 
   function formatRuleSummary(settings, gateState, yearRule, locale = 'zh-CN') {
@@ -642,6 +657,8 @@
     return { format, download, year };
   }
 
+  const summaryMessageCache = new WeakMap();
+
   function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN') {
     if (!list) return;
     let summary = list.querySelector('.zble-summary-card');
@@ -656,7 +673,33 @@
     const unit = locale.startsWith('zh') ? ' 本' : '';
     const message = `${translate(locale, 'summary.loaded')} ${stats.loaded}${unit}\n${translate(locale, 'summary.matched')} ${stats.matched}${unit}\n${translate(locale, 'summary.total')} ${total}${unit}`;
     const next = notices.length ? `${message}\n${notices.join(locale.startsWith('zh') ? '；' : '; ')}` : message;
-    if (summary.textContent !== next) summary.textContent = next;
+    if (summaryMessageCache.get(summary) !== next) {
+      if (typeof summary.replaceChildren === 'function') {
+        const values = [stats.loaded, stats.matched, stats.total === null ? null : stats.total];
+        const keys = ['summary.loaded', 'summary.matched', 'summary.total'];
+        const rows = keys.map((key, index) => {
+          const row = list.ownerDocument.createElement('div');
+          row.className = 'zble-summary-metric';
+          const label = list.ownerDocument.createElement('span');
+          label.className = 'zble-summary-label';
+          label.textContent = translate(locale, key);
+          const value = list.ownerDocument.createElement('strong');
+          value.className = 'zble-summary-value';
+          value.textContent = values[index] === null ? translate(locale, 'summary.unknown')
+            : `${new Intl.NumberFormat(locale).format(values[index])}${locale.startsWith('zh') ? ' 本' : ''}`;
+          row.append(label, value);
+          return row;
+        });
+        if (notices.length) {
+          const notice = list.ownerDocument.createElement('div');
+          notice.className = 'zble-summary-notice';
+          notice.textContent = notices.join(locale.startsWith('zh') ? '；' : '; ');
+          rows.push(notice);
+        }
+        summary.replaceChildren(...rows);
+      } else if (summary.textContent !== next) summary.textContent = next;
+      summaryMessageCache.set(summary, next);
+    }
     if (cardMetrics && summary.style) {
       if (summary.style.flex !== cardMetrics.flex) summary.style.flex = cardMetrics.flex;
       const minHeight = `${cardMetrics.height}px`;
@@ -853,7 +896,8 @@
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
-      createRefreshScheduler, renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
+      createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
+      renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
@@ -1163,6 +1207,8 @@
         const value = translate(locale, node.dataset.i18n);
         if (node.textContent !== value) node.textContent = value;
       }
+      for (const card of getActiveCards(document))
+        renderFormatBadge(card, normalizeExtension(card.getAttribute('extension')), settings.showFormat, locale);
       const gear = panelRoot.querySelector('#zble-gear');
       const collapse = panelRoot.querySelector('#zble-collapse');
       for (const [node, key] of [[gear, 'action.settings'],
@@ -1260,7 +1306,7 @@
       if (!main) return;
       startupObserver?.disconnect();
       startupObserver = null;
-      mainObserver = new MutationObserver(scheduleRefresh);
+      mainObserver = new MutationObserver(records => { if (mutationNeedsRefresh(records)) scheduleRefresh(); });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['extension', 'year', 'language'] });
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
@@ -1277,7 +1323,7 @@
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;align-items:center;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:28px 22px;border:1px solid var(--card-border-color,#d3dce5);border-top:4px solid #2d79b8;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:600 17px/1.75 system-ui,sans-serif;white-space:pre-line;overflow-wrap:anywhere}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:25px 22px;border:1px solid var(--card-border-color,#d3dce5);border-top:4px solid #2d79b8;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -1553,7 +1599,7 @@
       }
       head.addEventListener('pointerup', finishDrag);
       head.addEventListener('pointercancel', finishDrag);
-      panelResize = applySavedDock;
+      panelResize = createPanelResizeHandler(applySavedDock, scheduleRefresh);
       window.addEventListener('resize', panelResize);
       requestAnimationFrame(applySavedDock);
       refreshPanelLocale();

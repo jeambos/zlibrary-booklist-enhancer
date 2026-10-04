@@ -26,6 +26,8 @@ const {
   renderCardMeta,
   renderFullTitle,
   renderFullAuthor,
+  mutationNeedsRefresh,
+  createPanelResizeHandler,
   formatRuleSummary,
   bindDeferredTextInput,
   renderFilterSummary,
@@ -521,6 +523,24 @@ test('summary card adopts the current bookcard flex width and minimum height', (
   assert.match(list.children[0].textContent, /当前已加载 20 本\n本工具筛选后 0 本\n书单共 774 本/);
 });
 
+test('summary card renders three metric rows with distinct labels and values in DOM', () => {
+  const makeNode = tagName => ({ tagName: tagName.toUpperCase(), className: '', textContent: '',
+    children: [], style: {}, append(...items) { this.children.push(...items); },
+    replaceChildren(...items) { this.children = items; }, setAttribute() {} });
+  const list = { children: [], ownerDocument: { createElement: makeNode },
+    querySelector(selector) { return selector === '.zble-summary-card' ? this.children[0] || null : null; },
+    append(node) { this.children = [node]; } };
+  renderFilterSummary(list, computeStats({ loaded: 40, matched: 0, total: null }), true, [], null, 'en');
+  const rows = list.children[0].children;
+  assert.equal(rows.length, 3);
+  assert.ok(rows.every(row => row.className === 'zble-summary-metric'));
+  assert.equal(rows[0].children[0].className, 'zble-summary-label');
+  assert.equal(rows[0].children[1].className, 'zble-summary-value');
+  assert.equal(rows[0].children[0].textContent, 'Loaded books');
+  assert.equal(rows[0].children[1].textContent, '40');
+  assert.equal(rows[2].children[1].textContent, 'Unknown');
+});
+
 test('Show more progress uses loaded count and preserves native content and handler', () => {
   const native = { textContent: 'Show more' };
   const onclick = () => 'native';
@@ -620,6 +640,26 @@ test('panel groups, language selector, notice setting and author control are pre
   assert.ok(filters > 0 && filters < info && info < automation);
   for (const token of ['id="zble-ui-language"', 'value="auto"', 'id="zble-show-notice"',
     'id="zble-author-switch"', 'refreshPanelLocale(', 'data-zble-full-author']) assert.ok(script.includes(token), token);
+});
+
+test('tool-owned summary and progress mutations do not trigger another filter pass', () => {
+  const toolNode = name => ({ classList: { contains: key => key === name } });
+  const outer = { closest: () => null };
+  assert.equal(mutationNeedsRefresh([{ type: 'childList', target: outer,
+    addedNodes: [toolNode('zble-summary-card')], removedNodes: [] }]), false);
+  assert.equal(mutationNeedsRefresh([{ type: 'childList', target: { closest: () => ({}) },
+    addedNodes: [{}], removedNodes: [] }]), false);
+  assert.equal(mutationNeedsRefresh([{ type: 'childList', target: outer,
+    addedNodes: [toolNode('a-real-card')], removedNodes: [] }]), true);
+  assert.equal(mutationNeedsRefresh([{ type: 'attributes', target: outer,
+    addedNodes: [], removedNodes: [] }]), true);
+});
+
+test('panel resize recomputes statistics card dimensions after docking', () => {
+  const calls = [];
+  const onResize = createPanelResizeHandler(() => calls.push('dock'), () => calls.push('refresh'));
+  onResize();
+  assert.deepEqual(calls, ['dock', 'refresh']);
 });
 
 test('bulk favorite remains a disabled development-only entry', () => {

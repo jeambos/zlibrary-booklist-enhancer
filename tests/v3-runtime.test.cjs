@@ -288,7 +288,8 @@ test('bulk target collection excludes hidden, duplicate and off-origin book link
     classList: { contains(name) { return hidden && name === 'zble-hidden'; } } });
   const cards = [card('/book/123/a'), card('https://1lib.sk/book/123/a#fragment'),
     card('/book/456/b', true), card('https://elsewhere.example/book/777'),
-    card('/search/1'), card('javascript:alert(1)'), card('/book/789/c')];
+    card('/search/1'), card('javascript:alert(1)'),
+    card('https://user:secret@1lib.sk/book/888'), card('/book/789/c')];
   assert.deepEqual(collectOpenTargets(cards, 'https://1lib.sk', item => !item.hidden),
     ['https://1lib.sk/book/123/a', 'https://1lib.sk/book/789/c']);
 });
