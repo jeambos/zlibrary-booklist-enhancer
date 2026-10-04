@@ -6,7 +6,7 @@
 
 ### 这是什么？
 
-Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey 用户脚本。它让你更容易查看书籍信息、筛选当前书单，并了解已经加载了多少本书。你也可以选择让它连续点击「Show more」，或一次打开当前显示的多本书的详情页。
+Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey 用户脚本。它让你更容易查看书籍信息、筛选当前书单，并了解已经加载了多少本书。你也可以选择让它依次点击「Show more」，或一次打开当前显示的多本书的详情页。
 
 它不会替你下载图书，也不会修改书单内容。
 
@@ -25,8 +25,8 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 - **筛选书籍：**在「筛选器」中选择文件格式、下载状态或出版年份。多个已启用条件会同时生效。点击某个筛选器旁的齿轮可设置它的具体规则。文件格式支持 PDF、EPUB、AZW3、MOBI、「其他全部」和自定义扩展名；年份可设置起止范围，也可选择是否显示缺少年份的书。
 - **调整信息显示：**在「信息显示」中显示或隐藏文件格式标签、语言和年份，也可以展开过长的书名与作者名。
 - **查看书单进度：**启用筛选器后，书单末尾会显示已加载数量、筛选后数量和书单总数。点击原站的「Show more」加载更多书时，按钮附近还会显示按每 20 本估算的页数进度。
-- **连续加载更多书：**在「自动化（beta）」中点击「连点 5 次 Show more」。工具会等待新书加载后再点击下一次；如果长时间没有进展，会停止。按钮上会显示本页由工具发起的累计点击次数和失败次数。
-- **一次打开多本书的详情页：**先点击「打开当前视图的所有图书页面」查看说明，再到面板标题栏扳手图标中的全局设置，手动启用该站点的批量打开功能。执行前还需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
+- **连续加载更多书：**在「自动化（beta）」中点击「依次点击 Show more，最多 5 次」。工具会等待新书加载后再点击下一次；如果长时间没有进展，会停止。按钮上会显示本页由工具发起的累计尝试次数和失败次数。
+- **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再到面板标题栏扳手图标中的全局设置，手动启用该站点的批量打开功能。执行前还需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
 
 面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。标题栏的扳手图标用于界面语言等全局设置；筛选器旁的齿轮只设置对应筛选条件。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
 
@@ -52,7 +52,7 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 
 ### What is this?
 
-Z-lib Booklist Enhancer is a Tampermonkey userscript for Z-Library booklist pages. It makes book details easier to read, lets you filter the current list, and shows how many books have loaded. You can also choose to click “Show more” repeatedly or open multiple visible book detail pages at once.
+Z-lib Booklist Enhancer is a Tampermonkey userscript for Z-Library booklist pages. It makes book details easier to read, lets you filter the current list, and shows how many books have loaded. You can also choose to click “Show more” in sequence or open multiple visible book detail pages at once.
 
 It does not download books for you or change the contents of a booklist.
 
@@ -71,8 +71,8 @@ Built-in HTTPS site support covers `z-lib.sk`, `z-library.sk`, `1lib.sk`, `libb.
 - **Filter books:** Under “Filters,” choose file format, download status, or publication year. Enabled filters work together. Use the gear beside a filter to set its rule. Format choices include PDF, EPUB, AZW3, MOBI, all other formats, and custom extensions. You can set a year range and choose whether to include books without a year.
 - **Change what you see:** Under “Information display,” show or hide format badges, language, and year, or expand long titles and author names.
 - **Track booklist progress:** Once a filter is enabled, cards at the end of the list show the number of loaded books, the number remaining after filtering, and the booklist total. After you use the site's “Show more” button, you will also see estimated page progress based on 20 books per page.
-- **Load more books automatically:** Under “Automation (beta),” choose “Click Show more 5 times.” The tool waits for new books to load before trying the next click and stops if progress stalls. Its button shows how many clicks and failures the tool has recorded on the current page.
-- **Open several book detail pages:** Click “Open all book pages in the current view” for an explanation, then enable bulk opening for that site in the global settings under the title-bar wrench. You must confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
+- **Load more books automatically:** Under “Automation (beta),” choose “Click Show more up to 5 times.” The tool waits for new books to load before trying the next click and stops if progress stalls. Its button shows how many attempts and failures the tool has recorded on the current page.
+- **Open several book detail pages:** Click “Open pages for all currently visible books” for an explanation, then enable bulk opening for that site in the global settings under the title-bar wrench. You must confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
 
 Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. The title-bar wrench opens global settings such as interface language; the gears beside filters configure individual rules. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
 
