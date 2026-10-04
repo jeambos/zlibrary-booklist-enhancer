@@ -1,0 +1,5 @@
+# Publish only the userscript and its public README.
+*
+!.gitignore
+!README.md
+!booklist-enhancer.user.js
