@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Z-lib Booklist Enhancer
 // @namespace    local.booklist-enhancer
-// @version      3.0.0-dev
+// @version      3.0.1-dev
 // @description  增强书单信息显示、筛选与当前加载进度
 // @match        https://z-lib.sk/*
 // @match        https://z-library.sk/*
@@ -785,6 +785,22 @@
     return !event.target.closest('button') && (event.pointerType !== 'mouse' || event.button === 0);
   }
 
+  function createPanelHeaderToggle(toggle) {
+    let suppressNextClick = false;
+    return {
+      onPointerDown() { suppressNextClick = false; },
+      onPointerEnd(moved) { suppressNextClick = !!moved; },
+      onClick(event) {
+        if (suppressNextClick) {
+          suppressNextClick = false;
+          return;
+        }
+        if (event.button > 0 || event.detail >= 2 || event.target.closest?.('button')) return;
+        toggle();
+      },
+    };
+  }
+
   function renderFormatBadge(card, extension, show, locale = 'zh-CN') {
     const root = card.shadowRoot;
     if (!root) return false;
@@ -900,7 +916,7 @@
       renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
       renderFilterSummary, renderShowMore, formatProgressText,
-      snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
+      snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress, runShowMoreFive,
@@ -1554,6 +1570,8 @@
         collapse.setAttribute('aria-expanded', String(!collapsed));
         requestAnimationFrame(applySavedDock);
       }
+      const headerToggle = createPanelHeaderToggle(() => setCollapsed(!content.hidden));
+      head.addEventListener('click', headerToggle.onClick);
       collapse.addEventListener('click', () => setCollapsed(!content.hidden));
       gear.addEventListener('click', () => {
         if (content.hidden) setCollapsed(false);
@@ -1568,6 +1586,7 @@
       });
       let drag = null;
       head.addEventListener('pointerdown', event => {
+        headerToggle.onPointerDown();
         if (!canStartPanelDrag(event)) return;
         const rect = host.getBoundingClientRect();
         drag = { x: event.clientX, y: event.clientY, left: rect.left, top: rect.top,
@@ -1587,6 +1606,7 @@
       });
       function finishDrag(event) {
         if (!drag) return;
+        headerToggle.onPointerEnd(drag.moved);
         if (drag.moved) {
           const rect = host.getBoundingClientRect();
           const dock = snapPanelPosition(rect, viewport());

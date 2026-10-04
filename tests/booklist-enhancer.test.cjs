@@ -37,6 +37,7 @@ const {
   clampPanelPosition,
   resetPanelDock,
   canStartPanelDrag,
+  createPanelHeaderToggle,
   resolveLocale,
   translate,
   sanitizeSitePrefs,
@@ -235,6 +236,48 @@ test('header buttons and nonprimary mouse clicks cannot start a panel drag', () 
   assert.equal(canStartPanelDrag({ target: button, pointerType: 'mouse', button: 0 }), false);
   assert.equal(canStartPanelDrag({ target: title, pointerType: 'mouse', button: 2 }), false);
   assert.equal(canStartPanelDrag({ target: title, pointerType: 'touch', button: 0 }), true);
+});
+
+test('header single click toggles immediately and a double click toggles only once', () => {
+  let collapsed = false;
+  const header = createPanelHeaderToggle(() => { collapsed = !collapsed; });
+  const title = { closest() { return null; } };
+  header.onPointerDown();
+  header.onPointerEnd(false);
+  header.onClick({ target: title, detail: 1, button: 0 });
+  assert.equal(collapsed, true);
+  header.onPointerDown();
+  header.onPointerEnd(false);
+  header.onClick({ target: title, detail: 2, button: 0 });
+  assert.equal(collapsed, true);
+  header.onPointerDown();
+  header.onPointerEnd(false);
+  header.onClick({ target: title, detail: 1, button: 0 });
+  assert.equal(collapsed, false);
+});
+
+test('header controls and nonprimary click never toggle the panel', () => {
+  let toggles = 0;
+  const header = createPanelHeaderToggle(() => { toggles++; });
+  const button = {};
+  const nestedIcon = { closest(selector) { return selector === 'button' ? button : null; } };
+  header.onClick({ target: nestedIcon, detail: 1, button: 0 });
+  header.onClick({ target: { closest() { return null; } }, detail: 1, button: 2 });
+  assert.equal(toggles, 0);
+});
+
+test('drag-generated click is ignored but the next normal header click works', () => {
+  let toggles = 0;
+  const header = createPanelHeaderToggle(() => { toggles++; });
+  const title = { closest() { return null; } };
+  header.onPointerDown();
+  header.onPointerEnd(true);
+  header.onClick({ target: title, detail: 1, button: 0 });
+  assert.equal(toggles, 0);
+  header.onPointerDown();
+  header.onPointerEnd(false);
+  header.onClick({ target: title, detail: 1, button: 0 });
+  assert.equal(toggles, 1);
 });
 
 test('year rule validates inclusive closed and one-sided bounds', () => {
@@ -601,7 +644,7 @@ test('match rules cover six selected sites and exclude the retired host', () => 
 
 test('v3 userscript metadata identifies the updated implementation as a development build', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
-  assert.match(script, /^\/\/ @version\s+3\.0\.0-dev\s*$/m);
+  assert.match(script, /^\/\/ @version\s+3\.0\.1-dev\s*$/m);
   assert.match(script, /^\/\/ @name\s+Z-lib Booklist Enhancer\s*$/m);
 });
 
