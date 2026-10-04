@@ -299,6 +299,77 @@
     return KNOWN_HOSTS.has(String(hostname || '').toLowerCase()) ? 'notice' : 'silent';
   }
 
+  function noticeRemainingSeconds(startedAt, now) {
+    return Math.max(0, Math.ceil((startedAt + 10000 - now) / 1000));
+  }
+
+  function shouldShowNotice(host, enabled, sessionStore, documentSeen) {
+    if (!enabled || documentSeen.has(host)) return false;
+    const key = `zble-intro-seen-v3:${host}`;
+    try {
+      if (sessionStore?.getItem(key) === '1') return false;
+      sessionStore?.setItem(key, '1');
+    } catch { /* Storage blocked: dedupe within this document only. */ }
+    documentSeen.add(host);
+    return true;
+  }
+
+  function createNotice({ locale, host, now, sessionStore, sitePrefs, onDisable }) {
+    void host; void sessionStore; void sitePrefs;
+    const wrapper = document.createElement('div');
+    wrapper.id = 'zble-notice-host';
+    const root = wrapper.attachShadow({ mode: 'open' });
+    root.innerHTML = `<style>
+      :host{all:initial;position:fixed;right:14px;top:14px;z-index:2147483001;display:block;width:min(330px,calc(100vw - 28px));box-sizing:border-box;color-scheme:light;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+      *{box-sizing:border-box}.notice{padding:14px 16px;border:2px solid #247bc7;border-radius:10px;background:#fff;color:#172534;box-shadow:0 6px 22px #0004;animation:zble-flash 1.4s ease-in-out 2}
+      @keyframes zble-flash{0%,100%{border-color:#247bc7;box-shadow:0 6px 22px #0004}50%{border-color:#67b7ff;box-shadow:0 0 0 4px #4aa3ff77,0 6px 22px #0004}}
+      .head{display:flex;justify-content:space-between;gap:10px;align-items:start}.title{font-weight:700;font-size:15px}button{border:1px solid #83a6c3;background:#eef5fb;color:#133e62;border-radius:6px;padding:4px 7px;cursor:pointer;font:inherit;white-space:nowrap}p{margin:8px 0}a{color:#075da5;text-decoration:underline}.optout{display:flex;gap:6px;align-items:center;font-size:12px}.optout input{accent-color:#075da5}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0872c5;outline-offset:2px}
+      @media(prefers-color-scheme:dark){:host{color-scheme:dark}.notice{background:#1b2430;color:#eef3f8;border-color:#62aef1;box-shadow:0 6px 22px #0009}button{background:#253f54;color:#e9f4ff;border-color:#6d9bbd}a{color:#9bd3ff}}
+      @media(prefers-reduced-motion:reduce){.notice{animation:none}}
+      @media(forced-colors:active){.notice{border-color:Highlight;box-shadow:none;animation:none}button{forced-color-adjust:auto}}
+    </style><div class="notice" role="status"><div class="head"><span class="title"></span><button id="zble-notice-close" type="button"></button></div><p class="message"></p><a class="try" href="/booklists"></a><label class="optout"><input id="zble-notice-optout" type="checkbox"><span></span></label></div>`;
+    document.body.append(wrapper);
+    const close = root.querySelector('#zble-notice-close');
+    const optout = root.querySelector('#zble-notice-optout');
+    const link = root.querySelector('.try');
+    const startedAt = now();
+    let timer = null;
+    let disposed = false;
+    let currentLocale = locale;
+    function refreshLocale(nextLocale = currentLocale) {
+      currentLocale = nextLocale;
+      root.querySelector('.title').textContent = 'Z-lib Booklist Enhancer';
+      root.querySelector('.message').textContent = window.location.pathname === '/booklists'
+        ? translate(currentLocale, 'notice.listPage') : translate(currentLocale, 'notice.message');
+      link.textContent = translate(currentLocale, 'notice.link');
+      link.hidden = window.location.pathname === '/booklists';
+      root.querySelector('.optout span').textContent = translate(currentLocale, 'notice.optout');
+      tick();
+    }
+    function tick() {
+      if (disposed) return;
+      const seconds = noticeRemainingSeconds(startedAt, now());
+      close.textContent = translate(currentLocale, 'notice.close', { seconds });
+      close.setAttribute('aria-label', close.textContent);
+      if (seconds === 0) dispose();
+    }
+    function dispose() {
+      if (disposed) return;
+      disposed = true;
+      if (timer !== null) clearInterval(timer);
+      document.removeEventListener('visibilitychange', tick);
+      window.removeEventListener('pageshow', tick);
+      wrapper.remove();
+    }
+    close.addEventListener('click', dispose);
+    optout.addEventListener('change', () => { if (optout.checked) { onDisable(); dispose(); } });
+    document.addEventListener('visibilitychange', tick);
+    window.addEventListener('pageshow', tick);
+    refreshLocale();
+    timer = setInterval(tick, 250);
+    return { refreshLocale, dispose };
+  }
+
   function readCardData(card) {
     const cover = card.shadowRoot?.querySelector('z-cover');
     return {
@@ -589,13 +660,24 @@
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
-      classifyPage,
+      classifyPage, noticeRemainingSeconds, shouldShowNotice,
     };
   }
 
   if (typeof document !== 'undefined') {
     if (window.top && window.self && window.top !== window.self) return;
     let currentRoute = null;
+    const noticeSeenInDocument = new Set();
+    const SITE_PREFS_KEY = 'zble-site-prefs-v3';
+
+    function loadSitePrefs() {
+      try { return sanitizeSitePrefs(GM_getValue(SITE_PREFS_KEY, {})); }
+      catch { return sanitizeSitePrefs({}); }
+    }
+
+    function saveSitePrefs(prefs) {
+      try { GM_setValue(SITE_PREFS_KEY, prefs); } catch { /* Session-only preference. */ }
+    }
 
     function stopRoute() {
       currentRoute?.dispose?.();
@@ -622,8 +704,25 @@
       } else if (kind === 'booklist') {
         const instance = activate(startRoute);
         currentRoute = { kind, pathname, main, dispose: () => instance.dispose() };
+      } else if (kind === 'notice') {
+        const host = location.hostname.toLowerCase();
+        const prefs = loadSitePrefs();
+        let notice = null;
+        let sessionStore = null;
+        try { sessionStore = window.sessionStorage; } catch { /* Storage access blocked. */ }
+        if (document.body && shouldShowNotice(host, prefs[host]?.welcomeEnabled !== false,
+            sessionStore, noticeSeenInDocument)) {
+          let saved;
+          try { saved = GM_getValue('zble-settings-v2', {}); } catch { saved = {}; }
+          const locale = resolveLocale(sanitizeSettings(saved).uiLanguage, navigator?.languages);
+          notice = createNotice({ locale, host, now: Date.now, sessionStore,
+            sitePrefs: prefs, onDisable() {
+              prefs[host] = { welcomeEnabled: false, bulkOpenEnabled: prefs[host]?.bulkOpenEnabled === true };
+              saveSitePrefs(prefs);
+            } });
+        }
+        currentRoute = { kind, pathname, dispose: () => notice?.dispose() };
       } else {
-        // The non-booklist notice is mounted by the next implementation task.
         currentRoute = { kind, pathname, dispose() {} };
       }
     }
