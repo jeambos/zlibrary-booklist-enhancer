@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
-  classifyBatchProgress, runShowMoreFive, collectOpenTargets, canOpenAll,
+  classifyBatchProgress, classifyShowMoreIdle, runShowMoreFive, collectOpenTargets, canOpenAll,
   confirmBulkOpen, runOpenAll } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
@@ -165,7 +165,42 @@ test('batch classifier waits for twenty new cards and a quiet window', () => {
   assert.equal(classifyBatchProgress({ before: 20, now: 27, buttonExists: false,
     quietMs: 750, elapsedMs: 5000 }), 'end');
   assert.equal(classifyBatchProgress({ before: 20, now: 39, buttonExists: true,
-    quietMs: 100, elapsedMs: 20000 }), 'timeout');
+    quietMs: 10000, elapsedMs: 20000 }), 'timeout');
+});
+
+test('Show more idle phase changes at five and ten seconds without negative countdown', () => {
+  assert.deepEqual(classifyShowMoreIdle(4999), { phase: 'running', seconds: null });
+  assert.deepEqual(classifyShowMoreIdle(5000), { phase: 'warning', seconds: 5 });
+  assert.deepEqual(classifyShowMoreIdle(9000), { phase: 'warning', seconds: 1 });
+  assert.deepEqual(classifyShowMoreIdle(10000), { phase: 'timeout', seconds: null });
+  assert.deepEqual(classifyShowMoreIdle(50000), { phase: 'timeout', seconds: null });
+});
+
+test('five-click runner warns, then stops after ten seconds without new book cards', async () => {
+  let now = 0;
+  let clicks = 0;
+  const timers = new Map();
+  let nextId = 0;
+  const progress = [];
+  const clock = { now: () => now, setTimeout(fn, ms) {
+    const id = ++nextId; timers.set(id, { at: now + ms, fn }); return id;
+  }, clearTimeout(id) { timers.delete(id); } };
+  const tick = async at => {
+    now = at;
+    for (const [id, item] of [...timers]) if (item.at <= now) { timers.delete(id); item.fn(); }
+    await Promise.resolve();
+  };
+  const cards = [{}];
+  const result = runShowMoreFive({ getCards: () => cards, findButton: () => ({ click() { clicks++; } }),
+    observe: () => () => {}, clock, onProgress: item => progress.push(item) });
+  await tick(5000);
+  assert.equal(progress.at(-1).phase, 'warning');
+  assert.equal(progress.at(-1).seconds, 5);
+  await tick(9000);
+  assert.equal(progress.at(-1).seconds, 1);
+  await tick(10000);
+  assert.deepEqual(await result, { completed: 0, added: 0, attempted: 1, failed: 1, reason: 'timeout' });
+  assert.equal(clicks, 1);
 });
 
 test('five-click runner waits for actual card additions and disconnects observers', async () => {
@@ -235,7 +270,7 @@ test('partial 19-card batch does not click again; final seven-card batch ends sa
   await advance(750);
   assert.equal(clicks, 2);
   await advance(750);
-  assert.deepEqual(await task, { completed: 2, added: 27, reason: 'end' });
+  assert.deepEqual(await task, { completed: 2, added: 27, attempted: 2, failed: 0, reason: 'end' });
   assert.equal(timers.size, 0);
 });
 

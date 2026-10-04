@@ -98,6 +98,10 @@
     'progress.text': ['About {expansions} expansions; around page {current}; about {remaining} pages left; about {pages} pages total', '约展开 {expansions} 次，当前约第 {current} 页，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '約展開 {expansions} 次，目前約第 {current} 頁，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Environ {expansions} chargements ; page {current} ; {remaining} pages restantes ; {pages} pages au total', 'Etwa {expansions} Erweiterungen; Seite {current}; noch {remaining} Seiten; insgesamt {pages} Seiten', 'Примерно {expansions} раскрытий; страница {current}; осталось {remaining} стр.; всего {pages} стр.', '約 {expansions} 回展開、現在約 {current} ページ、残り約 {remaining} ページ、全 {pages} ページ', '약 {expansions}회 더 보기, 현재 약 {current}페이지, 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Unas {expansions} ampliaciones; página {current}; quedan {remaining} páginas; {pages} en total', 'Cerca de {expansions} expansões; página {current}; faltam {remaining} páginas; {pages} no total'],
     'progress.zero': ['No books loaded; about {remaining} pages left; about {pages} pages total', '尚无已加载书籍，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '尚無已載入書籍，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Aucun livre chargé ; {remaining} pages restantes ; {pages} pages au total', 'Noch keine Bücher geladen; {remaining} Seiten übrig; insgesamt {pages} Seiten', 'Книги ещё не загружены; осталось {remaining} стр.; всего {pages} стр.', 'まだ本を読み込んでいません。残り約 {remaining} ページ、全 {pages} ページ', '아직 로드된 책 없음; 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Aún no hay libros; quedan {remaining} páginas; {pages} en total', 'Nenhum livro carregado; faltam {remaining} páginas; {pages} no total'],
     'auto.showMore': ['Click Show more 5 times', '连点 5 次 Show more', '連點 5 次 Show more', 'Cliquer 5 fois sur Show more', 'Show more 5-mal klicken', 'Нажать Show more 5 раз', 'Show more を5回押す', 'Show more 5회 클릭', 'Pulsar Show more 5 veces', 'Clicar Show more 5 vezes'],
+    'auto.running': ['[Running] {action}', '[运行中] {action}', '[執行中] {action}', '[En cours] {action}', '[Läuft] {action}', '[Выполняется] {action}', '[実行中] {action}', '[실행 중] {action}', '[En curso] {action}', '[Em execução] {action}'],
+    'auto.warning': ['[Possibly failed; giving up in {seconds}s] {action}', '[可能失败，{seconds} 秒后放弃] {action}', '[可能失敗，{seconds} 秒後放棄] {action}', '[Échec possible ; arrêt dans {seconds} s] {action}', '[Möglicher Fehler; Abbruch in {seconds} s] {action}', '[Возможный сбой; остановка через {seconds} с] {action}', '[失敗の可能性・{seconds} 秒後に中止] {action}', '[실패 가능성; {seconds}초 후 중단] {action}', '[Posible fallo; se detendrá en {seconds} s] {action}', '[Possível falha; desiste em {seconds} s] {action}'],
+    'auto.clicked': ['{action} [clicked {attempted} times]', '{action} [已点 {attempted} 次]', '{action} [已點 {attempted} 次]', '{action} [cliqué {attempted} fois]', '{action} [{attempted}-mal geklickt]', '{action} [нажато {attempted} раз]', '{action} [{attempted} 回クリック]', '{action} [{attempted}회 클릭]', '{action} [{attempted} clics]', '{action} [{attempted} cliques]'],
+    'auto.clickedFailed': ['{action} [clicked {attempted} times; failed {failed} times]', '{action} [已点 {attempted} 次，失败 {failed} 次]', '{action} [已點 {attempted} 次，失敗 {failed} 次]', '{action} [cliqué {attempted} fois, {failed} échecs]', '{action} [{attempted}-mal geklickt, {failed} Fehler]', '{action} [нажато {attempted} раз, ошибок: {failed}]', '{action} [{attempted} 回クリック、失敗 {failed} 回]', '{action} [{attempted}회 클릭, 실패 {failed}회]', '{action} [{attempted} clics, {failed} fallos]', '{action} [{attempted} cliques, {failed} falhas]'],
     'auto.openAll': ['Open all books in current view', '打开当前视图的所有图书页面', '開啟目前檢視的所有圖書頁面', 'Ouvrir tous les livres affichés', 'Alle Bücher der aktuellen Ansicht öffnen', 'Открыть все книги текущего вида', '現在表示中の本をすべて開く', '현재 화면의 모든 책 열기', 'Abrir todos los libros visibles', 'Abrir todos os livros visíveis'],
     'auto.favorite': ['Add visible books to favorites', '批量加入收藏', '批次加入收藏', 'Ajouter les livres visibles aux favoris', 'Sichtbare Bücher zu Favoriten hinzufügen', 'Добавить видимые книги в избранное', '表示中の本をお気に入りに追加', '보이는 책을 즐겨찾기에 추가', 'Añadir libros visibles a favoritos', 'Adicionar livros visíveis aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
@@ -108,7 +112,7 @@
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
     'auto.showMoreStatus': ['Show more: {completed}/5 batches, {added} new books.', 'Show more：已完成 {completed}/5 轮，新增 {added} 本。', 'Show more：完成 {completed}/5 輪，新增 {added} 本。', 'Show more : {completed}/5 lots, {added} livres ajoutés.', 'Show more: {completed}/5 Runden, {added} neue Bücher.', 'Show more: {completed}/5 этапов, добавлено {added} книг.', 'Show more：{completed}/5 回、{added} 冊追加。', 'Show more: {completed}/5회, {added}권 추가.', 'Show more: {completed}/5 tandas, {added} libros nuevos.', 'Show more: {completed}/5 lotes, {added} livros novos.'],
     'auto.showMoreEnd': ['Reached the end of the list.', '已到达书单末尾。', '已到達書單末尾。', 'Fin de la liste atteinte.', 'Listenende erreicht.', 'Достигнут конец списка.', 'リストの末尾に到達しました。', '목록 끝에 도달했습니다.', 'Se llegó al final de la lista.', 'Fim da lista alcançado.'],
-    'auto.showMoreTimeout': ['Stopped: this batch did not finish within 20 seconds.', '已停止：本轮 20 秒内未加载完成。', '已停止：本輪 20 秒內未載入完成。', 'Arrêt : ce lot n’a pas fini en 20 secondes.', 'Gestoppt: Runde nicht in 20 Sekunden abgeschlossen.', 'Остановлено: этап не завершился за 20 секунд.', '停止：20 秒以内に読み込みが完了しませんでした。', '중지: 20초 안에 로드되지 않았습니다.', 'Se detuvo: el lote no terminó en 20 segundos.', 'Parou: o lote não terminou em 20 segundos.'],
+    'auto.showMoreTimeout': ['Stopped: no new books for 10 seconds.', '已停止：连续 10 秒没有新增书籍。', '已停止：連續 10 秒沒有新增書籍。', 'Arrêt : aucun nouveau livre depuis 10 secondes.', 'Gestoppt: 10 Sekunden lang keine neuen Bücher.', 'Остановлено: нет новых книг 10 секунд.', '停止：10 秒間、新しい本が追加されませんでした。', '중지: 10초 동안 새 책이 추가되지 않았습니다.', 'Detenido: 10 segundos sin libros nuevos.', 'Parou: 10 segundos sem novos livros.'],
     'auto.showMoreUnavailable': ['Stopped: Show more is unavailable.', '已停止：Show more 不可用。', '已停止：Show more 無法使用。', 'Arrêt : Show more indisponible.', 'Gestoppt: Show more nicht verfügbar.', 'Остановлено: Show more недоступна.', '停止：Show more が利用できません。', '중지: Show more를 사용할 수 없습니다.', 'Se detuvo: Show more no está disponible.', 'Parou: Show more indisponível.'],
     'auto.showMoreError': ['Stopped after an error.', '发生错误，已停止。', '發生錯誤，已停止。', 'Arrêt après une erreur.', 'Nach Fehler gestoppt.', 'Остановлено из-за ошибки.', 'エラーで停止しました。', '오류로 중지했습니다.', 'Se detuvo por un error.', 'Parou após um erro.'],
     'auto.bulkDisabled': ['Enable bulk opening for this site in Settings.', '请先在设置中启用本站批量打开。', '請先在設定中啟用本站批次開啟。', 'Activez l’ouverture groupée pour ce site dans les paramètres.', 'Massenöffnung für diese Seite in Einstellungen aktivieren.', 'Включите массовое открытие для сайта в настройках.', '設定でこのサイトの一括開きを有効にしてください。', '설정에서 이 사이트의 일괄 열기를 활성화하세요.', 'Active la apertura masiva para este sitio.', 'Ative a abertura em massa neste site.'],
@@ -361,19 +365,36 @@
   }
 
   function classifyBatchProgress({ before, now, buttonExists, quietMs, elapsedMs }) {
-    if (elapsedMs >= 20000) return 'timeout';
     if (quietMs < 750) return 'wait';
     if (!buttonExists) return 'end';
-    return now - before >= PAGE_SIZE ? 'next' : 'wait';
+    if (now - before >= PAGE_SIZE) return 'next';
+    return quietMs >= 10000 ? 'timeout' : 'wait';
+  }
+
+  function classifyShowMoreIdle(idleMs) {
+    if (idleMs >= 10000) return { phase: 'timeout', seconds: null };
+    if (idleMs >= 5000) return { phase: 'warning', seconds: Math.max(1, Math.ceil((10000 - idleMs) / 1000)) };
+    return { phase: 'running', seconds: null };
+  }
+
+  function formatShowMoreAction(locale, { phase = null, seconds = null, attempted = 0, failed = 0 } = {}) {
+    const action = translate(locale, 'auto.showMore');
+    if (phase === 'running') return translate(locale, 'auto.running', { action });
+    if (phase === 'warning') return translate(locale, 'auto.warning', { action, seconds });
+    if (failed > 0) return translate(locale, 'auto.clickedFailed', { action, attempted, failed });
+    if (attempted > 0) return translate(locale, 'auto.clicked', { action, attempted });
+    return action;
   }
 
   async function runShowMoreFive({ getCards, findButton, observe, clock = {
     now: () => Date.now(), setTimeout: (callback, delay) => setTimeout(callback, delay),
     clearTimeout: id => clearTimeout(id),
-  }, onProgress = () => {}, isSourceAlive = () => true, signal = null }) {
+  }, onProgress = () => {}, onAttempt = () => {}, isSourceAlive = () => true, signal = null }) {
     let completed = 0;
     let added = 0;
-    const result = reason => ({ completed, added, reason });
+    let attempted = 0;
+    let failed = 0;
+    const result = reason => ({ completed, added, attempted, failed, reason });
     for (let round = 0; round < 5; round++) {
       if (signal?.aborted || !isSourceAlive()) return result('source-gone');
       const button = findButton();
@@ -403,14 +424,16 @@
           if (signal?.aborted || !isSourceAlive()) { finish('source-gone'); return; }
           const now = clock.now();
           const newCount = getCards().filter(card => !beforeCards.has(card)).length;
-          if (newCount !== seenNew) { seenNew = newCount; changedAt = now; }
+          if (newCount > seenNew) { seenNew = newCount; changedAt = now; }
           const buttonExists = !!findButton();
           const quietMs = now - changedAt;
           const elapsedMs = now - startedAt;
           const state = classifyBatchProgress({ before: 0, now: newCount, buttonExists, quietMs, elapsedMs });
           if (state !== 'wait') { finish(state); return; }
+          const idle = classifyShowMoreIdle(quietMs);
+          onProgress({ ...result('running'), ...idle });
           if (timer !== null) clock.clearTimeout(timer);
-          const untilDeadline = Math.max(1, 20000 - elapsedMs);
+          const untilDeadline = Math.max(1, (quietMs < 5000 ? 5000 : Math.min(10000, Math.ceil((quietMs + 1) / 1000) * 1000)) - quietMs);
           const untilQuiet = Math.max(1, 750 - quietMs);
           timer = clock.setTimeout(check, newCount >= PAGE_SIZE || !buttonExists
             ? Math.min(untilQuiet, untilDeadline) : untilDeadline);
@@ -418,6 +441,8 @@
         try {
           unsubscribe = observe(check);
           signal?.addEventListener?.('abort', aborted, { once: true });
+          onAttempt(button);
+          attempted++;
           button.click();
           check();
         } catch (error) {
@@ -427,6 +452,7 @@
       });
       added += outcome.seenNew;
       if (outcome.reason === 'next' || outcome.reason === 'end') completed++;
+      if (outcome.reason === 'timeout' || outcome.reason === 'error') failed++;
       onProgress(result(outcome.reason));
       if (outcome.reason !== 'next') return result(outcome.reason);
     }
@@ -946,7 +972,8 @@
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
       createExclusiveDisclosure,
-      classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress, runShowMoreFive,
+      classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
+      classifyShowMoreIdle, formatShowMoreAction, runShowMoreFive,
       collectOpenTargets, canOpenAll, confirmBulkOpen, runOpenAll,
     };
   }
@@ -1049,6 +1076,9 @@
     let lastPanelData = null;
     let showMoreTask = null;
     let autoStatus = null;
+    let autoAttempts = 0;
+    let autoFailures = 0;
+    let autoLastFailed = false;
     let bulkBusy = false;
     let bulkStatus = null;
     let bulkMessageKey = '';
@@ -1142,12 +1172,19 @@
     }
 
     function renderAutoStatus() {
-      if (!autoStatus) return;
-      const suffix = autoStatus.reason === 'end' ? translate(locale, 'auto.showMoreEnd')
-        : autoStatus.reason === 'timeout' ? translate(locale, 'auto.showMoreTimeout')
-          : autoStatus.reason === 'button-unavailable' ? translate(locale, 'auto.showMoreUnavailable')
-            : ['error', 'source-gone'].includes(autoStatus.reason) ? translate(locale, 'auto.showMoreError') : '';
-      setText('#zble-auto-status', `${translate(locale, 'auto.showMoreStatus', autoStatus)} ${suffix}`.trim());
+      const button = panelRoot?.querySelector('#zble-show-more-five');
+      if (!button) return;
+      const suffix = autoStatus?.reason === 'end' ? translate(locale, 'auto.showMoreEnd')
+        : autoStatus?.reason === 'timeout' ? translate(locale, 'auto.showMoreTimeout')
+          : autoStatus?.reason === 'button-unavailable' ? translate(locale, 'auto.showMoreUnavailable')
+            : ['error', 'source-gone'].includes(autoStatus?.reason) ? translate(locale, 'auto.showMoreError') : '';
+      button.textContent = formatShowMoreAction(locale, {
+        phase: autoStatus?.phase, seconds: autoStatus?.seconds,
+        attempted: autoAttempts, failed: autoFailures,
+      });
+      button.title = suffix;
+      button.dataset.state = autoStatus?.phase === 'warning' || autoStatus?.phase === 'running'
+        ? 'running' : autoLastFailed ? 'failed' : '';
     }
 
     function isCardSiteVisible(card) {
@@ -1423,7 +1460,7 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore">连点 5 次 Show more</button><div id="zble-auto-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
+          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore" aria-live="polite">连点 5 次 Show more</button><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -1483,6 +1520,9 @@
       const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
       showMoreButton.addEventListener('click', () => {
         if (showMoreTask || bulkBusy || !isCurrentBooklist()) return;
+        autoLastFailed = false;
+        autoStatus = { phase: 'running' };
+        renderAutoStatus();
         showMoreButton.disabled = true;
         syncBulkControl();
         const mainForTask = document.querySelector('.booklist-main.active');
@@ -1499,6 +1539,9 @@
           signal: automationAbort.signal,
           onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
         }).then(result => {
+          autoAttempts += result.attempted;
+          autoFailures += result.failed;
+          autoLastFailed = result.failed > 0;
           autoStatus = result;
           renderAutoStatus();
           return result;

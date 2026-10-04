@@ -39,6 +39,7 @@ const {
   canStartPanelDrag,
   createPanelHeaderToggle,
   createExclusiveDisclosure,
+  formatShowMoreAction,
   resolveLocale,
   translate,
   sanitizeSitePrefs,
@@ -98,6 +99,17 @@ test('v3.1 labels distinguish native card metadata from added format badge in ev
   assert.equal(translate('zh-CN', 'control.formatBadge'), '文件格式标签');
   assert.equal(translate('zh-CN', 'control.language'), '书籍语言（页面自带）');
   assert.equal(translate('zh-CN', 'control.year'), '书籍年份（页面自带）');
+});
+
+test('Show more action label uses running warning and cumulative attempts without zero failures', () => {
+  assert.equal(formatShowMoreAction('zh-CN', { phase: 'running', attempted: 0, failed: 0 }),
+    '[运行中] 连点 5 次 Show more');
+  assert.equal(formatShowMoreAction('zh-CN', { phase: 'warning', seconds: 3, attempted: 1, failed: 0 }),
+    '[可能失败，3 秒后放弃] 连点 5 次 Show more');
+  assert.equal(formatShowMoreAction('zh-CN', { phase: null, attempted: 10, failed: 0 }),
+    '连点 5 次 Show more [已点 10 次]');
+  assert.equal(formatShowMoreAction('zh-CN', { phase: null, attempted: 10, failed: 2 }),
+    '连点 5 次 Show more [已点 10 次，失败 2 次]');
 });
 
 test('all supported languages provide each tool-generated translation key', () => {
