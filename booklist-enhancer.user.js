@@ -1,8 +1,11 @@
 // ==UserScript==
+// @license      GPL-3.0-or-later
 // @name         Z-lib Booklist Enhancer
+// @name:zh-CN   Z-Library 书单增强
 // @namespace    local.booklist-enhancer
-// @version      3.1.0-dev
-// @description  增强书单信息显示、筛选与当前加载进度
+// @version      3.1.0
+// @description      Enhance Z-Library booklist pages with richer metadata, filtering, loading progress, optional auto-loading, and bulk book-page opening.
+// @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
 // @match        https://z-lib.sk/*
 // @match        https://z-library.sk/*
 // @match        https://1lib.sk/*
