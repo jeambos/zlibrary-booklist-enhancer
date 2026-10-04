@@ -105,6 +105,13 @@
     'auto.showMoreTimeout': ['Stopped: this batch did not finish within 20 seconds.', '已停止：本轮 20 秒内未加载完成。', '已停止：本輪 20 秒內未載入完成。', 'Arrêt : ce lot n’a pas fini en 20 secondes.', 'Gestoppt: Runde nicht in 20 Sekunden abgeschlossen.', 'Остановлено: этап не завершился за 20 секунд.', '停止：20 秒以内に読み込みが完了しませんでした。', '중지: 20초 안에 로드되지 않았습니다.', 'Se detuvo: el lote no terminó en 20 segundos.', 'Parou: o lote não terminou em 20 segundos.'],
     'auto.showMoreUnavailable': ['Stopped: Show more is unavailable.', '已停止：Show more 不可用。', '已停止：Show more 無法使用。', 'Arrêt : Show more indisponible.', 'Gestoppt: Show more nicht verfügbar.', 'Остановлено: Show more недоступна.', '停止：Show more が利用できません。', '중지: Show more를 사용할 수 없습니다.', 'Se detuvo: Show more no está disponible.', 'Parou: Show more indisponível.'],
     'auto.showMoreError': ['Stopped after an error.', '发生错误，已停止。', '發生錯誤，已停止。', 'Arrêt après une erreur.', 'Nach Fehler gestoppt.', 'Остановлено из-за ошибки.', 'エラーで停止しました。', '오류로 중지했습니다.', 'Se detuvo por un error.', 'Parou após um erro.'],
+    'auto.bulkDisabled': ['Enable bulk opening for this site in Settings.', '请先在设置中启用本站批量打开。', '請先在設定中啟用本站批次開啟。', 'Activez l’ouverture groupée pour ce site dans les paramètres.', 'Massenöffnung für diese Seite in Einstellungen aktivieren.', 'Включите массовое открытие для сайта в настройках.', '設定でこのサイトの一括開きを有効にしてください。', '설정에서 이 사이트의 일괄 열기를 활성화하세요.', 'Active la apertura masiva para este sitio.', 'Ative a abertura em massa neste site.'],
+    'auto.bulkApi': ['GM_openInTab is unavailable.', '脚本管理器未提供 GM_openInTab。', '腳本管理器未提供 GM_openInTab。', 'GM_openInTab est indisponible.', 'GM_openInTab ist nicht verfügbar.', 'GM_openInTab недоступен.', 'GM_openInTab が利用できません。', 'GM_openInTab을 사용할 수 없습니다.', 'GM_openInTab no está disponible.', 'GM_openInTab indisponível.'],
+    'auto.bulkFilters': ['Wait for valid filter rules and download status.', '请等待筛选规则和下载状态就绪。', '請等待篩選規則與下載狀態就緒。', 'Attendez des filtres valides et l’état des téléchargements.', 'Auf gültige Filter und Downloadstatus warten.', 'Дождитесь корректных фильтров и статуса загрузок.', '有効な条件とダウンロード状態を待ってください。', '유효한 필터와 다운로드 상태를 기다리세요.', 'Espere reglas válidas y el estado de descarga.', 'Aguarde filtros válidos e status de download.'],
+    'auto.bulkUnknown': ['Some download statuses are unknown; bulk opening is paused.', '部分下载状态未知，批量打开已暂停。', '部分下載狀態未知，批次開啟暫停。', 'Certains états de téléchargement sont inconnus ; ouverture en pause.', 'Einige Downloadstatus unbekannt; Öffnen pausiert.', 'Часть статусов неизвестна; открытие приостановлено.', '一部のダウンロード状態が不明です。一括開きを停止中。', '일부 다운로드 상태가 불명확하여 일괄 열기를 중지합니다.', 'Algunos estados son desconocidos; apertura en pausa.', 'Alguns status são desconhecidos; abertura pausada.'],
+    'auto.bulkEmpty': ['No eligible visible book links.', '当前没有可打开的可见书籍链接。', '目前沒有可開啟的可見書籍連結。', 'Aucun lien de livre visible valide.', 'Keine gültigen sichtbaren Buchlinks.', 'Нет подходящих видимых ссылок на книги.', '開ける表示中の本のリンクがありません。', '열 수 있는 보이는 책 링크가 없습니다.', 'No hay enlaces visibles válidos.', 'Nenhum link de livro visível elegível.'],
+    'auto.bulkChanged': ['List or permission changed; nothing was opened.', '书单或权限已变化，本次没有打开页面。', '書單或權限已變更，本次未開啟頁面。', 'Liste ou autorisation modifiée ; aucune page ouverte.', 'Liste oder Berechtigung geändert; keine Seite geöffnet.', 'Список или разрешение изменились; страницы не открыты.', 'リストまたは権限が変わりました。開いていません。', '목록 또는 권한이 변경되어 페이지를 열지 않았습니다.', 'La lista o el permiso cambió; no se abrió nada.', 'Lista ou permissão mudou; nada foi aberto.'],
+    'auto.bulkProgress': ['Attempted {attempted}; submitted {submitted}; failed {failed}. Submission does not mean loaded.', '已尝试 {attempted}；已提交打开 {submitted}；失败 {failed}。提交不等于加载成功。', '已嘗試 {attempted}；已提交開啟 {submitted}；失敗 {failed}。提交不等於載入成功。', 'Tentés {attempted} ; soumis {submitted} ; échecs {failed}. Soumis ne veut pas dire chargés.', 'Versucht {attempted}; gesendet {submitted}; fehlgeschlagen {failed}. Gesendet heißt nicht geladen.', 'Попыток {attempted}; отправлено {submitted}; ошибок {failed}. Отправка не означает загрузку.', '試行 {attempted}、送信 {submitted}、失敗 {failed}。送信は読み込み成功ではありません。', '시도 {attempted}, 요청 {submitted}, 실패 {failed}. 요청은 로드 성공이 아닙니다.', 'Intentos {attempted}; enviados {submitted}; fallos {failed}. Enviado no significa cargado.', 'Tentativas {attempted}; enviados {submitted}; falhas {failed}. Enviado não significa carregado.'],
     'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
     'rule.conflict': ['Conflicting settings', '设置冲突', '設定衝突', 'Paramètres contradictoires', 'Widersprüchliche Einstellungen', 'Конфликт настроек', '設定が競合', '설정 충돌', 'Configuración contradictoria', 'Configurações conflitantes'],
     'rule.waiting': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'Attente des téléchargements', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
@@ -414,6 +421,76 @@
       if (outcome.reason !== 'next') return result(outcome.reason);
     }
     return result('complete');
+  }
+
+  function collectOpenTargets(cards, origin, isSiteVisible) {
+    const targets = [];
+    const seen = new Set();
+    let source;
+    try { source = new URL(origin); } catch { return targets; }
+    for (const card of cards) {
+      if (card.hidden || card.classList?.contains('zble-hidden')) continue;
+      try { if (!isSiteVisible(card)) continue; } catch { continue; }
+      let url;
+      try { url = new URL(card.getAttribute?.('href') || '', source); } catch { continue; }
+      if (!['http:', 'https:'].includes(url.protocol) || url.origin !== source.origin ||
+          !/^\/book\/[^/]+/.test(url.pathname)) continue;
+      url.hash = '';
+      const value = url.href;
+      if (seen.has(value)) continue;
+      seen.add(value);
+      targets.push(value);
+    }
+    return targets;
+  }
+
+  function canOpenAll({ enabled, filtersReady, unknownDownloads, openTabAvailable }) {
+    if (!enabled) return { allowed: false, reason: 'disabled' };
+    if (!openTabAvailable) return { allowed: false, reason: 'api-unavailable' };
+    if (!filtersReady) return { allowed: false, reason: 'filters-pending' };
+    if (unknownDownloads > 0) return { allowed: false, reason: 'unknown-downloads' };
+    return { allowed: true, reason: 'ready' };
+  }
+
+  async function confirmBulkOpen({ urls, getCurrentTargets, getDomainEnabled, showDialog,
+    isSourceAlive = () => true, repeat = false, getFilterSignature = null,
+    getCardSnapshot = null, onInvalid = () => {} }) {
+    if (!urls.length || !isSourceAlive()) return false;
+    try {
+      const filterSignature = getFilterSignature?.();
+      const cards = getCardSnapshot?.();
+      if (!await showDialog(1, { count: urls.length, repeat })) return false;
+      if (!await showDialog(2, { count: urls.length, repeat })) return false;
+      if (!isSourceAlive() || !getDomainEnabled() ||
+          (getFilterSignature && getFilterSignature() !== filterSignature)) { onInvalid(); return false; }
+      if (cards) {
+        const currentCards = getCardSnapshot();
+        if (cards.length !== currentCards.length || cards.some((card, index) => card !== currentCards[index])) {
+          onInvalid(); return false;
+        }
+      }
+      const current = getCurrentTargets();
+      const valid = current.length === urls.length && current.every((value, index) => value === urls[index]);
+      if (!valid) onInvalid();
+      return valid;
+    } catch { return false; }
+  }
+
+  async function runOpenAll({ urls, openTab, delay = ms => new Promise(resolve => setTimeout(resolve, ms)),
+    isSourceAlive = () => true, onProgress = () => {} }) {
+    const result = { attempted: 0, submitted: 0, failed: 0 };
+    for (let index = 0; index < urls.length; index++) {
+      if (!isSourceAlive()) break;
+      if (index > 0) await delay(350);
+      if (!isSourceAlive()) break;
+      result.attempted++;
+      try {
+        await openTab(urls[index], { active: false });
+        result.submitted++;
+      } catch { result.failed++; }
+      onProgress({ ...result });
+    }
+    return result;
   }
 
   function createNotice({ locale, host, now, sessionStore, sitePrefs, onDisable }) {
@@ -783,6 +860,7 @@
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress, runShowMoreFive,
+      collectOpenTargets, canOpenAll, confirmBulkOpen, runOpenAll,
     };
   }
 
@@ -884,6 +962,10 @@
     let lastPanelData = null;
     let showMoreTask = null;
     let autoStatus = null;
+    let bulkBusy = false;
+    let bulkStatus = null;
+    let bulkMessageKey = '';
+    let hasOpenedOnThisPage = false;
     const automationAbort = new AbortController();
 
     function isCurrentBooklist() {
@@ -981,6 +1063,99 @@
       setText('#zble-auto-status', `${translate(locale, 'auto.showMoreStatus', autoStatus)} ${suffix}`.trim());
     }
 
+    function isCardSiteVisible(card) {
+      if (!card.getClientRects?.().length) return false;
+      const style = getComputedStyle(card);
+      return style.display !== 'none' && style.visibility !== 'hidden';
+    }
+
+    function currentOpenTargets() {
+      if (!isCurrentBooklist()) return [];
+      return collectOpenTargets(getActiveCards(document), window.location.origin, isCardSiteVisible);
+    }
+
+    function currentFilterSignature() {
+      return JSON.stringify({ filterFormat: settings.filterFormat, formats: settings.formats,
+        custom: settings.custom, filterDownload: settings.filterDownload, downloadRule: settings.downloadRule,
+        filterYear: settings.filterYear, yearMin: settings.yearMin, yearMax: settings.yearMax,
+        includeMissingYear: settings.includeMissingYear, downloadState: gate.state });
+    }
+
+    function currentBulkGate() {
+      const context = lastPanelData?.context;
+      const filtersReady = !!context && (!settings.filterFormat || context.formatActive) &&
+        (!settings.filterYear || context.yearActive) &&
+        (!settings.filterDownload || gate.state === 'ready');
+      return canOpenAll({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
+        filtersReady, unknownDownloads: lastPanelData?.unknownCards || 0,
+        openTabAvailable: typeof GM_openInTab === 'function' });
+    }
+
+    function syncBulkControl() {
+      const button = panelRoot?.querySelector('#zble-open-all');
+      if (!button) return;
+      const gateResult = currentBulkGate();
+      const targets = gateResult.allowed ? currentOpenTargets() : [];
+      button.disabled = bulkBusy || !!showMoreTask || !gateResult.allowed || targets.length === 0;
+      const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
+        'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
+      setText('#zble-open-hint', gateResult.allowed
+        ? (targets.length ? '' : translate(locale, 'auto.bulkEmpty'))
+        : translate(locale, reasons[gateResult.reason]));
+    }
+
+    function renderBulkStatus() {
+      setText('#zble-open-status', bulkMessageKey ? translate(locale, bulkMessageKey)
+        : bulkStatus ? translate(locale, 'auto.bulkProgress', bulkStatus) : '');
+    }
+
+    function showBulkDialog(step, { count, repeat }) {
+      return new Promise(resolve => {
+        if (automationAbort.signal.aborted || !isCurrentBooklist()) { resolve(false); return; }
+        const previousFocus = panelRoot?.activeElement || document.activeElement;
+        const host = document.createElement('div');
+        host.id = 'zble-bulk-dialog-host';
+        const root = host.attachShadow({ mode: 'open' });
+        root.innerHTML = `<style>
+          :host{all:initial;position:fixed;inset:0;z-index:2147483002;display:grid;place-items:center;padding:16px;background:#0008;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+          *{box-sizing:border-box}.dialog{width:min(440px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #347aad;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere}
+          h2{font-size:17px;margin:0 0 12px}p{margin:0 0 18px}.actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px}button{font:inherit;padding:7px 12px;border:1px solid #6b99bc;border-radius:6px;background:#f0f6fb;color:#143a59;cursor:pointer}button:last-child{background:#1667a7;color:#fff;border-color:#1667a7}button:focus-visible{outline:3px solid #4da3ea;outline-offset:2px}
+          @media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#74b4e7}button{background:#263d50;color:#eef3f8;border-color:#78a5c6}button:last-child{background:#1b6a9c}}
+          @media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}button:focus-visible{outline-color:Highlight}}
+        </style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-bulk-title" aria-describedby="zble-bulk-message"><h2 id="zble-bulk-title"></h2><p id="zble-bulk-message"></p><div class="actions"><button id="zble-bulk-cancel" type="button"></button><button id="zble-bulk-confirm" type="button"></button></div></div>`;
+        const cancel = root.querySelector('#zble-bulk-cancel');
+        const confirm = root.querySelector('#zble-bulk-confirm');
+        root.querySelector('#zble-bulk-title').textContent = translate(locale, 'auto.openAll');
+        root.querySelector('#zble-bulk-message').textContent = step === 1
+          ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
+          : translate(locale, 'auto.secondWarning');
+        cancel.textContent = translate(locale, 'auto.cancel');
+        confirm.textContent = translate(locale, 'auto.continue');
+        document.body.append(host);
+        let settled = false;
+        function finish(value) {
+          if (settled) return;
+          settled = true;
+          automationAbort.signal.removeEventListener('abort', abort);
+          host.remove();
+          previousFocus?.focus?.();
+          resolve(value);
+        }
+        function abort() { finish(false); }
+        cancel.addEventListener('click', () => finish(false));
+        confirm.addEventListener('click', () => finish(true));
+        root.addEventListener('keydown', event => {
+          if (event.key === 'Escape') { event.preventDefault(); finish(false); }
+          if (event.key === 'Tab') {
+            if (event.shiftKey && root.activeElement === cancel) { event.preventDefault(); confirm.focus(); }
+            else if (!event.shiftKey && root.activeElement === confirm) { event.preventDefault(); cancel.focus(); }
+          }
+        });
+        automationAbort.signal.addEventListener('abort', abort, { once: true });
+        cancel.focus();
+      });
+    }
+
     function refreshPanelLocale(nextLocale = locale) {
       locale = nextLocale;
       if (!panelRoot) return;
@@ -1009,6 +1184,8 @@
         renderShowMore(main, stats, locale);
       }
       renderAutoStatus();
+      renderBulkStatus();
+      syncBulkControl();
     }
 
     function refresh() {
@@ -1064,6 +1241,7 @@
       const shownUnavailable = shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0, author: 0 };
       renderPanelState(context, unknownCards, shownUnavailable);
       lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main };
+      syncBulkControl();
       if (pendingShadow && shadowRetries < 20 && !retryId) {
         shadowRetries++;
         retryId = setTimeout(() => { retryId = null; scheduleRefresh(); }, 250);
@@ -1147,7 +1325,7 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore">连点 5 次 Show more</button><div id="zble-auto-status" class="hint" role="status"></div></div></div>
+          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore">连点 5 次 Show more</button><div id="zble-auto-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="section.settings">设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -1170,6 +1348,7 @@
             <div class="hint" data-i18n="setting.yearHint">输入后停顿或按回车生效；可只填一端。</div>
             <label class="row"><input id="zble-missing-year" type="checkbox"><span data-i18n="setting.missingYear">显示年份缺失的书籍</span></label>
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
+            <label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
           </div>
@@ -1204,6 +1383,14 @@
           bulkOpenEnabled: sitePrefs[currentHost]?.bulkOpenEnabled === true };
         saveSitePrefs(sitePrefs);
       });
+      const bulkInput = panelRoot.querySelector('#zble-allow-bulk');
+      bulkInput.checked = sitePrefs[currentHost]?.bulkOpenEnabled === true;
+      bulkInput.addEventListener('change', () => {
+        sitePrefs[currentHost] = { welcomeEnabled: sitePrefs[currentHost]?.welcomeEnabled !== false,
+          bulkOpenEnabled: bulkInput.checked };
+        saveSitePrefs(sitePrefs);
+        syncBulkControl();
+      });
       for (const input of panelRoot.querySelectorAll('[data-format]')) {
         input.checked = settings.formats.includes(input.dataset.format);
         input.addEventListener('change', () => {
@@ -1213,8 +1400,9 @@
       }
       const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
       showMoreButton.addEventListener('click', () => {
-        if (showMoreTask || !isCurrentBooklist()) return;
+        if (showMoreTask || bulkBusy || !isCurrentBooklist()) return;
         showMoreButton.disabled = true;
+        syncBulkControl();
         const mainForTask = document.querySelector('.booklist-main.active');
         const listForTask = mainForTask?.querySelector('.readlist-view');
         showMoreTask = runShowMoreFive({
@@ -1235,7 +1423,46 @@
         }).finally(() => {
           showMoreTask = null;
           if (!disposed) showMoreButton.disabled = false;
+          syncBulkControl();
         });
+      });
+      const openAllButton = panelRoot.querySelector('#zble-open-all');
+      openAllButton.addEventListener('click', async () => {
+        if (bulkBusy || showMoreTask || !isCurrentBooklist() || !currentBulkGate().allowed) return;
+        const urls = currentOpenTargets();
+        if (!urls.length) { syncBulkControl(); return; }
+        bulkBusy = true;
+        openAllButton.disabled = true;
+        showMoreButton.disabled = true;
+        bulkMessageKey = '';
+        renderBulkStatus();
+        try {
+          const approved = await confirmBulkOpen({ urls,
+            getCurrentTargets: () => currentBulkGate().allowed ? currentOpenTargets() : [],
+            getDomainEnabled: () => sitePrefs[currentHost]?.bulkOpenEnabled === true,
+            showDialog: showBulkDialog, isSourceAlive: isCurrentBooklist,
+            getFilterSignature: currentFilterSignature,
+            getCardSnapshot: () => getActiveCards(document),
+            onInvalid() { bulkMessageKey = 'auto.bulkChanged'; },
+            repeat: hasOpenedOnThisPage });
+          if (!approved) {
+            renderBulkStatus();
+            return;
+          }
+          const result = await runOpenAll({ urls, openTab: (url, options) => GM_openInTab(url, options),
+            isSourceAlive: isCurrentBooklist,
+            onProgress(progress) { bulkStatus = progress; renderBulkStatus(); } });
+          if (result.attempted > 0) hasOpenedOnThisPage = true;
+          bulkStatus = result;
+          renderBulkStatus();
+        } catch {
+          bulkMessageKey = 'auto.showMoreError';
+          renderBulkStatus();
+        } finally {
+          bulkBusy = false;
+          if (!disposed) showMoreButton.disabled = false;
+          syncBulkControl();
+        }
       });
       const downloadRule = panelRoot.querySelector('#zble-download-rule');
       downloadRule.value = settings.downloadRule;

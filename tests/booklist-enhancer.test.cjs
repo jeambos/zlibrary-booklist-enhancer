@@ -622,6 +622,13 @@ test('panel groups, language selector, notice setting and author control are pre
     'id="zble-author-switch"', 'refreshPanelLocale(', 'data-zble-full-author']) assert.ok(script.includes(token), token);
 });
 
+test('bulk favorite remains a disabled development-only entry', () => {
+  const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
+  assert.match(script, /id="zble-favorite"[^>]*disabled/);
+  assert.ok(!script.includes("querySelector('#zble-favorite').addEventListener"));
+  assert.match(script, /@grant\s+GM_openInTab/);
+});
+
 test('user-added non-booklist pages stay inert until a booklist appears', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   let siteReady = false;

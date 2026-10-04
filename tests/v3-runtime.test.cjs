@@ -1,7 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
-  classifyBatchProgress, runShowMoreFive } = require('../booklist-enhancer.user.js');
+  classifyBatchProgress, runShowMoreFive, collectOpenTargets, canOpenAll,
+  confirmBulkOpen, runOpenAll } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
 test('routes known non-booklist pages to notice and waits silently for mirror fingerprint', () => {
@@ -279,4 +280,86 @@ test('Show more task stops on click exception or source-page abort', async () =>
   assert.equal((await abortTask).reason, 'source-gone');
   assert.equal(clicked, 1);
   assert.equal(callback, null);
+});
+
+test('bulk target collection excludes hidden, duplicate and off-origin book links', () => {
+  const card = (href, hidden = false) => ({ href, hidden,
+    getAttribute(name) { return name === 'href' ? href : null; },
+    classList: { contains(name) { return hidden && name === 'zble-hidden'; } } });
+  const cards = [card('/book/123/a'), card('https://1lib.sk/book/123/a#fragment'),
+    card('/book/456/b', true), card('https://elsewhere.example/book/777'),
+    card('/search/1'), card('javascript:alert(1)'), card('/book/789/c')];
+  assert.deepEqual(collectOpenTargets(cards, 'https://1lib.sk', item => !item.hidden),
+    ['https://1lib.sk/book/123/a', 'https://1lib.sk/book/789/c']);
+});
+
+test('bulk gate requires host opt-in, ready filters, known download and tab API', () => {
+  assert.deepEqual(canOpenAll({ enabled: false, filtersReady: true, unknownDownloads: 0,
+    openTabAvailable: true }), { allowed: false, reason: 'disabled' });
+  assert.equal(canOpenAll({ enabled: true, filtersReady: false, unknownDownloads: 0,
+    openTabAvailable: true }).reason, 'filters-pending');
+  assert.equal(canOpenAll({ enabled: true, filtersReady: true, unknownDownloads: 1,
+    openTabAvailable: true }).reason, 'unknown-downloads');
+  assert.equal(canOpenAll({ enabled: true, filtersReady: true, unknownDownloads: 0,
+    openTabAvailable: false }).reason, 'api-unavailable');
+  assert.equal(canOpenAll({ enabled: true, filtersReady: true, unknownDownloads: 0,
+    openTabAvailable: true }).allowed, true);
+});
+
+test('bulk confirmation cancels on either warning or changed snapshot before any open', async () => {
+  const urls = ['https://1lib.sk/book/1', 'https://1lib.sk/book/2'];
+  let calls = 0;
+  const base = { urls, getCurrentTargets: () => urls, getDomainEnabled: () => true };
+  assert.equal(await confirmBulkOpen({ ...base, showDialog: async () => { calls++; return false; } }), false);
+  assert.equal(calls, 1);
+  calls = 0;
+  assert.equal(await confirmBulkOpen({ ...base, showDialog: async () => ++calls === 1 }), false);
+  assert.equal(calls, 2);
+  calls = 0;
+  let current = urls;
+  assert.equal(await confirmBulkOpen({ ...base, getCurrentTargets: () => current,
+    showDialog: async () => { calls++; if (calls === 2) current = [urls[0]]; return true; } }), false);
+  assert.equal(calls, 2);
+  assert.equal(await confirmBulkOpen({ ...base, getDomainEnabled: () => false,
+    showDialog: async () => true }), false);
+  let signature = 'old';
+  let invalid = 0;
+  assert.equal(await confirmBulkOpen({ ...base, getFilterSignature: () => signature,
+    onInvalid: () => { invalid++; },
+    showDialog: async step => { if (step === 2) signature = 'new'; return true; } }), false);
+  assert.equal(invalid, 1);
+  let cardSnapshot = [{ id: 1 }];
+  assert.equal(await confirmBulkOpen({ ...base, getCardSnapshot: () => cardSnapshot,
+    showDialog: async step => { if (step === 2) cardSnapshot = [{ id: 1 }]; return true; } }), false);
+  assert.equal(await confirmBulkOpen({ ...base, urls: [], showDialog: async () => {
+    throw new Error('zero target should not show a dialog');
+  } }), false);
+});
+
+test('bulk runner submits each target once and counts failures without retry', async () => {
+  const calls = [];
+  const result = await runOpenAll({ urls: ['a', 'b', 'c'],
+    openTab(url, options) { calls.push([url, options]); if (url === 'b') throw new Error('blocked');
+      if (url === 'c') return Promise.reject(new Error('rejected')); return {}; },
+    delay: async () => {}, isSourceAlive: () => true });
+  assert.deepEqual(result, { attempted: 3, submitted: 1, failed: 2 });
+  assert.deepEqual(calls.map(item => item[0]), ['a', 'b', 'c']);
+  assert.ok(calls.every(item => item[1].active === false));
+});
+
+test('bulk runner stops when source page disappears during pacing', async () => {
+  let alive = true;
+  const calls = [];
+  const result = await runOpenAll({ urls: ['a', 'b', 'c'], openTab(url) { calls.push(url); },
+    delay: async ms => { assert.equal(ms, 350); alive = false; }, isSourceAlive: () => alive });
+  assert.deepEqual(result, { attempted: 1, submitted: 1, failed: 0 });
+  assert.deepEqual(calls, ['a']);
+});
+
+test('bulk runner has no silent fifty-book cap', async () => {
+  let calls = 0;
+  const result = await runOpenAll({ urls: Array.from({ length: 55 }, (_, i) => `synthetic-${i}`),
+    openTab() { calls++; }, delay: async () => {}, isSourceAlive: () => true });
+  assert.equal(calls, 55);
+  assert.deepEqual(result, { attempted: 55, submitted: 55, failed: 0 });
 });
