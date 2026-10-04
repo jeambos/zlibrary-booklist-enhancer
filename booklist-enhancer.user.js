@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Z-lib Booklist Enhancer
 // @namespace    local.booklist-enhancer
-// @version      3.0.1-dev
+// @version      3.1.0-dev
 // @description  增强书单信息显示、筛选与当前加载进度
 // @match        https://z-lib.sk/*
 // @match        https://z-library.sk/*
@@ -51,9 +51,15 @@
     'section.info': ['Information display', '信息显示', '資訊顯示', 'Affichage des informations', 'Informationsanzeige', 'Отображение сведений', '情報表示', '정보 표시', 'Información visible', 'Exibição de informações'],
     'section.automation': ['Automation (beta)', '自动化（beta）', '自動化（beta）', 'Automatisation (bêta)', 'Automatisierung (Beta)', 'Автоматизация (бета)', '自動化（ベータ）', '자동화(베타)', 'Automatización (beta)', 'Automação (beta)'],
     'section.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
-    'control.formatBadge': ['Always show file format', '固定显示文件格式标签', '固定顯示檔案格式標籤', 'Toujours afficher le format', 'Dateiformat immer anzeigen', 'Всегда показывать формат', 'ファイル形式を常に表示', '파일 형식 항상 표시', 'Mostrar siempre el formato', 'Sempre mostrar o formato'],
-    'control.language': ['Language', '语言', '語言', 'Langue', 'Sprache', 'Язык', '言語', '언어', 'Idioma', 'Idioma'],
-    'control.year': ['Year', '年份', '年份', 'Année', 'Jahr', 'Год', '年', '연도', 'Año', 'Ano'],
+    'section.configuration': ['Filter configuration', '筛选配置', '篩選配置', 'Configuration du filtre', 'Filterkonfiguration', 'Настройка фильтра', 'フィルター設定', '필터 구성', 'Configuración del filtro', 'Configuração do filtro'],
+    'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
+    'about.description': ['Flexible filtering, clearer information and optional automation for Z-Library booklists.', '为 Z-Library 书单提供灵活筛选、信息显示和自选自动化操作。', '為 Z-Library 書單提供靈活篩選、資訊顯示與自選自動化操作。', 'Filtres, informations et automatisation facultative pour les listes Z-Library.', 'Flexible Filter, bessere Informationen und optionale Automatisierung für Z-Library-Listen.', 'Фильтры, сведения и необязательная автоматизация для списков Z-Library.', 'Z-Library の書籍リストに絞り込み、情報表示、任意の自動操作を追加します。', 'Z-Library 책 목록에 필터, 정보 표시, 선택적 자동화를 제공합니다.', 'Filtros, información y automatización opcional para listas de Z-Library.', 'Filtros, informações e automação opcional para listas do Z-Library.'],
+    'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
+    'about.github': ['GitHub page', 'GitHub 页面', 'GitHub 頁面', 'Page GitHub', 'GitHub-Seite', 'Страница GitHub', 'GitHub ページ', 'GitHub 페이지', 'Página de GitHub', 'Página no GitHub'],
+    'about.placeholder': ['To be added', '待填写', '待填寫', 'À renseigner', 'Noch offen', 'Будет добавлено', '未記入', '추후 입력', 'Pendiente', 'A preencher'],
+    'control.formatBadge': ['File format badge', '文件格式标签', '檔案格式標籤', 'Étiquette du format', 'Dateiformat-Label', 'Метка формата файла', 'ファイル形式ラベル', '파일 형식 배지', 'Etiqueta de formato', 'Etiqueta do formato'],
+    'control.language': ['Book language (from site)', '书籍语言（页面自带）', '書籍語言（頁面自帶）', 'Langue du livre (site)', 'Buchsprache (von der Seite)', 'Язык книги (на странице)', '書籍の言語（サイト表示）', '책 언어(사이트 제공)', 'Idioma del libro (del sitio)', 'Idioma do livro (do site)'],
+    'control.year': ['Book year (from site)', '书籍年份（页面自带）', '書籍年份（頁面自帶）', 'Année du livre (site)', 'Buchjahr (von der Seite)', 'Год книги (на странице)', '書籍の年（サイト表示）', '책 연도(사이트 제공)', 'Año del libro (del sitio)', 'Ano do livro (do site)'],
     'control.fullTitle': ['Show full long titles', '完整显示超长书名', '完整顯示過長書名', 'Afficher les titres longs en entier', 'Lange Titel vollständig anzeigen', 'Показывать длинные названия полностью', '長い書名を全文表示', '긴 책 제목 전체 표시', 'Mostrar títulos largos completos', 'Mostrar títulos longos completos'],
     'control.fullAuthor': ['Show full long author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を全文表示', '긴 저자 이름 전체 표시', 'Mostrar nombres de autor largos completos', 'Mostrar nomes longos de autores completos'],
     'control.filterFormat': ['Only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '指定したファイル形式のみ表示', '선택한 파일 형식만 표시', 'Solo formatos seleccionados', 'Apenas formatos selecionados'],
@@ -131,6 +137,10 @@
     'hint.formatPending': ['Format rule pending', '文件格式规则待设置', '格式規則待設定', 'Règle de format en attente', 'Formatregel fehlt', 'Правило формата не задано', '形式条件が未設定', '형식 규칙 미설정', 'Regla de formato pendiente', 'Regra de formato pendente'],
     'hint.downloadPaused': ['Download filter paused', '下载状态筛选暂停', '下載狀態篩選暫停', 'Filtre de téléchargement en pause', 'Downloadfilter pausiert', 'Фильтр загрузки остановлен', 'ダウンロード絞り込み停止中', '다운로드 필터 일시 중지', 'Filtro de descarga en pausa', 'Filtro de download pausado'],
     'action.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
+    'action.globalSettings': ['Global settings', '全局设置', '全域設定', 'Paramètres généraux', 'Globale Einstellungen', 'Общие настройки', '全体設定', '전역 설정', 'Ajustes generales', 'Configurações globais'],
+    'action.configureFormat': ['Configure file format filter', '配置文件格式筛选', '設定檔案格式篩選', 'Configurer le filtre des formats', 'Formatfilter konfigurieren', 'Настроить фильтр форматов', '形式フィルターを設定', '파일 형식 필터 설정', 'Configurar filtro de formato', 'Configurar filtro de formato'],
+    'action.configureDownload': ['Configure download status filter', '配置下载状态筛选', '設定下載狀態篩選', 'Configurer le filtre des téléchargements', 'Downloadfilter konfigurieren', 'Настроить фильтр загрузок', 'ダウンロード状態フィルターを設定', '다운로드 상태 필터 설정', 'Configurar filtro de descarga', 'Configurar filtro de download'],
+    'action.configureYear': ['Configure year filter', '配置年份筛选', '設定年份篩選', 'Configurer le filtre des années', 'Jahresfilter konfigurieren', 'Настроить фильтр года', '年フィルターを設定', '연도 필터 설정', 'Configurar filtro de año', 'Configurar filtro de ano'],
     'action.collapse': ['Collapse panel', '折叠面板', '收合面板', 'Réduire le panneau', 'Panel einklappen', 'Свернуть панель', 'パネルを閉じる', '패널 접기', 'Contraer panel', 'Recolher painel'],
     'action.expand': ['Expand panel', '展开面板', '展開面板', 'Développer le panneau', 'Panel ausklappen', 'Развернуть панель', 'パネルを開く', '패널 펼치기', 'Expandir panel', 'Expandir painel'],
     'action.waitDownload': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'Attente des téléchargements', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
@@ -801,6 +811,22 @@
     };
   }
 
+  function createExclusiveDisclosure(items, flushPending = () => {}) {
+    const allowed = new Set(items);
+    let open = null;
+    function closeAll() {
+      if (open !== null) flushPending(open);
+      open = null;
+    }
+    return { current: () => open, closeAll, toggle(id) {
+      if (!allowed.has(id)) return open;
+      const wasOpen = open === id;
+      closeAll();
+      if (!wasOpen) open = id;
+      return open;
+    } };
+  }
+
   function renderFormatBadge(card, extension, show, locale = 'zh-CN') {
     const root = card.shadowRoot;
     if (!root) return false;
@@ -919,6 +945,7 @@
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
+      createExclusiveDisclosure,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress, runShowMoreFive,
       collectOpenTargets, canOpenAll, confirmBulkOpen, runOpenAll,
     };
@@ -1227,12 +1254,18 @@
         renderFormatBadge(card, normalizeExtension(card.getAttribute('extension')), settings.showFormat, locale);
       const gear = panelRoot.querySelector('#zble-gear');
       const collapse = panelRoot.querySelector('#zble-collapse');
-      for (const [node, key] of [[gear, 'action.settings'],
+      for (const [node, key] of [[gear, 'action.globalSettings'],
         [collapse, panelRoot.querySelector('#zble-content').hidden ? 'action.expand' : 'action.collapse'],
         [panelRoot.querySelector('#zble-wait-icon'), 'action.waitDownload'],
         [panelRoot.querySelector('#zble-warn-icon'), 'action.downloadUnconfirmed']]) {
         node?.setAttribute('aria-label', translate(locale, key));
         if (node === gear || node === collapse) node?.setAttribute('title', translate(locale, key));
+      }
+      for (const [name, key] of [['format', 'action.configureFormat'],
+        ['download', 'action.configureDownload'], ['year', 'action.configureYear']]) {
+        const control = panelRoot.querySelector(`#zble-configure-${name}`);
+        control?.setAttribute('aria-label', translate(locale, key));
+        control?.setAttribute('title', translate(locale, key));
       }
       for (const [selector, key] of [['#zble-custom', 'setting.custom'], ['#zble-year-min', 'setting.minYear'],
         ['#zble-year-max', 'setting.maxYear']]) panelRoot.querySelector(selector)?.setAttribute('aria-label', translate(locale, key));
@@ -1365,54 +1398,41 @@
           button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:var(--zble-accent-bg);color:var(--zble-accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--zble-accent);outline-offset:2px}.chevron{display:block;width:18px;height:18px;transition:transform .15s ease}#zble-collapse[aria-expanded="false"] .chevron{transform:rotate(180deg)}@media(prefers-reduced-motion:reduce){.chevron{transition:none}}
           .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
-          .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
+          .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.configure{font-size:14px;line-height:1;padding:5px;flex:none}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
           input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}
         </style>
         <div class="body">
-          <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="设置" aria-label="设置" aria-controls="zble-settings" aria-expanded="false">⚙</button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
+          <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 3a6 6 0 0 1-8 7.6L6 17.6 3.4 21 3 18l7-7A6 6 0 0 1 17 3l-3 3 4 4z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
           <div id="zble-content">
           <div class="group"><div class="group-title" data-i18n="section.filters">筛选器</div>
-            <label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label>
+            <div class="filter-row"><label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label><button id="zble-configure-format" class="configure" type="button" aria-controls="zble-format-config" aria-expanded="false" aria-label="配置文件格式筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M10 2h4l.7 2.4 2 1.2 2.4-.6 2 3.5-1.7 1.8v2.4l1.7 1.8-2 3.5-2.4-.6-2 1.2L14 21h-4l-.7-2.4-2-1.2-2.4.6-2-3.5 1.7-1.8v-2.4L2.9 8.5l2-3.5 2.4.6 2-1.2z"/><circle cx="12" cy="11.5" r="3"/></svg></button></div>
             <div id="zble-format-hint" class="hint error" role="status"></div>
-            <label class="row"><input id="zble-download-switch" type="checkbox"><span><span data-i18n="control.filterDownload">只显示指定下载状态</span> <span id="zble-download-summary" class="summary"></span></span><span id="zble-wait-icon" class="spin" aria-label="等待下载状态"></span><span id="zble-warn-icon" hidden aria-label="下载状态未确认">⚠️</span></label>
+            <div id="zble-format-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><div class="setting-label" data-i18n="setting.formats">筛选文件格式（可多选）</div><div class="grid"><label><input type="checkbox" data-format="pdf"> PDF</label><label><input type="checkbox" data-format="epub"> EPUB</label><label><input type="checkbox" data-format="azw3"> AZW3</label><label><input type="checkbox" data-format="mobi"> MOBI</label><label><input type="checkbox" data-format="other"> <span data-i18n="setting.other">其他全部</span></label><label><input type="checkbox" data-format="custom"> <span data-i18n="setting.custom">自定义</span></label></div><input id="zble-custom" type="text" aria-label="自定义文件格式" placeholder="如 djvu, txt; fb2"><div class="hint" data-i18n="setting.customHint">自定义格式用逗号或分号分隔。</div></div>
+            <div class="filter-row"><label class="row"><input id="zble-download-switch" type="checkbox"><span><span data-i18n="control.filterDownload">只显示指定下载状态</span> <span id="zble-download-summary" class="summary"></span></span><span id="zble-wait-icon" class="spin" aria-label="等待下载状态"></span><span id="zble-warn-icon" hidden aria-label="下载状态未确认">⚠️</span></label><button id="zble-configure-download" class="configure" type="button" aria-controls="zble-download-config" aria-expanded="false" aria-label="配置下载状态筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M10 2h4l.7 2.4 2 1.2 2.4-.6 2 3.5-1.7 1.8v2.4l1.7 1.8-2 3.5-2.4-.6-2 1.2L14 21h-4l-.7-2.4-2-1.2-2.4.6-2-3.5 1.7-1.8v-2.4L2.9 8.5l2-3.5 2.4.6 2-1.2z"/><circle cx="12" cy="11.5" r="3"/></svg></button></div>
             <div id="zble-download-hint" class="hint error" role="status"></div>
-            <label class="row"><input id="zble-year-filter-switch" type="checkbox"><span><span data-i18n="control.filterYear">只显示指定年份的书籍</span> <span id="zble-year-summary" class="summary"></span></span></label>
+            <div id="zble-download-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><label class="setting-label" for="zble-download-rule" data-i18n="setting.downloadRule">下载状态规则</label><select id="zble-download-rule"><option value="not-downloaded" data-i18n="setting.onlyUndownloaded">仅未下载</option><option value="downloaded" data-i18n="setting.onlyDownloaded">仅已下载</option></select></div>
+            <div class="filter-row"><label class="row"><input id="zble-year-filter-switch" type="checkbox"><span><span data-i18n="control.filterYear">只显示指定年份的书籍</span> <span id="zble-year-summary" class="summary"></span></span></label><button id="zble-configure-year" class="configure" type="button" aria-controls="zble-year-config" aria-expanded="false" aria-label="配置年份筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M10 2h4l.7 2.4 2 1.2 2.4-.6 2 3.5-1.7 1.8v2.4l1.7 1.8-2 3.5-2.4-.6-2 1.2L14 21h-4l-.7-2.4-2-1.2-2.4.6-2-3.5 1.7-1.8v-2.4L2.9 8.5l2-3.5 2.4.6 2-1.2z"/><circle cx="12" cy="11.5" r="3"/></svg></button></div>
             <div id="zble-year-hint" class="hint error" role="status"></div>
+            <div id="zble-year-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><div class="setting-label" data-i18n="setting.yearRange">出版年份范围（含端点）</div><div class="year-grid"><label><span data-i18n="setting.minYear">最小年份</span><input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label><span data-i18n="setting.maxYear">最大年份</span><input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div><div class="hint" data-i18n="setting.yearHint">输入后停顿或按回车生效；可只填一端。</div><label class="row"><input id="zble-missing-year" type="checkbox"><span data-i18n="setting.missingYear">显示年份缺失的书籍</span></label></div>
           </div>
           <div class="group"><div class="group-title" data-i18n="section.info">信息显示</div>
-            <label class="row"><input id="zble-show-switch" type="checkbox"><span data-i18n="control.formatBadge">固定显示文件格式标签</span></label>
-            <label class="row"><input id="zble-language-switch" type="checkbox"><span data-i18n="control.language">语言</span></label>
-            <label class="row"><input id="zble-year-show-switch" type="checkbox"><span data-i18n="control.year">年份</span></label>
+            <label class="row"><input id="zble-show-switch" type="checkbox"><span data-i18n="control.formatBadge">文件格式标签</span></label>
+            <label class="row"><input id="zble-language-switch" type="checkbox"><span data-i18n="control.language">书籍语言（页面自带）</span></label>
+            <label class="row"><input id="zble-year-show-switch" type="checkbox"><span data-i18n="control.year">书籍年份（页面自带）</span></label>
             <label class="row"><input id="zble-title-switch" type="checkbox"><span data-i18n="control.fullTitle">完整显示超长书名</span></label>
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
           <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore">连点 5 次 Show more</button><div id="zble-auto-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
-            <div class="settings-title" data-i18n="section.settings">设置</div>
+            <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
             <select id="zble-ui-language"><option value="auto" data-i18n="setting.autoLanguage">跟随浏览器/系统</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="pt-BR">Português (Brasil)</option></select>
-            <div class="setting-label" data-i18n="setting.formats">筛选文件格式（可多选）</div>
-            <div class="grid">
-              <label><input type="checkbox" data-format="pdf"> PDF</label>
-              <label><input type="checkbox" data-format="epub"> EPUB</label>
-              <label><input type="checkbox" data-format="azw3"> AZW3</label>
-              <label><input type="checkbox" data-format="mobi"> MOBI</label>
-              <label><input type="checkbox" data-format="other"> <span data-i18n="setting.other">其他全部</span></label>
-              <label><input type="checkbox" data-format="custom"> <span data-i18n="setting.custom">自定义</span></label>
-            </div>
-            <input id="zble-custom" type="text" aria-label="自定义文件格式" placeholder="如 djvu, txt; fb2">
-            <div class="hint" data-i18n="setting.customHint">自定义格式用逗号或分号分隔。</div>
-            <label class="setting-label" for="zble-download-rule" data-i18n="setting.downloadRule">下载状态规则</label>
-            <select id="zble-download-rule"><option value="not-downloaded" data-i18n="setting.onlyUndownloaded">仅未下载</option><option value="downloaded" data-i18n="setting.onlyDownloaded">仅已下载</option></select>
-            <div class="setting-label" data-i18n="setting.yearRange">出版年份范围（含端点）</div>
-            <div class="year-grid"><label><span data-i18n="setting.minYear">最小年份</span><input id="zble-year-min" type="text" inputmode="numeric" aria-label="最小年份" placeholder="留空不限"></label><label><span data-i18n="setting.maxYear">最大年份</span><input id="zble-year-max" type="text" inputmode="numeric" aria-label="最大年份" placeholder="留空不限"></label></div>
-            <div class="hint" data-i18n="setting.yearHint">输入后停顿或按回车生效；可只填一端。</div>
-            <label class="row"><input id="zble-missing-year" type="checkbox"><span data-i18n="setting.missingYear">显示年份缺失的书籍</span></label>
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
             <label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
+            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">为 Z-Library 书单提供灵活筛选、信息显示和自选自动化操作。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span data-i18n="about.placeholder">待填写</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<span data-i18n="about.placeholder">待填写</span></div></div>
           </div>
           </div>
         </div>`;
@@ -1532,19 +1552,33 @@
         settings.downloadRule = downloadRule.value;
         saveSettings(); scheduleRefresh();
       });
-      const flushInputs = [];
-      for (const [selector, key, limit] of [
-        ['#zble-custom', 'custom', 1000], ['#zble-year-min', 'yearMin', 20], ['#zble-year-max', 'yearMax', 20],
+      const flushInputs = { format: [], year: [] };
+      for (const [selector, key, limit, section] of [
+        ['#zble-custom', 'custom', 1000, 'format'], ['#zble-year-min', 'yearMin', 20, 'year'],
+        ['#zble-year-max', 'yearMax', 20, 'year'],
       ]) {
         const input = panelRoot.querySelector(selector);
         input.value = settings[key];
-        flushInputs.push(bindDeferredTextInput(input, value => {
+        flushInputs[section].push(bindDeferredTextInput(input, value => {
           settings[key] = value.slice(0, limit);
           saveSettings(); scheduleRefresh();
         }));
       }
       const gear = panelRoot.querySelector('#zble-gear');
       const settingsPanel = panelRoot.querySelector('#zble-settings');
+      const disclosure = createExclusiveDisclosure(['global', 'format', 'download', 'year'], section => {
+        for (const flush of flushInputs[section] || []) flush();
+      });
+      function renderDisclosure() {
+        const current = disclosure.current();
+        settingsPanel.hidden = current !== 'global';
+        gear.setAttribute('aria-expanded', String(current === 'global'));
+        for (const name of ['format', 'download', 'year']) {
+          panelRoot.querySelector(`#zble-${name}-config`).hidden = current !== name;
+          panelRoot.querySelector(`#zble-configure-${name}`).setAttribute('aria-expanded', String(current === name));
+        }
+        requestAnimationFrame(applySavedDock);
+      }
       const content = panelRoot.querySelector('#zble-content');
       const collapse = panelRoot.querySelector('#zble-collapse');
       const head = panelRoot.querySelector('.head');
@@ -1575,12 +1609,16 @@
       collapse.addEventListener('click', () => setCollapsed(!content.hidden));
       gear.addEventListener('click', () => {
         if (content.hidden) setCollapsed(false);
-        const opening = gear.getAttribute('aria-expanded') !== 'true';
-        if (!opening) for (const flush of flushInputs) flush();
-        gear.setAttribute('aria-expanded', String(opening));
-        settingsPanel.hidden = !opening;
-        requestAnimationFrame(applySavedDock);
+        disclosure.toggle('global');
+        renderDisclosure();
       });
+      for (const name of ['format', 'download', 'year']) {
+        panelRoot.querySelector(`#zble-configure-${name}`).addEventListener('click', () => {
+          if (content.hidden) setCollapsed(false);
+          disclosure.toggle(name);
+          renderDisclosure();
+        });
+      }
       panelRoot.querySelector('#zble-reset-position').addEventListener('click', () => {
         resetPanelDock(host, settings, saveSettings);
       });

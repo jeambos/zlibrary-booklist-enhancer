@@ -38,6 +38,7 @@ const {
   resetPanelDock,
   canStartPanelDrag,
   createPanelHeaderToggle,
+  createExclusiveDisclosure,
   resolveLocale,
   translate,
   sanitizeSitePrefs,
@@ -68,6 +69,35 @@ test('language resolution follows browser preference and falls back to English',
   assert.equal(resolveLocale('auto', ['zh-SG']), 'zh-CN');
   assert.equal(resolveLocale('auto', ['pt']), 'pt-BR');
   assert.equal(resolveLocale('ja', ['fr']), 'ja');
+});
+
+test('global settings and filter configurations are mutually exclusive and flush only the closing panel', () => {
+  const flushed = [];
+  const disclosure = createExclusiveDisclosure(['global', 'format', 'download', 'year'],
+    id => flushed.push(id));
+  assert.equal(disclosure.current(), null);
+  disclosure.toggle('format');
+  assert.equal(disclosure.current(), 'format');
+  disclosure.toggle('download');
+  assert.equal(disclosure.current(), 'download');
+  assert.deepEqual(flushed, ['format']);
+  disclosure.toggle('download');
+  assert.equal(disclosure.current(), null);
+  disclosure.toggle('global');
+  disclosure.closeAll();
+  assert.deepEqual(flushed, ['format', 'download', 'global']);
+});
+
+test('v3.1 labels distinguish native card metadata from added format badge in every locale', () => {
+  for (const locale of ['en', 'zh-CN', 'zh-TW', 'fr', 'de', 'ru', 'ja', 'ko', 'es', 'pt-BR']) {
+    for (const key of ['section.configuration', 'section.about', 'about.description', 'about.placeholder',
+      'action.globalSettings', 'action.configureFormat', 'action.configureDownload', 'action.configureYear']) {
+      assert.ok(translate(locale, key), `${locale}:${key}`);
+    }
+  }
+  assert.equal(translate('zh-CN', 'control.formatBadge'), '文件格式标签');
+  assert.equal(translate('zh-CN', 'control.language'), '书籍语言（页面自带）');
+  assert.equal(translate('zh-CN', 'control.year'), '书籍年份（页面自带）');
 });
 
 test('all supported languages provide each tool-generated translation key', () => {
@@ -642,9 +672,9 @@ test('match rules cover six selected sites and exclude the retired host', () => 
   assert.match(script, /^\/\/ @noframes\s*$/m);
 });
 
-test('v3 userscript metadata identifies the updated implementation as a development build', () => {
+test('v3.1 userscript metadata identifies the updated implementation as a development build', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
-  assert.match(script, /^\/\/ @version\s+3\.0\.1-dev\s*$/m);
+  assert.match(script, /^\/\/ @version\s+3\.1\.0-dev\s*$/m);
   assert.match(script, /^\/\/ @name\s+Z-lib Booklist Enhancer\s*$/m);
 });
 
