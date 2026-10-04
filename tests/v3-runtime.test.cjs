@@ -2,7 +2,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
   classifyBatchProgress, classifyShowMoreIdle, runShowMoreFive, createShowMoreStallTracker,
-  attemptShowMoreReset, collectOpenTargets, canOpenAll, bulkClickDecision,
+  attemptShowMoreReset, classifyResetVerification, hasVerifiedResetAdapter, modalTabDestination,
+  collectOpenTargets, canOpenAll, bulkClickDecision,
   confirmBulkOpen, runOpenAll } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
@@ -267,6 +268,100 @@ test('reset does not claim an interactive native button when site CSS still bloc
     stillEligible: () => true });
   assert.deepEqual(outcome, { attempted: true, interactive: false });
   assert.equal(button.disabled, false);
+});
+
+test('a reset that is asynchronously disabled again reports failure without enabling a second reset', () => {
+  const button = { disabled: false };
+  const pending = { button, cardCount: 20 };
+  assert.equal(classifyResetVerification(pending, button, 20, false), 'pending');
+  button.disabled = true;
+  assert.equal(classifyResetVerification(pending, button, 20, true), 'failed');
+  assert.equal(classifyResetVerification(pending, button, 21, true), 'clear');
+  assert.equal(classifyResetVerification(pending, { disabled: true }, 20, true), 'clear');
+});
+
+test('unverified live hosts cannot expose the mutating reset adapter', () => {
+  assert.equal(hasVerifiedResetAdapter('1lib.sk', true), false);
+  assert.equal(hasVerifiedResetAdapter('mirror.example', true), false);
+  assert.equal(hasVerifiedResetAdapter('127.0.0.1', false), false);
+  assert.equal(hasVerifiedResetAdapter('127.0.0.1', true), true);
+});
+
+test('a one-button information dialog traps both Tab directions on Close', () => {
+  const cancel = {};
+  const confirm = {};
+  assert.equal(modalTabDestination(0, false, cancel, cancel, confirm), cancel);
+  assert.equal(modalTabDestination(0, true, cancel, cancel, confirm), cancel);
+  assert.equal(modalTabDestination(1, false, confirm, cancel, confirm), cancel);
+  assert.equal(modalTabDestination(1, true, cancel, cancel, confirm), confirm);
+});
+
+test('five-click runner stops when CSS keeps native Show more locked after a completed batch', async () => {
+  let cards = Array.from({ length: 20 }, (_, i) => ({ i }));
+  let clicks = 0;
+  let observerCallback;
+  let now = 0;
+  const timers = new Map();
+  let nextId = 0;
+  const button = { style: { pointerEvents: '' }, click() {
+    clicks++;
+    cards = [...cards, ...Array.from({ length: 20 }, (_, i) => ({ i: clicks * 20 + i }))];
+    button.style.pointerEvents = 'none';
+    observerCallback?.();
+  } };
+  const task = runShowMoreFive({ getCards: () => cards, findButton: () => button,
+    observe(callback) { observerCallback = callback; return () => { observerCallback = null; }; },
+    clock: { now: () => now, setTimeout(callback, delay) {
+      const id = ++nextId; timers.set(id, { at: now + delay, callback }); return id;
+    }, clearTimeout(id) { timers.delete(id); } } });
+  for (let round = 0; round < 3; round++) {
+    now += 750;
+    for (const [id, timer] of [...timers]) if (timer.at <= now) { timers.delete(id); timer.callback(); }
+    await Promise.resolve();
+  }
+  assert.deepEqual(await task, { completed: 1, added: 20, attempted: 1, failed: 0,
+    reason: 'button-unavailable' });
+  assert.equal(clicks, 1);
+});
+
+test('staggered book additions dismiss the warning and restart the full idle window', async () => {
+  let now = 0;
+  let cards = [{}];
+  let buttonPresent = true;
+  let clicks = 0;
+  let observerCallback;
+  let nextId = 0;
+  const timers = new Map();
+  const phases = [];
+  const clock = { now: () => now, setTimeout(callback, delay) {
+    const id = ++nextId; timers.set(id, { at: now + delay, callback }); return id;
+  }, clearTimeout(id) { timers.delete(id); } };
+  const tick = async at => {
+    now = at;
+    for (const [id, task] of [...timers]) if (task.at <= now) { timers.delete(id); task.callback(); }
+    await Promise.resolve();
+  };
+  const task = runShowMoreFive({ getCards: () => cards,
+    findButton: () => buttonPresent ? { click() { clicks++; } } : null,
+    observe(callback) { observerCallback = callback; return () => { observerCallback = null; }; },
+    clock, onProgress: item => phases.push(item.phase) });
+  await tick(5000);
+  assert.equal(phases.at(-1), 'warning');
+  await tick(6000);
+  cards.push({}); observerCallback();
+  assert.equal(phases.at(-1), 'running');
+  await tick(10999);
+  assert.equal(phases.at(-1), 'running');
+  await tick(11000);
+  assert.equal(phases.at(-1), 'warning');
+  cards.push(...Array.from({ length: 19 }, () => ({})));
+  buttonPresent = false;
+  observerCallback();
+  assert.equal(phases.at(-1), 'running');
+  await tick(11750);
+  assert.deepEqual(await task, { completed: 1, added: 20, attempted: 1, failed: 0,
+    reason: 'end' });
+  assert.equal(clicks, 1);
 });
 
 test('five-click runner waits for actual card additions and disconnects observers', async () => {

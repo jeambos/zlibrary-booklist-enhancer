@@ -402,9 +402,7 @@
     for (let round = 0; round < 5; round++) {
       if (signal?.aborted || !isSourceAlive()) return result('source-gone');
       const button = findButton();
-      if (!button || button.disabled || button.hidden || button.getAttribute?.('aria-disabled') === 'true' ||
-          ('isConnected' in button && !button.isConnected) ||
-          (button.getClientRects && button.getClientRects().length === 0)) return result('button-unavailable');
+      if (isNativeShowMoreUnavailable(button)) return result('button-unavailable');
       const beforeCards = new Set(getCards());
       const startedAt = clock.now();
       const outcome = await new Promise(resolve => {
@@ -528,6 +526,22 @@
       else button.setAttribute?.('aria-disabled', baseline.ariaDisabled);
     }
     return { attempted: true, interactive: !isNativeShowMoreUnavailable(button) };
+  }
+
+  function classifyResetVerification(pending, button, cardCount, buttonUnavailable) {
+    if (!pending || button !== pending.button || cardCount > pending.cardCount) return 'clear';
+    return buttonUnavailable ? 'failed' : 'pending';
+  }
+
+  function hasVerifiedResetAdapter(hostname, fixtureMarker) {
+    return (hostname === '127.0.0.1' || hostname === 'localhost') && fixtureMarker === true;
+  }
+
+  function modalTabDestination(step, shiftKey, activeElement, cancel, confirm) {
+    if (step === 0) return cancel;
+    if (shiftKey && activeElement === cancel) return confirm;
+    if (!shiftKey && activeElement === confirm) return cancel;
+    return null;
   }
 
   function collectOpenTargets(cards, origin, isSiteVisible) {
@@ -1051,7 +1065,9 @@
       createExclusiveDisclosure,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
       classifyShowMoreIdle, formatShowMoreAction, runShowMoreFive,
-      createShowMoreStallTracker, attemptShowMoreReset, showMoreControlState,
+      createShowMoreStallTracker, attemptShowMoreReset, classifyResetVerification,
+      hasVerifiedResetAdapter,
+      modalTabDestination, showMoreControlState,
       collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll,
     };
   }
@@ -1165,6 +1181,10 @@
     let bulkLastFailed = false;
     let bulkMessageKey = '';
     let resetMessageKey = '';
+    let resetVerification = null;
+    let bulkDialogPromise = null;
+    const verifiedResetAdapter = hasVerifiedResetAdapter(window.location.hostname,
+      document.documentElement?.hasAttribute?.('data-zble-reset-fixture'));
     let hasOpenedOnThisPage = false;
     const automationAbort = new AbortController();
 
@@ -1274,7 +1294,7 @@
       if (!panelRoot) return;
       const state = showMoreControlState({ nativeButton: isCurrentBooklist()
         ? initialMain?.querySelector('.page-load-more') : null,
-      resetEligible: stallState.resetEligible, busy: showMoreBusy, bulkBusy });
+      resetEligible: verifiedResetAdapter && stallState.resetEligible, busy: showMoreBusy, bulkBusy });
       panelRoot.querySelector('#zble-show-more-five').disabled = state.autoDisabled;
       panelRoot.querySelector('#zble-reset-show-more').disabled = state.resetDisabled;
     }
@@ -1282,8 +1302,12 @@
     function onNativeShowMoreClick(event) {
       if (!event.isTrusted || !isCurrentBooklist()) return;
       const button = event.target?.closest?.('.page-load-more');
-      if (button && button === initialMain?.querySelector('.page-load-more'))
+      if (button && button === initialMain?.querySelector('.page-load-more')) {
+        resetVerification = null;
+        resetMessageKey = '';
+        setText('#zble-reset-hint', '');
         showMoreTracker?.noteManualClick(button);
+      }
     }
 
     function isCardSiteVisible(card) {
@@ -1334,7 +1358,8 @@
     }
 
     function showBulkDialog(step, { count, repeat }) {
-      return new Promise(resolve => {
+      if (bulkDialogPromise) return bulkDialogPromise;
+      bulkDialogPromise = new Promise(resolve => {
         if (automationAbort.signal.aborted || !isCurrentBooklist()) { resolve(false); return; }
         const previousFocus = panelRoot?.activeElement || document.activeElement;
         const host = document.createElement('div');
@@ -1365,6 +1390,7 @@
           automationAbort.signal.removeEventListener('abort', abort);
           host.remove();
           previousFocus?.focus?.();
+          bulkDialogPromise = null;
           resolve(value);
         }
         function abort() { finish(false); }
@@ -1372,14 +1398,15 @@
         confirm.addEventListener('click', () => finish(true));
         root.addEventListener('keydown', event => {
           if (event.key === 'Escape') { event.preventDefault(); finish(false); }
-          if (event.key === 'Tab' && step !== 0) {
-            if (event.shiftKey && root.activeElement === cancel) { event.preventDefault(); confirm.focus(); }
-            else if (!event.shiftKey && root.activeElement === confirm) { event.preventDefault(); cancel.focus(); }
+          if (event.key === 'Tab') {
+            const next = modalTabDestination(step, event.shiftKey, root.activeElement, cancel, confirm);
+            if (next) { event.preventDefault(); next.focus(); }
           }
         });
         automationAbort.signal.addEventListener('abort', abort, { once: true });
         cancel.focus();
       });
+      return bulkDialogPromise;
     }
 
     function refreshPanelLocale(nextLocale = locale) {
@@ -1630,17 +1657,37 @@
       const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
       showMoreTracker = createShowMoreStallTracker({ getCards: () => getActiveCards(document),
         getButton: () => isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null,
-        onState(state) { stallState = state; syncShowMoreControls(); } });
+        onState(state) {
+          stallState = state;
+          if (resetVerification) {
+            const currentButton = initialMain?.querySelector('.page-load-more');
+            const verdict = classifyResetVerification(resetVerification,
+              currentButton, getActiveCards(document).length,
+              isNativeShowMoreUnavailable(currentButton));
+            if (verdict !== 'pending') {
+              resetVerification = null;
+              resetMessageKey = verdict === 'failed' ? 'auto.resetFailed' : '';
+              setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
+            }
+          }
+          if (!verifiedResetAdapter && state.resetEligible) {
+            resetMessageKey = 'auto.resetFailed';
+            setText('#zble-reset-hint', translate(locale, resetMessageKey));
+          }
+          syncShowMoreControls();
+        } });
       initialMain?.addEventListener('click', onNativeShowMoreClick, true);
       const resetButton = panelRoot.querySelector('#zble-reset-show-more');
       resetButton.addEventListener('click', () => {
-        if (!isCurrentBooklist()) return;
+        if (!verifiedResetAdapter || !isCurrentBooklist()) return;
         const button = initialMain?.querySelector('.page-load-more');
         const result = attemptShowMoreReset({ button, baseline: showMoreTracker.baseline(),
           stillEligible: () => showMoreTracker.check().resetEligible });
         if (!result.attempted) return;
         showMoreTracker.consumeReset();
         resetMessageKey = result.interactive ? 'auto.resetCaution' : 'auto.resetFailed';
+        resetVerification = result.interactive
+          ? { button, cardCount: getActiveCards(document).length } : null;
         setText('#zble-reset-hint', translate(locale, resetMessageKey));
         syncShowMoreControls();
       });
@@ -1665,7 +1712,12 @@
           },
           isSourceAlive: isCurrentBooklist,
           signal: automationAbort.signal,
-          onAttempt(button) { showMoreTracker?.noteToolClick(button); },
+          onAttempt(button) {
+            resetVerification = null;
+            resetMessageKey = '';
+            setText('#zble-reset-hint', '');
+            showMoreTracker?.noteToolClick(button);
+          },
           onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
         }).then(result => {
           autoAttempts += result.attempted;
