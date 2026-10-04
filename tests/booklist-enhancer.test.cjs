@@ -34,8 +34,68 @@ const {
   clampPanelPosition,
   resetPanelDock,
   canStartPanelDrag,
+  resolveLocale,
+  translate,
+  sanitizeSitePrefs,
+  TRANSLATION_KEYS,
+  TRANSLATIONS,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
+
+test('v3 settings preserve v2 choices while adding safe defaults', () => {
+  const result = sanitizeSettings({ formats: [], filterYear: true, yearMin: '2000', panelDock: { edge: 'left', offset: 20 } });
+  assert.deepEqual(result.formats, []);
+  assert.equal(result.filterYear, true);
+  assert.equal(result.yearMin, '2000');
+  assert.deepEqual(result.panelDock, { edge: 'left', offset: 20 });
+  assert.equal(result.showFullAuthor, false);
+  assert.equal(result.uiLanguage, 'auto');
+  assert.equal(sanitizeSettings({ showFullAuthor: 'yes', uiLanguage: 'xx' }).uiLanguage, 'auto');
+});
+
+test('language resolution follows browser preference and falls back to English', () => {
+  assert.equal(typeof resolveLocale, 'function');
+  assert.equal(resolveLocale('auto', ['zh-HK']), 'zh-TW');
+  assert.equal(resolveLocale('auto', ['zh-TW']), 'zh-TW');
+  assert.equal(resolveLocale('auto', ['fr-CA']), 'fr');
+  assert.equal(resolveLocale('auto', ['xx']), 'en');
+  assert.equal(resolveLocale('auto', ['zh-MO']), 'zh-TW');
+  assert.equal(resolveLocale('auto', ['zh-SG']), 'zh-CN');
+  assert.equal(resolveLocale('auto', ['pt']), 'pt-BR');
+  assert.equal(resolveLocale('ja', ['fr']), 'ja');
+});
+
+test('all supported languages provide each tool-generated translation key', () => {
+  assert.equal(Array.isArray(TRANSLATION_KEYS), true);
+  assert.ok(TRANSLATION_KEYS.length > 40);
+  for (const locale of ['en', 'zh-CN', 'zh-TW', 'fr', 'de', 'ru', 'ja', 'ko', 'es', 'pt-BR']) {
+    for (const key of TRANSLATION_KEYS) {
+      assert.equal(typeof TRANSLATIONS[locale]?.[key], 'string', `${locale}:${key}`);
+      assert.ok(TRANSLATIONS[locale][key].length > 0, `${locale}:${key}`);
+    }
+  }
+  assert.equal(translate('en', 'notice.close', { seconds: 10 }), 'Close · 10s');
+  assert.equal(translate('en', 'notice.close', { seconds: '<b>' }), 'Close · <b>s');
+  assert.equal(translate('ko', 'not.a.key'), '');
+});
+
+test('per-host preferences reject paths, prototypes and malformed records', () => {
+  assert.equal(typeof sanitizeSitePrefs, 'function');
+  const result = sanitizeSitePrefs({
+    '1lib.sk': { welcomeEnabled: false, bulkOpenEnabled: true },
+    'mirror.example': { welcomeEnabled: true, bulkOpenEnabled: false },
+    'https://bad.example/path': { welcomeEnabled: false, bulkOpenEnabled: true },
+    '__proto__': { welcomeEnabled: false, bulkOpenEnabled: true },
+    'odd..host': { welcomeEnabled: false, bulkOpenEnabled: true },
+    'z-lib.sk': { welcomeEnabled: 'no', bulkOpenEnabled: 'yes' },
+  });
+  assert.deepEqual(result['1lib.sk'], { welcomeEnabled: false, bulkOpenEnabled: true });
+  assert.deepEqual(result['mirror.example'], { welcomeEnabled: true, bulkOpenEnabled: false });
+  assert.deepEqual(result['z-lib.sk'], { welcomeEnabled: true, bulkOpenEnabled: false });
+  assert.equal(Object.hasOwn(result, 'https://bad.example/path'), false);
+  assert.equal(Object.hasOwn(result, '__proto__'), false);
+  assert.equal(Object.hasOwn(result, 'odd..host'), false);
+});
 
 test('normalizes formats and fails open without a selection', () => {
   assert.equal(normalizeExtension(' .PDF '), 'pdf');
@@ -88,11 +148,13 @@ test('invalid saved settings fall back safely and custom-only empty rule is inac
     showLanguage: true,
     showYear: true,
     showFullTitle: false,
+    showFullAuthor: false,
     filterYear: false,
     yearMin: '',
     yearMax: '',
     includeMissingYear: false,
     panelDock: null,
+    uiLanguage: 'auto',
   });
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set()), false);
   assert.equal(hasEffectiveFormatRule(new Set(['custom']), new Set(['djvu'])), true);

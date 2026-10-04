@@ -31,12 +31,114 @@
     showLanguage: true,
     showYear: true,
     showFullTitle: false,
+    showFullAuthor: false,
     filterYear: false,
     yearMin: '',
     yearMax: '',
     includeMissingYear: false,
     panelDock: null,
+    uiLanguage: 'auto',
   });
+
+  const LOCALES = ['en', 'zh-CN', 'zh-TW', 'fr', 'de', 'ru', 'ja', 'ko', 'es', 'pt-BR'];
+  // Entries are ordered as LOCALES. Keep one complete row per tool-owned message.
+  const MESSAGES = {
+    'section.filters': ['Filters', '筛选器', '篩選器', 'Filtres', 'Filter', 'Фильтры', 'フィルター', '필터', 'Filtros', 'Filtros'],
+    'section.info': ['Information display', '信息显示', '資訊顯示', 'Affichage des informations', 'Informationsanzeige', 'Отображение сведений', '情報表示', '정보 표시', 'Información visible', 'Exibição de informações'],
+    'section.automation': ['Automation (beta)', '自动化（beta）', '自動化（beta）', 'Automatisation (bêta)', 'Automatisierung (Beta)', 'Автоматизация (бета)', '自動化（ベータ）', '자동화(베타)', 'Automatización (beta)', 'Automação (beta)'],
+    'section.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
+    'control.formatBadge': ['Always show file format', '固定显示文件格式标签', '固定顯示檔案格式標籤', 'Toujours afficher le format', 'Dateiformat immer anzeigen', 'Всегда показывать формат', 'ファイル形式を常に表示', '파일 형식 항상 표시', 'Mostrar siempre el formato', 'Sempre mostrar o formato'],
+    'control.language': ['Language', '语言', '語言', 'Langue', 'Sprache', 'Язык', '言語', '언어', 'Idioma', 'Idioma'],
+    'control.year': ['Year', '年份', '年份', 'Année', 'Jahr', 'Год', '年', '연도', 'Año', 'Ano'],
+    'control.fullTitle': ['Show full long titles', '完整显示超长书名', '完整顯示過長書名', 'Afficher les titres longs en entier', 'Lange Titel vollständig anzeigen', 'Показывать длинные названия полностью', '長い書名を全文表示', '긴 책 제목 전체 표시', 'Mostrar títulos largos completos', 'Mostrar títulos longos completos'],
+    'control.fullAuthor': ['Show full long author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を全文表示', '긴 저자 이름 전체 표시', 'Mostrar nombres de autor largos completos', 'Mostrar nomes longos de autores completos'],
+    'control.filterFormat': ['Only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '指定したファイル形式のみ表示', '선택한 파일 형식만 표시', 'Solo formatos seleccionados', 'Apenas formatos selecionados'],
+    'control.filterDownload': ['Only selected download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Afficher uniquement l’état de téléchargement choisi', 'Nur gewählten Downloadstatus', 'Только выбранный статус загрузки', '指定したダウンロード状態のみ表示', '선택한 다운로드 상태만 표시', 'Solo estado de descarga seleccionado', 'Apenas status de download selecionado'],
+    'control.filterYear': ['Only selected publication years', '只显示指定年份的书籍', '只顯示指定年份的書籍', 'Afficher uniquement les années choisies', 'Nur ausgewählte Erscheinungsjahre', 'Только выбранные годы издания', '指定した出版年のみ表示', '선택한 출판 연도만 표시', 'Solo años de publicación seleccionados', 'Apenas anos de publicação selecionados'],
+    'setting.formats': ['File formats (multiple)', '筛选文件格式（可多选）', '篩選檔案格式（可多選）', 'Formats (choix multiples)', 'Dateiformate (Mehrfachauswahl)', 'Форматы (можно несколько)', 'ファイル形式（複数選択可）', '파일 형식(복수 선택)', 'Formatos (selección múltiple)', 'Formatos (seleção múltipla)'],
+    'setting.other': ['All others', '其他全部', '其他全部', 'Tous les autres', 'Alle anderen', 'Все остальные', 'その他すべて', '기타 모두', 'Todos los demás', 'Todos os outros'],
+    'setting.custom': ['Custom', '自定义', '自訂', 'Personnalisé', 'Benutzerdefiniert', 'Свой вариант', 'カスタム', '사용자 지정', 'Personalizado', 'Personalizado'],
+    'setting.customPlaceholder': ['e.g. djvu, txt; fb2', '如 djvu, txt; fb2', '例如 djvu, txt; fb2', 'ex. djvu, txt; fb2', 'z. B. djvu, txt; fb2', 'например djvu, txt; fb2', '例: djvu, txt; fb2', '예: djvu, txt; fb2', 'p. ej. djvu, txt; fb2', 'ex.: djvu, txt; fb2'],
+    'setting.customHint': ['Separate formats with commas or semicolons.', '用逗号或分号分隔格式。', '以逗號或分號分隔格式。', 'Séparez les formats par des virgules ou des points-virgules.', 'Formate durch Kommas oder Semikolons trennen.', 'Разделяйте форматы запятыми или точками с запятой.', 'カンマまたはセミコロンで区切ります。', '쉼표나 세미콜론으로 구분하세요.', 'Separe los formatos con comas o punto y coma.', 'Separe os formatos com vírgulas ou ponto e vírgula.'],
+    'setting.downloadRule': ['Download status rule', '下载状态规则', '下載狀態規則', 'Règle de téléchargement', 'Downloadstatus-Regel', 'Правило статуса загрузки', 'ダウンロード状態の条件', '다운로드 상태 규칙', 'Regla de descarga', 'Regra de download'],
+    'setting.onlyUndownloaded': ['Not downloaded', '仅未下载', '僅未下載', 'Non téléchargés', 'Nicht heruntergeladen', 'Не загруженные', '未ダウンロード', '다운로드하지 않음', 'No descargados', 'Não baixados'],
+    'setting.onlyDownloaded': ['Downloaded', '仅已下载', '僅已下載', 'Téléchargés', 'Heruntergeladen', 'Загруженные', 'ダウンロード済み', '다운로드됨', 'Descargados', 'Baixados'],
+    'setting.yearRange': ['Publication year range (inclusive)', '出版年份范围（含端点）', '出版年份範圍（含端點）', 'Années de publication (bornes incluses)', 'Erscheinungsjahre (einschließlich Grenzen)', 'Годы издания (границы включены)', '出版年の範囲（両端を含む）', '출판 연도 범위(양끝 포함)', 'Años de publicación (inclusive)', 'Anos de publicação (inclusivo)'],
+    'setting.minYear': ['Minimum year', '最小年份', '最小年份', 'Année minimale', 'Frühestes Jahr', 'Минимальный год', '開始年', '최소 연도', 'Año mínimo', 'Ano mínimo'],
+    'setting.maxYear': ['Maximum year', '最大年份', '最大年份', 'Année maximale', 'Spätestes Jahr', 'Максимальный год', '終了年', '최대 연도', 'Año máximo', 'Ano máximo'],
+    'setting.yearPlaceholder': ['Blank = no limit', '留空不限', '留空不限', 'Vide = sans limite', 'Leer = keine Grenze', 'Пусто = без ограничения', '空欄＝制限なし', '빈칸 = 제한 없음', 'Vacío = sin límite', 'Vazio = sem limite'],
+    'setting.yearHint': ['Applies after a pause or Enter; either bound may be blank.', '停顿后或按回车生效；可只填一端。', '停頓後或按 Enter 生效；可只填一端。', 'Appliqué après une pause ou Entrée ; une borne peut rester vide.', 'Nach kurzer Pause oder Eingabe wirksam; eine Grenze kann leer sein.', 'Применяется после паузы или Enter; одну границу можно оставить пустой.', '入力後しばらく待つか Enter で適用。片側は空欄可。', '잠시 후 또는 Enter로 적용; 한쪽은 비워도 됩니다.', 'Se aplica tras una pausa o Intro; puede dejar un límite vacío.', 'Aplica após uma pausa ou Enter; um limite pode ficar vazio.'],
+    'setting.missingYear': ['Include books without a year', '显示年份缺失的书籍', '顯示缺少年份的書籍', 'Inclure les livres sans année', 'Bücher ohne Jahr einschließen', 'Включать книги без года', '出版年不明の本も表示', '연도 없는 책 포함', 'Incluir libros sin año', 'Incluir livros sem ano'],
+    'setting.resetPosition': ['Reset panel position', '重置浮窗位置', '重設浮窗位置', 'Réinitialiser la position', 'Panelposition zurücksetzen', 'Сбросить положение панели', 'パネル位置をリセット', '패널 위치 초기화', 'Restablecer posición', 'Redefinir posição'],
+    'setting.userMatches': ['Other mirrors: add User matches in Tampermonkey.', '其他镜像：请在 Tampermonkey 中添加 User matches。', '其他鏡像：請在 Tampermonkey 中加入 User matches。', 'Autres miroirs : ajoutez des User matches dans Tampermonkey.', 'Weitere Mirrors: User matches in Tampermonkey hinzufügen.', 'Другие зеркала: добавьте User matches в Tampermonkey.', '他のミラーは Tampermonkey の User matches に追加してください。', '다른 미러는 Tampermonkey의 User matches에 추가하세요.', 'Otros espejos: añada User matches en Tampermonkey.', 'Outros espelhos: adicione User matches no Tampermonkey.'],
+    'setting.language': ['Interface language', '界面语言', '介面語言', 'Langue de l’interface', 'Oberflächensprache', 'Язык интерфейса', '表示言語', '인터페이스 언어', 'Idioma de la interfaz', 'Idioma da interface'],
+    'setting.autoLanguage': ['Follow browser/system', '跟随浏览器/系统', '跟隨瀏覽器／系統', 'Suivre le navigateur/système', 'Browser/System folgen', 'Как в браузере/системе', 'ブラウザー／システムに従う', '브라우저/시스템 따르기', 'Seguir navegador/sistema', 'Seguir navegador/sistema'],
+    'setting.showNotice': ['Show welcome notice on this site', '在本站显示启动提示', '在本站顯示啟用提示', 'Afficher l’avis sur ce site', 'Hinweis auf dieser Seite anzeigen', 'Показывать уведомление на этом сайте', 'このサイトで案内を表示', '이 사이트에서 안내 표시', 'Mostrar aviso en este sitio', 'Mostrar aviso neste site'],
+    'setting.allowBulk': ['Enable bulk opening on this site', '在本站启用批量打开', '在本站啟用批次開啟', 'Activer l’ouverture groupée sur ce site', 'Massenöffnung auf dieser Seite aktivieren', 'Включить массовое открытие на этом сайте', 'このサイトで一括で開く機能を有効化', '이 사이트에서 일괄 열기 사용', 'Activar apertura masiva en este sitio', 'Ativar abertura em massa neste site'],
+    'notice.message': ['Booklist tools are ready. Open any booklist to use them.', '工具已生效，打开任意书单即可使用。', '工具已啟用，開啟任意書單即可使用。', 'Les outils sont prêts. Ouvrez une liste de livres.', 'Die Werkzeuge sind bereit. Öffnen Sie eine Bücherliste.', 'Инструмент готов. Откройте любой список книг.', 'ツールは有効です。書籍リストを開くと使えます。', '도구가 준비되었습니다. 책 목록을 열어 사용하세요.', 'La herramienta está lista. Abra cualquier lista de libros.', 'A ferramenta está pronta. Abra qualquer lista de livros.'],
+    'notice.link': ['Try it', '点击试用', '點擊試用', 'Essayer', 'Ausprobieren', 'Попробовать', '試す', '사용해 보기', 'Probar', 'Experimentar'],
+    'notice.listPage': ['Open any booklist to use the tools.', '打开任意书单即可启用工具。', '開啟任意書單即可啟用工具。', 'Ouvrez une liste de livres pour utiliser les outils.', 'Öffnen Sie eine Bücherliste, um die Werkzeuge zu nutzen.', 'Откройте любой список книг, чтобы использовать инструмент.', '書籍リストを開くと使えます。', '책 목록을 열면 사용할 수 있습니다.', 'Abra una lista de libros para usar la herramienta.', 'Abra uma lista de livros para usar a ferramenta.'],
+    'notice.close': ['Close · {seconds}s', '关闭 · {seconds}秒', '關閉 · {seconds}秒', 'Fermer · {seconds}s', 'Schließen · {seconds}s', 'Закрыть · {seconds}с', '閉じる · {seconds}秒', '닫기 · {seconds}초', 'Cerrar · {seconds}s', 'Fechar · {seconds}s'],
+    'notice.optout': ['Do not show this again', '不再显示该提示', '不再顯示此提示', 'Ne plus afficher cet avis', 'Diesen Hinweis nicht mehr anzeigen', 'Больше не показывать', '今後表示しない', '다시 표시하지 않기', 'No volver a mostrar', 'Não mostrar novamente'],
+    'summary.loaded': ['Loaded books', '当前已加载', '目前已載入', 'Livres chargés', 'Geladene Bücher', 'Загружено книг', '読み込み済み', '로드된 책', 'Libros cargados', 'Livros carregados'],
+    'summary.matched': ['After filtering', '本工具筛选后', '本工具篩選後', 'Après filtrage', 'Nach Filterung', 'После фильтрации', '絞り込み後', '필터링 후', 'Tras filtrar', 'Após filtrar'],
+    'summary.total': ['Booklist total', '书单共', '書單共', 'Total de la liste', 'Bücher insgesamt', 'Всего в списке', 'リスト全体', '목록 전체', 'Total de la lista', 'Total da lista'],
+    'summary.unknown': ['Unknown', '未知', '未知', 'Inconnu', 'Unbekannt', 'Неизвестно', '不明', '알 수 없음', 'Desconocido', 'Desconhecido'],
+    'progress.empty': ['No books loaded yet', '尚无已加载书籍', '尚無已載入書籍', 'Aucun livre chargé', 'Noch keine Bücher geladen', 'Книги ещё не загружены', 'まだ読み込みなし', '아직 로드된 책 없음', 'Aún no hay libros cargados', 'Nenhum livro carregado'],
+    'progress.text': ['About {expansions} expansions; around page {current}; about {remaining} pages left; about {pages} pages total', '约展开 {expansions} 次，当前约第 {current} 页，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '約展開 {expansions} 次，目前約第 {current} 頁，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Environ {expansions} chargements ; page {current} ; {remaining} pages restantes ; {pages} pages au total', 'Etwa {expansions} Erweiterungen; Seite {current}; noch {remaining} Seiten; insgesamt {pages} Seiten', 'Примерно {expansions} раскрытий; страница {current}; осталось {remaining} стр.; всего {pages} стр.', '約 {expansions} 回展開、現在約 {current} ページ、残り約 {remaining} ページ、全 {pages} ページ', '약 {expansions}회 더 보기, 현재 약 {current}페이지, 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Unas {expansions} ampliaciones; página {current}; quedan {remaining} páginas; {pages} en total', 'Cerca de {expansions} expansões; página {current}; faltam {remaining} páginas; {pages} no total'],
+    'auto.showMore': ['Click Show more 5 times', '连点 5 次 Show more', '連點 5 次 Show more', 'Cliquer 5 fois sur Show more', 'Show more 5-mal klicken', 'Нажать Show more 5 раз', 'Show more を5回押す', 'Show more 5회 클릭', 'Pulsar Show more 5 veces', 'Clicar Show more 5 vezes'],
+    'auto.openAll': ['Open all books in current view', '打开当前视图的所有图书页面', '開啟目前檢視的所有圖書頁面', 'Ouvrir tous les livres affichés', 'Alle Bücher der aktuellen Ansicht öffnen', 'Открыть все книги текущего вида', '現在表示中の本をすべて開く', '현재 화면의 모든 책 열기', 'Abrir todos los libros visibles', 'Abrir todos os livros visíveis'],
+    'auto.favorite': ['Add visible books to favorites', '批量加入收藏', '批次加入收藏', 'Ajouter les livres visibles aux favoris', 'Sichtbare Bücher zu Favoriten hinzufügen', 'Добавить видимые книги в избранное', '表示中の本をお気に入りに追加', '보이는 책을 즐겨찾기에 추가', 'Añadir libros visibles a favoritos', 'Adicionar livros visíveis aos favoritos'],
+    'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
+    'auto.firstWarning': ['Open {count} pages? This may slow your browser or trigger rate limits.', '将打开 {count} 个页面，可能卡顿或触发站点限流。继续？', '將開啟 {count} 個頁面，可能卡頓或觸發網站限流。繼續？', 'Ouvrir {count} pages ? Le navigateur peut ralentir ou le site limiter l’accès.', '{count} Seiten öffnen? Browser und Website können langsam werden oder Zugriffe begrenzen.', 'Открыть {count} страниц? Возможны замедление и ограничение доступа.', '{count} ページを開きますか？動作低下やアクセス制限の可能性があります。', '{count}개 페이지를 여시겠습니까? 속도 저하나 접근 제한이 발생할 수 있습니다.', '¿Abrir {count} páginas? Puede ralentizar el navegador o activar límites.', 'Abrir {count} páginas? Pode causar lentidão ou limite de acesso.'],
+    'auto.repeatWarning': ['Already run on this page; {count} pages may open again.', '本页已执行过，可能重复打开 {count} 个页面。', '本頁已執行過，可能重複開啟 {count} 個頁面。', 'Déjà exécuté ici ; {count} pages pourraient rouvrir.', 'Hier bereits ausgeführt; {count} Seiten könnten erneut öffnen.', 'Уже запускалось здесь; {count} страниц могут открыться снова.', 'このページで実行済みです。{count} ページが再度開く可能性があります。', '이 페이지에서 이미 실행했습니다. {count}개 페이지가 다시 열릴 수 있습니다.', 'Ya se ejecutó aquí; podrían reabrirse {count} páginas.', 'Já foi executado aqui; {count} páginas podem abrir novamente.'],
+    'auto.secondWarning': ['Opened pages cannot be closed in bulk. You accept the risks. Continue?', '已打开的页面无法批量撤销。风险由你承担，确认执行？', '已開啟的頁面無法批次撤銷。風險由你承擔，確定執行？', 'Les pages ouvertes ne peuvent pas être fermées en lot. Vous acceptez les risques ?', 'Geöffnete Seiten lassen sich nicht gesammelt schließen. Risiko übernehmen?', 'Открытые страницы нельзя закрыть разом. Вы принимаете риск?', '開いたページは一括で閉じられません。リスクを承知で続行しますか？', '열린 페이지를 일괄로 닫을 수 없습니다. 위험을 감수하고 계속하시겠습니까?', 'Las páginas abiertas no pueden cerrarse en lote. ¿Acepta los riesgos?', 'As páginas abertas não podem ser fechadas em lote. Aceita os riscos?'],
+    'auto.cancel': ['Cancel', '取消', '取消', 'Annuler', 'Abbrechen', 'Отмена', 'キャンセル', '취소', 'Cancelar', 'Cancelar'],
+    'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
+  };
+  const TRANSLATION_KEYS = Object.keys(MESSAGES);
+  const TRANSLATIONS = Object.fromEntries(LOCALES.map((locale, index) => [locale,
+    Object.fromEntries(TRANSLATION_KEYS.map(key => [key, MESSAGES[key][index]]))]));
+
+  function resolveLocale(preference, languages) {
+    if (LOCALES.includes(preference)) return preference;
+    for (const raw of Array.isArray(languages) ? languages : []) {
+      const tag = String(raw ?? '').toLowerCase();
+      if (tag === 'zh-tw' || tag === 'zh-hk' || tag === 'zh-mo' || tag.startsWith('zh-hant')) return 'zh-TW';
+      if (tag.startsWith('zh')) return 'zh-CN';
+      if (tag.startsWith('pt')) return 'pt-BR';
+      const exact = LOCALES.find(locale => locale.toLowerCase() === tag);
+      if (exact) return exact;
+      const base = tag.split('-')[0];
+      const partial = LOCALES.find(locale => locale.toLowerCase() === base);
+      if (partial) return partial;
+    }
+    return 'en';
+  }
+
+  function translate(locale, key, params = {}) {
+    const template = TRANSLATIONS[locale]?.[key] || TRANSLATIONS.en[key] || '';
+    return template.replace(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (match, name) => {
+      if (!Object.hasOwn(params, name)) return match;
+      const value = params[name];
+      return typeof value === 'number' ? new Intl.NumberFormat(locale).format(value) : String(value);
+    });
+  }
+
+  function sanitizeSitePrefs(saved) {
+    const result = Object.create(null);
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return result;
+    for (const [rawHost, rawPrefs] of Object.entries(saved)) {
+      const host = rawHost.toLowerCase();
+      if (host === '__proto__' || !/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(host)) continue;
+      const prefs = rawPrefs && typeof rawPrefs === 'object' && !Array.isArray(rawPrefs) ? rawPrefs : {};
+      result[host] = {
+        welcomeEnabled: typeof prefs.welcomeEnabled === 'boolean' ? prefs.welcomeEnabled : true,
+        bulkOpenEnabled: typeof prefs.bulkOpenEnabled === 'boolean' ? prefs.bulkOpenEnabled : false,
+      };
+    }
+    return result;
+  }
 
   function normalizeExtension(raw) {
     const value = String(raw ?? '').trim().replace(/^\.+/, '').toLowerCase();
@@ -81,6 +183,7 @@
       showLanguage: typeof input.showLanguage === 'boolean' ? input.showLanguage : DEFAULT_SETTINGS.showLanguage,
       showYear: typeof input.showYear === 'boolean' ? input.showYear : DEFAULT_SETTINGS.showYear,
       showFullTitle: typeof input.showFullTitle === 'boolean' ? input.showFullTitle : DEFAULT_SETTINGS.showFullTitle,
+      showFullAuthor: typeof input.showFullAuthor === 'boolean' ? input.showFullAuthor : DEFAULT_SETTINGS.showFullAuthor,
       filterYear: typeof input.filterYear === 'boolean' ? input.filterYear : DEFAULT_SETTINGS.filterYear,
       yearMin: typeof input.yearMin === 'string' ? input.yearMin.slice(0, 20) : '',
       yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
@@ -89,6 +192,7 @@
       panelDock: input.panelDock && ['top', 'right', 'bottom', 'left'].includes(input.panelDock.edge) &&
         Number.isFinite(input.panelDock.offset) && input.panelDock.offset >= 0
         ? { edge: input.panelDock.edge, offset: input.panelDock.offset } : null,
+      uiLanguage: LOCALES.includes(input.uiLanguage) ? input.uiLanguage : DEFAULT_SETTINGS.uiLanguage,
     };
   }
 
@@ -475,6 +579,7 @@
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
       parseYearRule, matchesYear,
+      resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
     };
   }
 
