@@ -1,24 +1,28 @@
 // ==UserScript==
-// @name         Z-Library 书单增强
+// @name         Z-lib Booklist Enhancer
 // @namespace    local.booklist-enhancer
-// @version      2.0.1-dev
+// @version      3.0.0-dev
 // @description  增强书单信息显示、筛选与当前加载进度
-// @match        https://z-lib.sk/booklist/*
-// @match        https://z-library.sk/booklist/*
-// @match        https://1lib.sk/booklist/*
-// @match        https://libb.la/booklist/*
-// @match        https://z-library.im/booklist/*
-// @match        https://z-lib.fm/booklist/*
+// @match        https://z-lib.sk/*
+// @match        https://z-library.sk/*
+// @match        https://1lib.sk/*
+// @match        https://libb.la/*
+// @match        https://z-library.im/*
+// @match        https://z-lib.fm/*
+// @noframes
 // @run-at       document-start
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        unsafeWindow
+// @grant        GM_openInTab
+// @grant        window.onurlchange
 // ==/UserScript==
 
 (() => {
   'use strict';
 
   const KNOWN_FORMATS = new Set(['pdf', 'epub', 'azw3', 'mobi']);
+  const KNOWN_HOSTS = new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la', 'z-library.im', 'z-lib.fm']);
   const PAGE_SIZE = 20;
   const SETTING_FORMATS = new Set([...KNOWN_FORMATS, 'other', 'custom']);
   const DEFAULT_SETTINGS = Object.freeze({
@@ -288,6 +292,11 @@
     if (!main?.querySelector('.readlist-view')) return false;
     if (getActiveCards(root).length > 0) return true;
     return parseBookTotal(root.querySelector('.booklist-header__tabs tab')?.textContent) === 0;
+  }
+
+  function classifyPage(hostname, pathname, fingerprint) {
+    if (String(pathname || '').startsWith('/booklist/')) return fingerprint ? 'booklist' : 'pending';
+    return KNOWN_HOSTS.has(String(hostname || '').toLowerCase()) ? 'notice' : 'silent';
   }
 
   function readCardData(card) {
@@ -580,39 +589,57 @@
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
+      classifyPage,
     };
   }
 
   if (typeof document !== 'undefined') {
-    let preflightObserver = null;
-    let preflightTimeout = null;
-    let started = false;
+    if (window.top && window.self && window.top !== window.self) return;
+    let currentRoute = null;
 
-    function tryStart() {
-      if (started || !hasBooklistFingerprint(document)) return;
-      started = true;
-      preflightObserver?.disconnect();
-      clearTimeout(preflightTimeout);
-      activate();
+    function stopRoute() {
+      currentRoute?.dispose?.();
+      currentRoute = null;
     }
 
-    function preflight() {
-      tryStart();
-      if (started || !document.documentElement) return;
-      preflightObserver = new MutationObserver(tryStart);
-      preflightObserver.observe(document.documentElement, { childList: true, subtree: true });
-      preflightTimeout = setTimeout(() => preflightObserver.disconnect(), 30000);
+    function startRoute() {
+      const location = window.location || { hostname: '', pathname: '/booklist/' };
+      const pathname = location.pathname || '/';
+      const main = document.querySelector('.booklist-main.active');
+      const kind = classifyPage(location.hostname, pathname, hasBooklistFingerprint(document));
+      if (currentRoute && currentRoute.kind === kind && currentRoute.pathname === pathname &&
+          (kind !== 'booklist' || currentRoute.main === main)) return;
+      stopRoute();
+      if (kind === 'pending') {
+        let observer = null;
+        let timeoutId = null;
+        if (document.documentElement) {
+          observer = new MutationObserver(startRoute);
+          observer.observe(document.documentElement, { childList: true, subtree: true });
+          timeoutId = setTimeout(() => observer.disconnect(), 30000);
+        }
+        currentRoute = { kind, pathname, dispose() { observer?.disconnect(); clearTimeout(timeoutId); } };
+      } else if (kind === 'booklist') {
+        const instance = activate(startRoute);
+        currentRoute = { kind, pathname, main, dispose: () => instance.dispose() };
+      } else {
+        // The non-booklist notice is mounted by the next implementation task.
+        currentRoute = { kind, pathname, dispose() {} };
+      }
     }
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', preflight, { once: true });
-    else preflight();
-    window.addEventListener('pagehide', () => {
-      preflightObserver?.disconnect();
-      clearTimeout(preflightTimeout);
-    }, { once: true });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startRoute, { once: true });
+    else startRoute();
+    window.addEventListener('pagehide', stopRoute);
+    window.addEventListener('pageshow', event => { if (event.persisted) startRoute(); });
+    window.addEventListener('popstate', startRoute);
+    window.addEventListener('hashchange', startRoute);
+    window.addEventListener('urlchange', startRoute);
 
-    function activate() {
+    function activate(onStale) {
     const STORAGE_KEY = 'zble-settings-v2';
+    const initialPathname = window.location?.pathname || '/booklist/';
+    const initialMain = document.querySelector('.booklist-main.active');
     let stored;
     try { stored = GM_getValue(STORAGE_KEY, {}); } catch { stored = {}; }
     const settings = sanitizeSettings(stored);
@@ -627,6 +654,13 @@
     let startupObserver = null;
     let classObservers = [];
     let lastCardMetrics = null;
+    let panelResize = null;
+    let disposed = false;
+
+    function isCurrentBooklist() {
+      return !disposed && (window.location?.pathname || '/booklist/') === initialPathname &&
+        document.querySelector('.booklist-main.active') === initialMain;
+    }
 
     function saveSettings() {
       try { GM_setValue(STORAGE_KEY, { ...settings, formats: [...settings.formats] }); } catch { /* Session still works. */ }
@@ -700,7 +734,8 @@
     }
 
     function refresh() {
-      if (!panelRoot) return;
+      if (!panelRoot || disposed) return;
+      if (!isCurrentBooklist()) { onStale(); return; }
       attachObservers();
       const main = document.querySelector('.booklist-main.active');
       const library = siteLibrary();
@@ -791,6 +826,14 @@
 
       const host = document.createElement('div');
       host.id = 'zble-panel-host';
+      for (const eventName of ['click', 'change', 'input', 'pointerdown']) {
+        host.addEventListener(eventName, event => {
+          if (isCurrentBooklist()) return;
+          event.stopImmediatePropagation();
+          event.preventDefault();
+          onStale();
+        }, true);
+      }
       const main = document.querySelector('.booklist-main.active');
       if (main?.parentElement) main.parentElement.insertBefore(host, main);
       else document.body.append(host);
@@ -956,15 +999,16 @@
       }
       head.addEventListener('pointerup', finishDrag);
       head.addEventListener('pointercancel', finishDrag);
-      window.addEventListener('resize', applySavedDock);
+      panelResize = applySavedDock;
+      window.addEventListener('resize', panelResize);
       requestAnimationFrame(applySavedDock);
       scheduleRefresh();
     }
 
     function init() {
-      if (!document.body) return;
+      if (!document.body || disposed) return;
       createPanel();
-      startupObserver = new MutationObserver(scheduleRefresh);
+      startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentBooklist()) onStale(); });
       startupObserver.observe(document.documentElement, { childList: true, subtree: true });
       attachObservers();
       scheduleRefresh();
@@ -978,7 +1022,10 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
     else init();
 
-    window.addEventListener('pagehide', () => {
+    return { dispose() {
+      if (disposed) return;
+      disposed = true;
+      document.removeEventListener?.('DOMContentLoaded', init);
       document.removeEventListener('marksLoaded', onMarksLoaded);
       clearTimeout(timeoutId);
       clearTimeout(retryId);
@@ -986,7 +1033,19 @@
       mainObserver?.disconnect();
       parentObserver?.disconnect();
       for (const observer of classObservers) observer.disconnect();
-    }, { once: true });
+      if (panelResize) window.removeEventListener?.('resize', panelResize);
+      for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
+        card.classList.remove('zble-hidden');
+        renderFormatBadge(card, card.getAttribute('extension'), false);
+        renderCardMeta(card, { showLanguage: true, showYear: true });
+        renderFullTitle(card, false);
+      }
+      initialMain?.querySelector('.zble-summary-card')?.remove();
+      initialMain?.querySelector('.zble-progress')?.remove();
+      document.getElementById?.('zble-panel-host')?.remove();
+      document.getElementById?.('zble-page-style')?.remove();
+      panelRoot = null;
+    } };
     }
   }
 })();

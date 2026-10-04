@@ -39,6 +39,7 @@ const {
   sanitizeSitePrefs,
   TRANSLATION_KEYS,
   TRANSLATIONS,
+  classifyPage,
 } = require('../booklist-enhancer.user.js');
 const { makeCard, makeBooklist } = require('./dom-fixture.cjs');
 
@@ -558,22 +559,24 @@ test('recognizes the booklist structure before activating on user-added mirrors'
   assert.equal(hasBooklistFingerprint({ querySelector: () => null, querySelectorAll: () => [] }), false);
 });
 
-test('match rules cover six selected booklist hosts and exclude the retired host', () => {
+test('match rules cover six selected sites and exclude the retired host', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
   const matches = [...script.matchAll(/^\/\/ @match\s+(\S+)\s*$/gm)].map(match => match[1]);
   const hosts = matches.map(pattern => {
-    const parts = /^https:\/\/([^/*]+)\/booklist\/\*$/.exec(pattern);
-    assert.ok(parts, `匹配范围必须限定为 HTTPS 书单路径：${pattern}`);
+    const parts = /^https:\/\/([^/*]+)\/\*$/.exec(pattern);
+    assert.ok(parts, `匹配范围必须限定为 HTTPS 全站：${pattern}`);
     return parts[1];
   });
   assert.deepEqual(new Set(hosts), new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la', 'z-library.im', 'z-lib.fm']));
   assert.equal(hosts.length, 6);
   assert.equal(hosts.includes('z-library.biz'), false);
+  assert.match(script, /^\/\/ @noframes\s*$/m);
 });
 
-test('v2 userscript metadata identifies the updated implementation as a development build', () => {
+test('v3 userscript metadata identifies the updated implementation as a development build', () => {
   const script = readFileSync(require.resolve('../booklist-enhancer.user.js'), 'utf8');
-  assert.match(script, /^\/\/ @version\s+2\.0\.1-dev\s*$/m);
+  assert.match(script, /^\/\/ @version\s+3\.0\.0-dev\s*$/m);
+  assert.match(script, /^\/\/ @name\s+Z-lib Booklist Enhancer\s*$/m);
 });
 
 test('user-added non-booklist pages stay inert until a booklist appears', () => {
@@ -600,7 +603,7 @@ test('user-added non-booklist pages stay inert until a booklist appears', () => 
   };
   runInNewContext(script, {
     document,
-    window: { addEventListener() {} },
+    window: { location: { hostname: 'mirror.example', pathname: '/booklist/1' }, addEventListener() {} },
     MutationObserver: class {
       constructor(callback) { observerCallback = callback; }
       observe() {}
