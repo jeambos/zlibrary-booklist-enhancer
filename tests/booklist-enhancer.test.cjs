@@ -40,6 +40,7 @@ const {
   createPanelHeaderToggle,
   createExclusiveDisclosure,
   formatShowMoreAction,
+  showMoreControlState,
   resolveLocale,
   translate,
   sanitizeSitePrefs,
@@ -110,6 +111,18 @@ test('Show more action label uses running warning and cumulative attempts withou
     '连点 5 次 Show more [已点 10 次]');
   assert.equal(formatShowMoreAction('zh-CN', { phase: null, attempted: 10, failed: 2 }),
     '连点 5 次 Show more [已点 10 次，失败 2 次]');
+});
+
+test('native Show more availability gates automatic retry while a stalled button permits only manual reset', () => {
+  const nativeButton = { disabled: true, getAttribute: () => null };
+  assert.deepEqual(showMoreControlState({ nativeButton, resetEligible: true }),
+    { autoDisabled: true, resetDisabled: false });
+  nativeButton.disabled = false;
+  assert.deepEqual(showMoreControlState({ nativeButton, resetEligible: false }),
+    { autoDisabled: false, resetDisabled: true });
+  assert.deepEqual(showMoreControlState({ nativeButton: null, resetEligible: false }),
+    { autoDisabled: true, resetDisabled: true });
+  assert.equal(showMoreControlState({ nativeButton, busy: true }).autoDisabled, true);
 });
 
 test('all supported languages provide each tool-generated translation key', () => {

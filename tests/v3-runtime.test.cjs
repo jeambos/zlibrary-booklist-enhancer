@@ -1,7 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { classifyPage, noticeRemainingSeconds, shouldShowNotice,
-  classifyBatchProgress, classifyShowMoreIdle, runShowMoreFive, collectOpenTargets, canOpenAll,
+  classifyBatchProgress, classifyShowMoreIdle, runShowMoreFive, createShowMoreStallTracker,
+  attemptShowMoreReset, collectOpenTargets, canOpenAll,
   confirmBulkOpen, runOpenAll } = require('../booklist-enhancer.user.js');
 const { makeRuntime } = require('./runtime-fixture.cjs');
 
@@ -201,6 +202,71 @@ test('five-click runner warns, then stops after ten seconds without new book car
   await tick(10000);
   assert.deepEqual(await result, { completed: 0, added: 0, attempted: 1, failed: 1, reason: 'timeout' });
   assert.equal(clicks, 1);
+});
+
+test('manual Show more click enables one reset only after ten seconds with disabled native button', () => {
+  let now = 0;
+  const cards = [{}];
+  const attrs = new Map();
+  const button = { disabled: false, getAttribute: key => attrs.get(key) ?? null,
+    setAttribute: (key, value) => attrs.set(key, value), removeAttribute: key => attrs.delete(key),
+    hasAttribute: key => attrs.has(key) };
+  let currentButton = button;
+  const states = [];
+  const timers = new Map();
+  let timerId = 0;
+  const tracker = createShowMoreStallTracker({ clock: {
+    now: () => now, setTimeout(fn, ms) { const id = ++timerId; timers.set(id, { at: now + ms, fn }); return id; },
+    clearTimeout(id) { timers.delete(id); },
+  }, getCards: () => cards, getButton: () => currentButton, onState: state => states.push(state) });
+  tracker.check();
+  assert.equal(states.at(-1).resetEligible, false);
+  tracker.noteManualClick(button);
+  button.disabled = true;
+  now = 9999; tracker.check();
+  assert.equal(states.at(-1).resetEligible, false);
+  now = 10000; tracker.check();
+  assert.equal(states.at(-1).resetEligible, true);
+  assert.deepEqual(attemptShowMoreReset({ button, baseline: tracker.baseline(),
+    stillEligible: () => tracker.check().resetEligible }), { attempted: true, interactive: true });
+  tracker.consumeReset();
+  assert.equal(button.disabled, false);
+  assert.equal(tracker.check().resetEligible, false);
+  button.disabled = true;
+  now = 20000; tracker.check();
+  assert.equal(tracker.check().resetEligible, false);
+  currentButton = { ...button, disabled: true };
+  assert.equal(tracker.check().resetEligible, false);
+  tracker.dispose();
+  assert.equal(timers.size, 0);
+});
+
+test('late books or natural native recovery revoke reset eligibility', () => {
+  let now = 0;
+  const cards = [{}];
+  const button = { disabled: false, getAttribute: () => null };
+  const tracker = createShowMoreStallTracker({ clock: { now: () => now,
+    setTimeout: () => 1, clearTimeout() {} }, getCards: () => cards, getButton: () => button });
+  tracker.noteToolClick(button);
+  button.disabled = true;
+  now = 10000; assert.equal(tracker.check().resetEligible, true);
+  cards.push({});
+  assert.equal(tracker.check().resetEligible, false);
+  now = 19999; assert.equal(tracker.check().resetEligible, false);
+  button.disabled = false;
+  assert.equal(tracker.check().resetEligible, false);
+  button.disabled = true;
+  now = 30000; assert.equal(tracker.check().resetEligible, false);
+  tracker.dispose();
+});
+
+test('reset does not claim an interactive native button when site CSS still blocks clicks', () => {
+  const button = { disabled: true, style: { pointerEvents: 'none' },
+    getAttribute: () => null };
+  const outcome = attemptShowMoreReset({ button, baseline: { disabled: false, ariaDisabled: null },
+    stillEligible: () => true });
+  assert.deepEqual(outcome, { attempted: true, interactive: false });
+  assert.equal(button.disabled, false);
 });
 
 test('five-click runner waits for actual card additions and disconnects observers', async () => {

@@ -102,6 +102,9 @@
     'auto.warning': ['[Possibly failed; giving up in {seconds}s] {action}', '[可能失败，{seconds} 秒后放弃] {action}', '[可能失敗，{seconds} 秒後放棄] {action}', '[Échec possible ; arrêt dans {seconds} s] {action}', '[Möglicher Fehler; Abbruch in {seconds} s] {action}', '[Возможный сбой; остановка через {seconds} с] {action}', '[失敗の可能性・{seconds} 秒後に中止] {action}', '[실패 가능성; {seconds}초 후 중단] {action}', '[Posible fallo; se detendrá en {seconds} s] {action}', '[Possível falha; desiste em {seconds} s] {action}'],
     'auto.clicked': ['{action} [clicked {attempted} times]', '{action} [已点 {attempted} 次]', '{action} [已點 {attempted} 次]', '{action} [cliqué {attempted} fois]', '{action} [{attempted}-mal geklickt]', '{action} [нажато {attempted} раз]', '{action} [{attempted} 回クリック]', '{action} [{attempted}회 클릭]', '{action} [{attempted} clics]', '{action} [{attempted} cliques]'],
     'auto.clickedFailed': ['{action} [clicked {attempted} times; failed {failed} times]', '{action} [已点 {attempted} 次，失败 {failed} 次]', '{action} [已點 {attempted} 次，失敗 {failed} 次]', '{action} [cliqué {attempted} fois, {failed} échecs]', '{action} [{attempted}-mal geklickt, {failed} Fehler]', '{action} [нажато {attempted} раз, ошибок: {failed}]', '{action} [{attempted} 回クリック、失敗 {failed} 回]', '{action} [{attempted}회 클릭, 실패 {failed}회]', '{action} [{attempted} clics, {failed} fallos]', '{action} [{attempted} cliques, {failed} falhas]'],
+    'auto.resetShowMore': ['Reset Show more availability', '重置 Show more 按钮可用性', '重設 Show more 按鈕可用性', 'Rétablir le bouton Show more', 'Show-more-Schaltfläche zurücksetzen', 'Восстановить кнопку Show more', 'Show more ボタンを再有効化', 'Show more 버튼 사용 가능 상태 재설정', 'Restablecer botón Show more', 'Restaurar botão Show more'],
+    'auto.resetCaution': ['Button restored, but the original request may still be running. Clicking again may load duplicates.', '按钮已尝试恢复；原请求可能仍在处理，再次点击可能重复加载。', '已嘗試恢復按鈕；原請求可能仍在處理，再次點擊可能重複載入。', 'Bouton rétabli ; la requête peut encore être en cours. Un nouveau clic peut créer des doublons.', 'Schaltfläche wieder aktiv; die Anfrage könnte noch laufen. Erneutes Klicken kann duplizieren.', 'Кнопка восстановлена, но запрос может ещё выполняться; повторный щелчок может вызвать дубли.', 'ボタンを復元しましたが、元の処理は継続中かもしれません。再クリックは重複の恐れがあります。', '버튼은 복구했지만 기존 요청이 진행 중일 수 있습니다. 다시 클릭하면 중복될 수 있습니다.', 'Botón restaurado; la solicitud puede seguir activa. Otro clic puede duplicar cargas.', 'Botão restaurado; a solicitação pode continuar. Outro clique pode duplicar cargas.'],
+    'auto.resetFailed': ['Could not restore Show more. Refresh the page.', '无法恢复 Show more，请刷新页面。', '無法恢復 Show more，請重新整理頁面。', 'Impossible de rétablir Show more. Actualisez la page.', 'Show more konnte nicht wiederhergestellt werden. Seite neu laden.', 'Не удалось восстановить Show more. Обновите страницу.', 'Show more を復元できません。ページを再読み込みしてください。', 'Show more를 복구하지 못했습니다. 페이지를 새로고침하세요.', 'No se pudo restaurar Show more. Actualice la página.', 'Não foi possível restaurar Show more. Atualize a página.'],
     'auto.openAll': ['Open all books in current view', '打开当前视图的所有图书页面', '開啟目前檢視的所有圖書頁面', 'Ouvrir tous les livres affichés', 'Alle Bücher der aktuellen Ansicht öffnen', 'Открыть все книги текущего вида', '現在表示中の本をすべて開く', '현재 화면의 모든 책 열기', 'Abrir todos los libros visibles', 'Abrir todos os livros visíveis'],
     'auto.favorite': ['Add visible books to favorites', '批量加入收藏', '批次加入收藏', 'Ajouter les livres visibles aux favoris', 'Sichtbare Bücher zu Favoriten hinzufügen', 'Добавить видимые книги в избранное', '表示中の本をお気に入りに追加', '보이는 책을 즐겨찾기에 추가', 'Añadir libros visibles a favoritos', 'Adicionar livros visíveis aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
@@ -457,6 +460,73 @@
       if (outcome.reason !== 'next') return result(outcome.reason);
     }
     return result('complete');
+  }
+
+  function isNativeShowMoreDisabled(button) {
+    return !!button && (button.disabled === true || button.getAttribute?.('aria-disabled') === 'true');
+  }
+
+  function isNativeShowMoreUnavailable(button) {
+    if (!button || button.hidden || ('isConnected' in button && !button.isConnected) ||
+        isNativeShowMoreDisabled(button) || button.style?.pointerEvents === 'none' ||
+        (button.getClientRects && button.getClientRects().length === 0)) return true;
+    try { return typeof getComputedStyle === 'function' && getComputedStyle(button).pointerEvents === 'none'; }
+    catch { return false; }
+  }
+
+  function showMoreControlState({ nativeButton = null, resetEligible = false, busy = false, bulkBusy = false }) {
+    return { autoDisabled: busy || bulkBusy || isNativeShowMoreUnavailable(nativeButton),
+      resetDisabled: busy || bulkBusy || !resetEligible };
+  }
+
+  function createShowMoreStallTracker({ clock = {
+    now: () => Date.now(), setTimeout: (callback, delay) => setTimeout(callback, delay),
+    clearTimeout: id => clearTimeout(id),
+  }, getCards, getButton, onState = () => {} }) {
+    let attempt = null;
+    let timer = null;
+    let disposed = false;
+    function clearTimer() { if (timer !== null) clock.clearTimeout(timer); timer = null; }
+    function check() {
+      clearTimer();
+      const button = getButton();
+      if (disposed || !attempt || !button || button !== attempt.button || button.hidden ||
+          ('isConnected' in button && !button.isConnected)) attempt = null;
+      if (attempt) {
+        const count = getCards().length;
+        if (count > attempt.count) { attempt.count = count; attempt.changedAt = clock.now(); }
+        if (isNativeShowMoreDisabled(button)) attempt.sawUnavailable = true;
+        else if (attempt.sawUnavailable || clock.now() - attempt.changedAt >= 10000) attempt = null;
+      }
+      const idleMs = attempt ? Math.max(0, clock.now() - attempt.changedAt) : 0;
+      const resetEligible = !!attempt && idleMs >= 10000 && isNativeShowMoreDisabled(button);
+      const state = { resetEligible, idleMs, buttonUnavailable: isNativeShowMoreDisabled(button) };
+      if (attempt && !resetEligible) timer = clock.setTimeout(check, Math.max(1, 10000 - idleMs));
+      onState(state);
+      return state;
+    }
+    function noteClick(button) {
+      if (disposed || !button || button !== getButton() || isNativeShowMoreDisabled(button)) return;
+      attempt = { button, count: getCards().length, changedAt: clock.now(), sawUnavailable: false,
+        baseline: { disabled: button.disabled === true, ariaDisabled: button.getAttribute?.('aria-disabled') ?? null } };
+      check();
+    }
+    return {
+      noteManualClick: noteClick, noteToolClick: noteClick, check,
+      baseline: () => attempt?.baseline ?? null,
+      consumeReset() { attempt = null; check(); },
+      dispose() { disposed = true; attempt = null; clearTimer(); },
+    };
+  }
+
+  function attemptShowMoreReset({ button, baseline, stillEligible }) {
+    if (!button || !baseline || !stillEligible()) return { attempted: false, interactive: false };
+    if (baseline.disabled === false && button.disabled === true) button.disabled = false;
+    if (button.getAttribute?.('aria-disabled') === 'true' && baseline.ariaDisabled !== 'true') {
+      if (baseline.ariaDisabled === null) button.removeAttribute?.('aria-disabled');
+      else button.setAttribute?.('aria-disabled', baseline.ariaDisabled);
+    }
+    return { attempted: true, interactive: !isNativeShowMoreUnavailable(button) };
   }
 
   function collectOpenTargets(cards, origin, isSiteVisible) {
@@ -974,6 +1044,7 @@
       createExclusiveDisclosure,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
       classifyShowMoreIdle, formatShowMoreAction, runShowMoreFive,
+      createShowMoreStallTracker, attemptShowMoreReset, showMoreControlState,
       collectOpenTargets, canOpenAll, confirmBulkOpen, runOpenAll,
     };
   }
@@ -1075,6 +1146,9 @@
     let disposed = false;
     let lastPanelData = null;
     let showMoreTask = null;
+    let showMoreBusy = false;
+    let showMoreTracker = null;
+    let stallState = { resetEligible: false };
     let autoStatus = null;
     let autoAttempts = 0;
     let autoFailures = 0;
@@ -1185,6 +1259,22 @@
       button.title = suffix;
       button.dataset.state = autoStatus?.phase === 'warning' || autoStatus?.phase === 'running'
         ? 'running' : autoLastFailed ? 'failed' : '';
+    }
+
+    function syncShowMoreControls() {
+      if (!panelRoot) return;
+      const state = showMoreControlState({ nativeButton: isCurrentBooklist()
+        ? initialMain?.querySelector('.page-load-more') : null,
+      resetEligible: stallState.resetEligible, busy: showMoreBusy, bulkBusy });
+      panelRoot.querySelector('#zble-show-more-five').disabled = state.autoDisabled;
+      panelRoot.querySelector('#zble-reset-show-more').disabled = state.resetDisabled;
+    }
+
+    function onNativeShowMoreClick(event) {
+      if (!event.isTrusted || !isCurrentBooklist()) return;
+      const button = event.target?.closest?.('.page-load-more');
+      if (button && button === initialMain?.querySelector('.page-load-more'))
+        showMoreTracker?.noteManualClick(button);
     }
 
     function isCardSiteVisible(card) {
@@ -1318,6 +1408,7 @@
       renderAutoStatus();
       renderBulkStatus();
       syncBulkControl();
+      syncShowMoreControls();
     }
 
     function refresh() {
@@ -1374,6 +1465,8 @@
       renderPanelState(context, unknownCards, shownUnavailable);
       lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main };
       syncBulkControl();
+      showMoreTracker?.check();
+      syncShowMoreControls();
       if (pendingShadow && shadowRetries < 20 && !retryId) {
         shadowRetries++;
         retryId = setTimeout(() => { retryId = null; scheduleRefresh(); }, 250);
@@ -1392,8 +1485,12 @@
       if (!main) return;
       startupObserver?.disconnect();
       startupObserver = null;
-      mainObserver = new MutationObserver(records => { if (mutationNeedsRefresh(records)) scheduleRefresh(); });
-      mainObserver.observe(main, { childList: true, subtree: true, attributes: true, attributeFilter: ['extension', 'year', 'language'] });
+      mainObserver = new MutationObserver(records => {
+        showMoreTracker?.check();
+        if (mutationNeedsRefresh(records)) scheduleRefresh();
+      });
+      mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
+        attributeFilter: ['extension', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
         parentObserver.observe(main.parentElement, { childList: true });
@@ -1460,7 +1557,7 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore" aria-live="polite">连点 5 次 Show more</button><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
+          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore" aria-live="polite">连点 5 次 Show more</button><button id="zble-reset-show-more" class="action-button" type="button" data-i18n="auto.resetShowMore" disabled>重置 Show more 按钮可用性</button><div id="zble-reset-hint" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前视图的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -1518,12 +1615,29 @@
         });
       }
       const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
+      showMoreTracker = createShowMoreStallTracker({ getCards: () => getActiveCards(document),
+        getButton: () => isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null,
+        onState(state) { stallState = state; syncShowMoreControls(); } });
+      initialMain?.addEventListener('click', onNativeShowMoreClick, true);
+      const resetButton = panelRoot.querySelector('#zble-reset-show-more');
+      resetButton.addEventListener('click', () => {
+        if (!isCurrentBooklist()) return;
+        const button = initialMain?.querySelector('.page-load-more');
+        const result = attemptShowMoreReset({ button, baseline: showMoreTracker.baseline(),
+          stillEligible: () => showMoreTracker.check().resetEligible });
+        if (!result.attempted) return;
+        showMoreTracker.consumeReset();
+        setText('#zble-reset-hint', translate(locale, result.interactive ? 'auto.resetCaution' : 'auto.resetFailed'));
+        syncShowMoreControls();
+      });
+      showMoreTracker.check();
       showMoreButton.addEventListener('click', () => {
         if (showMoreTask || bulkBusy || !isCurrentBooklist()) return;
+        showMoreBusy = true;
         autoLastFailed = false;
         autoStatus = { phase: 'running' };
         renderAutoStatus();
-        showMoreButton.disabled = true;
+        syncShowMoreControls();
         syncBulkControl();
         const mainForTask = document.querySelector('.booklist-main.active');
         const listForTask = mainForTask?.querySelector('.readlist-view');
@@ -1537,6 +1651,7 @@
           },
           isSourceAlive: isCurrentBooklist,
           signal: automationAbort.signal,
+          onAttempt(button) { showMoreTracker?.noteToolClick(button); },
           onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
         }).then(result => {
           autoAttempts += result.attempted;
@@ -1547,7 +1662,8 @@
           return result;
         }).finally(() => {
           showMoreTask = null;
-          if (!disposed) showMoreButton.disabled = false;
+          showMoreBusy = false;
+          if (!disposed) syncShowMoreControls();
           syncBulkControl();
         });
       });
@@ -1558,7 +1674,7 @@
         if (!urls.length) { syncBulkControl(); return; }
         bulkBusy = true;
         openAllButton.disabled = true;
-        showMoreButton.disabled = true;
+        syncShowMoreControls();
         bulkMessageKey = '';
         renderBulkStatus();
         try {
@@ -1585,7 +1701,7 @@
           renderBulkStatus();
         } finally {
           bulkBusy = false;
-          if (!disposed) showMoreButton.disabled = false;
+          if (!disposed) syncShowMoreControls();
           syncBulkControl();
         }
       });
@@ -1710,6 +1826,7 @@
     function init() {
       if (!document.body || disposed) return;
       createPanel();
+      syncShowMoreControls();
       startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentBooklist()) onStale(); });
       startupObserver.observe(document.documentElement, { childList: true, subtree: true });
       attachObservers();
@@ -1728,6 +1845,8 @@
       if (disposed) return;
       disposed = true;
       automationAbort.abort();
+      showMoreTracker?.dispose();
+      initialMain?.removeEventListener?.('click', onNativeShowMoreClick, true);
       document.removeEventListener?.('DOMContentLoaded', init);
       document.removeEventListener('marksLoaded', onMarksLoaded);
       clearTimeout(timeoutId);
