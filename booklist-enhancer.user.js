@@ -2,10 +2,90 @@
 // @license      GPL-3.0-or-later
 // @name         Z-lib Booklist Enhancer
 // @name:zh-CN   Z-Library 书单增强
+// @name:zh-TW   Z-Library 書單增強
+// @name:fr      Listes de livres Z-Library améliorées
+// @name:de      Z-Library: Erweiterte Bücherlisten
+// @name:ru      Улучшение списков книг Z-Library
+// @name:ja      Z-Library 書籍リスト拡張
+// @name:ko      Z-Library 책 목록 개선
+// @name:es      Mejora de listas de libros de Z-Library
+// @name:pt-BR   Melhorias para listas de livros da Z-Library
+// @name:ar      تحسين قوائم كتب Z-Library
+// @name:be      Паляпшэнне спісаў кніг Z-Library
+// @name:bg      Подобрени списъци с книги в Z-Library
+// @name:ckb     باشترکردنی لیستی کتێبەکانی Z-Library
+// @name:cs      Vylepšení seznamů knih Z-Library
+// @name:da      Forbedrede boglister på Z-Library
+// @name:el      Βελτιωμένες λίστες βιβλίων Z-Library
+// @name:eo      Plibonigilo por librolistoj de Z-Library
+// @name:es-419  Mejoras para listas de libros de Z-Library
+// @name:fi      Z-Library-kirjalistojen parannukset
+// @name:fil     Pagpapahusay ng mga listahan ng aklat sa Z-Library
+// @name:fr-CA   Amélioration des listes de livres Z-Library
+// @name:he      שיפור רשימות הספרים של Z-Library
+// @name:hr      Poboljšanja popisa knjiga na Z-Libraryju
+// @name:hu      Z-Library-könyvlisták fejlesztése
+// @name:id      Peningkatan Daftar Buku Z-Library
+// @name:it      Liste di libri Z-Library migliorate
+// @name:ka      Z-Library-ის წიგნების სიების გაუმჯობესება
+// @name:mr      Z-Library पुस्तक यादी सुधारक
+// @name:nb      Forbedrede boklister på Z-Library
+// @name:nl      Verbeterde boekenlijsten van Z-Library
+// @name:pl      Ulepszone listy książek Z-Library
+// @name:pt      Melhorias para listas de livros da Z-Library
+// @name:ro      Îmbunătățiri pentru listele de cărți Z-Library
+// @name:sk      Vylepšenie zoznamov kníh Z-Library
+// @name:sr      Побољшања спискова књига Z-Library
+// @name:sv      Förbättrade boklistor på Z-Library
+// @name:th      ปรับปรุงรายการหนังสือ Z-Library
+// @name:tr      Z-Library Kitap Listesi Geliştirici
+// @name:ug      Z-Library كىتاب تىزىملىكىنى ياخشىلاش
+// @name:uk      Покращення списків книг Z-Library
+// @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.1.0
+// @version      3.1.1
 // @description      Enhance Z-Library booklist pages with richer metadata, filtering, loading progress, optional auto-loading, and bulk book-page opening.
 // @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
+// @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
+// @description:fr     Améliore les listes de livres Z-Library avec des informations supplémentaires, des filtres, la progression du chargement, le chargement automatique facultatif et l’ouverture groupée des pages de livres.
+// @description:de     Erweitert Z-Library-Bücherlisten um zusätzliche Angaben, Filter und Ladefortschritt sowie optionales automatisches Nachladen und gebündeltes Öffnen von Buchseiten.
+// @description:ru     Дополняет списки книг Z-Library сведениями, фильтрами и ходом загрузки, а также позволяет по желанию автоматически загружать новые книги и открывать страницы книг группами.
+// @description:ja     Z-Library の書籍リストに詳細情報、絞り込み、読み込み状況を追加。必要に応じて追加読み込みの自動化や書籍ページの一括表示もできます。
+// @description:ko     Z-Library 책 목록에 추가 정보, 필터, 로딩 진행 상황을 표시하고 필요할 때 자동 추가 로드와 책 페이지 일괄 열기를 사용할 수 있습니다.
+// @description:es     Mejora las listas de Z-Library con más datos, filtros y progreso de carga; permite cargar más libros automáticamente y abrir páginas de libros en lote de forma opcional.
+// @description:pt-BR  Melhora as listas de livros da Z-Library com mais informações, filtros e progresso de carregamento; permite carregar mais livros automaticamente e abrir páginas em lote de forma opcional.
+// @description:ar     يعزّز قوائم الكتب في Z-Library بمعلومات إضافية وفلاتر وتقدّم التحميل، مع خيار تحميل المزيد تلقائيًا وفتح صفحات الكتب دفعة واحدة.
+// @description:be     Дадае ў спісы кніг Z-Library дадатковыя звесткі, фільтры і паказ ходу загрузкі, а таксама неабавязковую аўтаматычную падгрузку і пакетнае адкрыццё старонак кніг.
+// @description:bg     Добавя към списъците с книги в Z-Library повече информация, филтри и напредък на зареждането, както и незадължително автоматично зареждане и групово отваряне на страниците на книгите.
+// @description:ckb    زانیاریی زیاتر، پاڵاوتن، پێشکەوتنی بارکردن و هەڵبژاردەکانی بارکردنی خۆکار و کردنەوەی بەکۆمەڵی لاپەڕەی کتێب بۆ لیستەکانی Z-Library زیاد دەکات.
+// @description:cs     Rozšiřuje seznamy knih Z-Library o další údaje, filtry a průběh načítání. Volitelně umožňuje automatické načítání dalších knih a hromadné otevírání jejich stránek.
+// @description:da     Udvider Z-Librarys boglister med flere oplysninger, filtre og indlæsningsstatus samt valgfri automatisk indlæsning og samlet åbning af bogsider.
+// @description:el     Προσθέτει περισσότερες πληροφορίες, φίλτρα και πρόοδο φόρτωσης στις λίστες βιβλίων του Z-Library, με προαιρετική αυτόματη φόρτωση περισσότερων βιβλίων και μαζικό άνοιγμα των σελίδων τους.
+// @description:eo     Plibonigas la librolistojn de Z-Library per pliaj informoj, filtriloj kaj progreso de ŝargado; laŭvole aŭtomate ŝargas pliajn librojn kaj amase malfermas libro-paĝojn.
+// @description:es-419 Mejora las listas de Z-Library con más datos, filtros y progreso de carga; permite cargar más libros automáticamente y abrir páginas de libros en lote de forma opcional.
+// @description:fi     Lisää Z-Libraryn kirjalistoihin tietoja, suodattimia ja latauksen edistymisen seurannan sekä valinnaisen automaattisen lisälatauksen ja kirjasivujen avaamisen joukolla.
+// @description:fil    Nagdaragdag ng impormasyon, mga filter, at progreso ng pag-load sa mga listahan ng aklat sa Z-Library; maaari ring awtomatikong mag-load ng higit pang aklat at magbukas ng maraming pahina ng aklat.
+// @description:fr-CA  Améliore les listes de livres Z-Library avec des renseignements supplémentaires, des filtres, la progression du chargement, le chargement automatique facultatif et l’ouverture groupée des pages de livres.
+// @description:he     מוסיף לרשימות הספרים של Z-Library פרטים, סינון והתקדמות טעינה, עם אפשרות לטעינה אוטומטית של ספרים נוספים ולפתיחה מרוכזת של דפי ספרים.
+// @description:hr     Dodaje više podataka, filtre i prikaz napretka učitavanja popisima knjiga na Z-Libraryju, uz opcionalno automatsko učitavanje i skupno otvaranje stranica knjiga.
+// @description:hu     További adatokat, szűrőket és betöltési folyamatjelzést ad a Z-Library könyvlistáihoz; igény szerint automatikus további betöltést és a könyvoldalak tömeges megnyitását is kínálja.
+// @description:id     Menambahkan informasi buku, filter, dan progres pemuatan ke daftar buku Z-Library, serta opsi memuat lebih banyak buku secara otomatis dan membuka halaman buku secara massal.
+// @description:it     Aggiunge dettagli, filtri e avanzamento del caricamento alle liste di libri di Z-Library, con opzioni per caricare automaticamente altri libri e aprire più pagine di libri insieme.
+// @description:ka     Z-Library-ის წიგნების სიებს ამატებს მეტ ინფორმაციას, ფილტრებსა და ჩატვირთვის პროგრესს; სურვილისამებრ ხელმისაწვდომია ავტომატური დამატებითი ჩატვირთვა და წიგნების გვერდების ჯგუფურად გახსნა.
+// @description:mr     Z-Library पुस्तक याद्यांमध्ये अधिक माहिती, फिल्टर व लोडिंगची प्रगती दाखवते; ऐच्छिक स्वयंचलित पुढील लोडिंग आणि पुस्तकांची पाने एकत्र उघडण्याची सुविधा देते.
+// @description:nb     Gir Z-Librarys boklister mer informasjon, filtre og visning av lastefremdrift, med valgfri automatisk innlasting av flere bøker og åpning av mange boksider samtidig.
+// @description:nl     Voegt extra boekgegevens, filters en laadvoortgang toe aan Z-Library-boekenlijsten, met optioneel automatisch meer laden en het tegelijk openen van boekpagina's.
+// @description:pl     Dodaje do list książek Z-Library więcej informacji, filtry i postęp wczytywania, a opcjonalnie także automatyczne doładowywanie oraz zbiorcze otwieranie stron książek.
+// @description:pt     Melhora as listas de livros da Z-Library com mais informações, filtros e progresso de carregamento; permite carregar mais livros automaticamente e abrir páginas em conjunto, se desejado.
+// @description:ro     Adaugă detalii, filtre și progresul încărcării în listele de cărți Z-Library, cu opțiuni de încărcare automată a mai multor cărți și deschidere în grup a paginilor acestora.
+// @description:sk     Pridáva do zoznamov kníh Z-Library ďalšie údaje, filtre a priebeh načítania; voliteľne automaticky načíta ďalšie knihy a hromadne otvorí ich stránky.
+// @description:sr     Додаје више података, филтере и приказ напретка учитавања списковима књига на Z-Library, уз опционално аутоматско учитавање и групно отварање страница књига.
+// @description:sv     Ger Z-Librarys boklistor fler uppgifter, filter och laddningsförlopp samt valfri automatisk inläsning av fler böcker och öppning av flera boksidor samtidigt.
+// @description:th     เพิ่มข้อมูลหนังสือ ตัวกรอง และความคืบหน้าการโหลดให้รายการหนังสือของ Z-Library พร้อมตัวเลือกโหลดหนังสือเพิ่มเติมอัตโนมัติและเปิดหน้าหนังสือหลายหน้าในคราวเดียว
+// @description:tr     Z-Library kitap listelerine ek bilgiler, filtreler ve yükleme ilerlemesi ekler; isteğe bağlı otomatik daha fazla yükleme ve kitap sayfalarını toplu açma sunar.
+// @description:ug     Z-Library كىتاب تىزىملىكىگە تېخىمۇ كۆپ ئۇچۇر، سۈزگۈچ ۋە يۈكلەش جەريانىنى قوشىدۇ؛ خالىغاندا ئاپتوماتىك داۋاملىق يۈكلەش ۋە كىتاب بەتلىرىنى توپلاپ ئېچىشقا بولىدۇ.
+// @description:uk     Додає до списків книг Z-Library докладніші відомості, фільтри та показ поступу завантаження, а також необов’язкове автоматичне підвантаження й групове відкриття сторінок книг.
+// @description:vi     Bổ sung thông tin sách, bộ lọc và tiến trình tải cho danh sách Z-Library; tùy chọn tự động tải thêm sách và mở hàng loạt trang sách.
 // @match        https://z-lib.sk/*
 // @match        https://z-library.sk/*
 // @match        https://1lib.sk/*
