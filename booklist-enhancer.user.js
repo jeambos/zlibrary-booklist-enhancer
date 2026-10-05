@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.2.0
+// @version      3.2.1
 // @description      Enhance Z-Library booklist pages with richer metadata, filtering, loading progress, optional auto-loading, and bulk book-page opening.
 // @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
 // @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
@@ -1189,7 +1189,7 @@
     if (!style) {
       style = card.ownerDocument.createElement('style');
       style.id = 'zble-author-style';
-      style.textContent = ':host([data-zble-full-author]) .book-info{height:auto!important;min-height:88px;overflow:visible!important}:host([data-zble-full-author]) .book-info .author,:host([data-zble-full-author]) .book-info .authors,:host([data-zble-full-author]) .book-info .book-author{max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important;white-space:normal!important}';
+      style.textContent = ':host([data-zble-full-author]) .book-info{height:auto!important;min-height:88px;overflow:visible!important}:host([data-zble-full-author]) .book-info .author,:host([data-zble-full-author]) .book-info .authors,:host([data-zble-full-author]) .book-info .book-author{height:auto!important;max-height:none!important;overflow:visible!important;-webkit-line-clamp:unset!important;display:block!important;white-space:normal!important}';
       root.append(style);
     }
     card.toggleAttribute('data-zble-full-author', !!enabled);
