@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.1.2
+// @version      3.2.0
 // @description      Enhance Z-Library booklist pages with richer metadata, filtering, loading progress, optional auto-loading, and bulk book-page opening.
 // @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
 // @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
@@ -125,6 +125,8 @@
     includeMissingYear: false,
     panelDock: null,
     uiLanguage: 'auto',
+    showMoreCount1: 5,
+    showMoreCount2: 10,
   });
 
   const LOCALES = ['en', 'zh-CN', 'zh-TW', 'fr', 'de', 'ru', 'ja', 'ko', 'es', 'pt-BR'];
@@ -133,6 +135,7 @@
     'section.filters': ['Filters', '筛选器', '篩選器', 'Filtres', 'Filter', 'Фильтры', 'フィルター', '필터', 'Filtros', 'Filtros'],
     'section.info': ['Information display', '信息显示', '資訊顯示', 'Affichage des informations', 'Informationsanzeige', 'Отображение сведений', '情報表示', '정보 표시', 'Información visible', 'Exibição de informações'],
     'section.automation': ['Automation (beta)', '自动化（beta）', '自動化（beta）', 'Automatisation (bêta)', 'Automatisierung (Beta)', 'Автоматизация (бета)', '自動化（ベータ）', '자동화(베타)', 'Automatización (beta)', 'Automação (beta)'],
+    'section.automationConfig': ['Automation settings', '自动化设置', '自動化設定', 'Réglages de l’automatisation', 'Automatisierungseinstellungen', 'Настройки автоматизации', '自動操作の設定', '자동화 설정', 'Configuración de automatización', 'Configurações da automação'],
     'section.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
     'section.configuration': ['Filter configuration', '筛选配置', '篩選配置', 'Configuration du filtre', 'Filterkonfiguration', 'Настройка фильтра', 'フィルター設定', '필터 구성', 'Configuración del filtro', 'Configuração do filtro'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
@@ -157,6 +160,9 @@
     'setting.onlyUndownloaded': ['Not downloaded', '仅未下载', '僅未下載', 'Non téléchargés', 'Nicht heruntergeladen', 'Не загруженные', '未ダウンロード', '다운로드하지 않은 책', 'No descargados', 'Não baixados'],
     'setting.onlyDownloaded': ['Downloaded', '仅已下载', '僅已下載', 'Téléchargés', 'Heruntergeladen', 'Загруженные', 'ダウンロード済み', '다운로드한 책', 'Descargados', 'Baixados'],
     'setting.yearRange': ['Publication year range (inclusive)', '出版年份范围（含端点）', '出版年份範圍（含端點）', 'Années de publication (bornes incluses)', 'Erscheinungsjahre (einschließlich Grenzen)', 'Годы издания (границы включены)', '出版年の範囲（両端を含む）', '출판 연도 범위(양끝 포함)', 'Años de publicación (límites incluidos)', 'Anos de publicação (limites incluídos)'],
+    'setting.showMoreCount1': ['Clicker 1: number of clicks', '连点器 1 次数', '連點器 1 次數', 'Cliqueur 1 : nombre de clics', 'Klickfolge 1: Anzahl', 'Серия нажатий 1: число нажатий', '連続クリック 1：回数', '연속 클릭 1: 횟수', 'Clics automáticos 1: cantidad', 'Cliques automáticos 1: quantidade'],
+    'setting.showMoreCount2': ['Clicker 2: number of clicks', '连点器 2 次数', '連點器 2 次數', 'Cliqueur 2 : nombre de clics', 'Klickfolge 2: Anzahl', 'Серия нажатий 2: число нажатий', '連続クリック 2：回数', '연속 클릭 2: 횟수', 'Clics automáticos 2: cantidad', 'Cliques automáticos 2: quantidade'],
+    'setting.continuousEnabled': ['Enable continuous clicking on this site', '在本站启用持续连点', '在本站啟用持續連點', 'Activer les clics continus sur ce site', 'Fortlaufendes Klicken auf dieser Website aktivieren', 'Включить непрерывные нажатия на этом сайте', 'このサイトで連続クリックを有効にする', '이 사이트에서 연속 클릭 사용', 'Activar los clics continuos en este sitio', 'Ativar cliques contínuos neste site'],
     'setting.minYear': ['Earliest year', '起始年份', '起始年份', 'Première année', 'Frühestes Jahr', 'Начальный год', '開始年', '시작 연도', 'Año inicial', 'Ano inicial'],
     'setting.maxYear': ['Latest year', '截止年份', '截止年份', 'Dernière année', 'Spätestes Jahr', 'Конечный год', '終了年', '마지막 연도', 'Año final', 'Ano final'],
     'setting.yearPlaceholder': ['Blank = no limit', '留空不限', '留空不限', 'Vide = sans limite', 'Leer = keine Grenze', 'Пусто = без ограничения', '空欄＝制限なし', '빈칸 = 제한 없음', 'Vacío = sin límite', 'Vazio = sem limite'],
@@ -182,16 +188,27 @@
     'progress.zero': ['No books loaded; about {remaining} pages left; about {pages} pages total', '尚无已加载书籍，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '尚無已載入書籍，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Aucun livre chargé ; environ {remaining} pages restantes sur {pages} au total', 'Noch keine Bücher geladen; etwa {remaining} Seiten übrig; insgesamt etwa {pages} Seiten', 'Книги ещё не загружены; осталось около {remaining} страниц; всего около {pages} страниц', 'まだ本を読み込んでいません。残り約 {remaining} ページ、全 {pages} ページ', '아직 로드된 책 없음; 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Aún no hay libros cargados; quedan unas {remaining} páginas de unas {pages} en total', 'Nenhum livro carregado; faltam cerca de {remaining} páginas de cerca de {pages} no total'],
     'progress.unknown': ['Estimated from 20 books per page: about {expansions} extra loads; around page {current}; total pages unknown', '按每页 20 本估算：额外加载约 {expansions} 批；当前约第 {current} 页；总页数未知', '按每頁 20 本估算：額外載入約 {expansions} 批；目前約第 {current} 頁；總頁數未知', 'Estimation à 20 livres par page : environ {expansions} chargements supplémentaires ; page {current} ; total inconnu', 'Geschätzt bei 20 Büchern pro Seite: etwa {expansions} weitere Ladevorgänge; Seite {current}; Gesamtzahl unbekannt', 'Оценка по 20 книг на страницу: около {expansions} дополнительных загрузок; страница {current}; всего страниц неизвестно', '1ページ20冊で推定：追加読込約{expansions}回、現在約{current}ページ、総ページ数は不明', '페이지당 20권 기준 추정: 추가 로드 약 {expansions}회, 현재 약 {current}페이지, 총 페이지 수 알 수 없음', 'Estimación de 20 libros por página: unas {expansions} cargas adicionales; página {current}; total desconocido', 'Estimativa de 20 livros por página: cerca de {expansions} carregamentos extras; página {current}; total desconhecido'],
     'progress.zeroUnknown': ['No books loaded; total pages unknown', '尚无已加载书籍；书单总页数未知', '尚無已載入書籍；書單總頁數未知', 'Aucun livre chargé ; nombre total de pages inconnu', 'Noch keine Bücher geladen; Gesamtzahl der Seiten unbekannt', 'Книги ещё не загружены; всего страниц неизвестно', 'まだ本を読み込んでいません。総ページ数は不明', '아직 로드된 책 없음; 총 페이지 수 알 수 없음', 'Aún no hay libros cargados; total de páginas desconocido', 'Nenhum livro carregado; total de páginas desconhecido'],
-    'auto.showMore': ['Click Show more up to 5 times', '依次点击 Show more，最多 5 次', '依序點擊 Show more，最多 5 次', 'Cliquer jusqu’à 5 fois sur Show more', 'Show more bis zu 5-mal anklicken', 'Нажать Show more до 5 раз', 'Show more を順に最大5回クリック', 'Show more를 차례로 최대 5번 클릭', 'Pulsar Show more hasta 5 veces', 'Clicar em Show more até 5 vezes'],
+    'auto.showMore': ['Click Show more {count} times', '连点 {count} 次 Show more', '連點 {count} 次 Show more', 'Cliquer {count} fois sur Show more', 'Show more {count}-mal anklicken', 'Нажать Show more {count} раз', 'Show more を {count} 回クリック', 'Show more를 {count}번 클릭', 'Pulsar Show more {count} veces', 'Clicar em Show more {count} vezes'],
+    'auto.showMoreOne': ['Click Show more once', '连点 1 次 Show more', '連點 1 次 Show more', 'Cliquer 1 fois sur Show more', 'Show more 1-mal anklicken', 'Нажать Show more 1 раз', 'Show more を 1 回クリック', 'Show more를 1번 클릭', 'Pulsar Show more 1 vez', 'Clicar em Show more 1 vez'],
+    'auto.continuous': ['Keep clicking Show more until the whole booklist is displayed', '持续连点 Show more，直到书单显示完毕', '持續連點 Show more，直到書單顯示完畢', 'Cliquer sur Show more jusqu’à afficher toute la liste de livres', 'Show more anklicken, bis die gesamte Bücherliste angezeigt wird', 'Нажимать Show more, пока не отобразится весь список книг', '書籍リスト全体が表示されるまで Show more を繰り返しクリック', '전체 도서 목록이 표시될 때까지 Show more 계속 클릭', 'Pulsar Show more hasta que se muestre toda la lista de libros', 'Clicar em Show more até que toda a lista de livros seja exibida'],
+    'auto.showMoreProgress': ['clicked {clicked}, {remaining} left', '已点 {clicked} 次，剩余 {remaining} 次', '已點 {clicked} 次，剩餘 {remaining} 次', '{clicked} clics, encore {remaining}', '{clicked} geklickt, {remaining} übrig', 'нажато {clicked}, осталось {remaining}', '{clicked} 回クリック、残り {remaining} 回', '{clicked}회 클릭, {remaining}회 남음', '{clicked} clics, faltan {remaining}', '{clicked} cliques, faltam {remaining}'],
+    'auto.continuousProgress': ['clicked {clicked} times', '已点 {clicked} 次', '已點 {clicked} 次', '{clicked} clics', '{clicked}-mal geklickt', 'нажато {clicked} раз', '{clicked} 回クリック', '{clicked}회 클릭', '{clicked} clics', '{clicked} cliques'],
+    'auto.countInvalid': ['Enter a whole number from 1–50; using the default of {default} clicks.', '请输入 1–50 的整数；当前使用默认 {default} 次。', '請輸入 1–50 的整數；目前使用預設的 {default} 次。', 'Saisissez un entier de 1 à 50 ; la valeur par défaut de {default} clics est utilisée.', 'Ganze Zahl von 1 bis 50 eingeben; derzeit gelten die voreingestellten {default} Klicks.', 'Введите целое число от 1 до 50; пока используется значение по умолчанию: {default}.', '1～50 の整数を入力してください。現在は既定の {default} 回で実行します。', '1~50의 정수를 입력하세요. 현재 기본값 {default}회로 실행합니다.', 'Introduce un número entero del 1 al 50; se usa el valor predeterminado de {default} clics.', 'Digite um número inteiro de 1 a 50; o padrão de {default} cliques está em uso.'],
+    'auto.continuousDisabled': ['Enable continuous clicking for this site in Automation settings.', '请先在自动化设置中启用本站持续连点。', '請先在自動化設定中啟用本站持續連點。', 'Activez les clics continus pour ce site dans les réglages de l’automatisation.', 'Fortlaufendes Klicken für diese Website in den Automatisierungseinstellungen aktivieren.', 'Включите непрерывные нажатия для этого сайта в настройках автоматизации.', '自動操作の設定で、このサイトの連続クリックを有効にしてください。', '자동화 설정에서 이 사이트의 연속 클릭을 사용 설정하세요.', 'Activa los clics continuos para este sitio en la configuración de automatización.', 'Ative os cliques contínuos para este site nas configurações da automação.'],
+    'auto.continuousWarning': ['Keep clicking Show more until the button disappears? This may take time or trigger site limits.', '将持续点击 Show more 直到按钮消失。可能耗时较长，也可能触发站点限制。继续？', '將持續點擊 Show more 直到按鈕消失。可能耗時較長，也可能觸發網站限制。繼續？', 'Cliquer sur Show more jusqu’à disparition du bouton ? Cela peut prendre du temps ou déclencher des limites du site.', 'Show more anklicken, bis die Schaltfläche verschwindet? Dies kann dauern oder Zugriffsbeschränkungen auslösen.', 'Нажимать Show more, пока кнопка не исчезнет? Это может занять время или вызвать ограничения сайта.', 'Show more ボタンが消えるまでクリックしますか？時間がかかるか、サイトの制限に達する可能性があります。', 'Show more 버튼이 사라질 때까지 클릭할까요? 시간이 걸리거나 사이트 제한이 적용될 수 있습니다.', '¿Pulsar Show more hasta que desaparezca el botón? Puede tardar o activar límites del sitio.', 'Clicar em Show more até o botão desaparecer? Isso pode demorar ou acionar limites do site.'],
+    'auto.showMoreCountMismatch': ['The booklist is displayed, but the page has {loaded} books; expected {expected}.', '书单显示完毕，但页面有 {loaded} 本，预期为 {expected} 本，数量不符。', '書單顯示完畢，但頁面有 {loaded} 本，預期為 {expected} 本，數量不符。', 'La liste de livres est entièrement affichée, mais la page contient {loaded} livres au lieu des {expected} attendus.', 'Die Bücherliste wird vollständig angezeigt, aber die Seite enthält {loaded} statt der erwarteten {expected} Bücher.', 'Список книг показан полностью, но на странице {loaded} книг вместо ожидаемых {expected}.', '書籍リストの表示は終了しましたが、ページには {loaded} 冊あり、予想された {expected} 冊と一致しません。', '도서 목록 표시가 끝났지만 페이지에는 {loaded}권이 있으며 예상한 {expected}권과 다릅니다.', 'Se muestra toda la lista, pero la página tiene {loaded} libros en vez de los {expected} esperados.', 'A lista inteira foi exibida, mas a página tem {loaded} livros em vez dos {expected} esperados.'],
+    'auto.showMoreCountUnknown': ['The whole booklist is displayed; its expected total cannot be checked.', '书单显示完毕；无法核对预期总数。', '書單顯示完畢；無法核對預期總數。', 'Toute la liste de livres est affichée ; son total attendu ne peut pas être vérifié.', 'Die gesamte Bücherliste wird angezeigt; die erwartete Gesamtzahl lässt sich nicht prüfen.', 'Весь список книг показан; ожидаемое общее число проверить нельзя.', '書籍リスト全体の表示は終了しましたが、予想総数は確認できません。', '전체 도서 목록 표시가 끝났지만 예상 총수는 확인할 수 없습니다.', 'Se muestra toda la lista de libros; no se puede comprobar el total esperado.', 'A lista inteira foi exibida; não é possível conferir o total esperado.'],
+    'auto.stop': ['Stop clicking', '停止连点', '停止連點', 'Arrêter les clics', 'Klicken stoppen', 'Остановить нажатия', '連続クリックを停止', '연속 클릭 중지', 'Detener los clics', 'Parar os cliques'],
+    'auto.cancelled': ['Stopped by you.', '已手动停止。', '已手動停止。', 'Arrêté à votre demande.', 'Von Ihnen gestoppt.', 'Остановлено вами.', '手動で停止しました。', '사용자가 중지했습니다.', 'Detenido por ti.', 'Interrompido por você.'],
     'auto.running': ['[Running] {action}', '[运行中] {action}', '[執行中] {action}', '[En cours] {action}', '[Läuft] {action}', '[Выполняется] {action}', '[実行中] {action}', '[실행 중] {action}', '[En curso] {action}', '[Em execução] {action}'],
     'auto.warning': ['[Possible failure; stopping in {seconds}s] {action}', '[可能失败，{seconds} 秒后停止] {action}', '[可能失敗，{seconds} 秒後停止] {action}', '[Échec possible ; arrêt dans {seconds} s] {action}', '[Möglicher Fehler; Stopp in {seconds} s] {action}', '[Возможный сбой; остановка через {seconds} с] {action}', '[失敗の可能性・{seconds} 秒後に中止] {action}', '[실패 가능성; {seconds}초 후 중단] {action}', '[Posible fallo; se detendrá en {seconds} s] {action}', '[Possível falha; parada em {seconds} s] {action}'],
-    'auto.clicked': ['{action} [attempted {attempted} times]', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} [{attempted} tentatives]', '{action} [{attempted} Versuche]', '{action} [попыток: {attempted}]', '{action} [試行 {attempted} 回]', '{action} [시도 {attempted}회]', '{action} [{attempted} intentos]', '{action} [{attempted} tentativas]'],
-    'auto.clickedFailed': ['{action} [attempted {attempted}, failed {failed}]', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} [{attempted} tentatives, {failed} échecs]', '{action} [{attempted} Versuche, {failed} Fehler]', '{action} [попыток: {attempted}, ошибок: {failed}]', '{action} [試行 {attempted} 回、失敗 {failed} 回]', '{action} [시도 {attempted}회, 실패 {failed}회]', '{action} [{attempted} intentos, {failed} fallos]', '{action} [{attempted} tentativas, {failed} falhas]'],
+    'auto.clicked': ['{action} [clicks attempted: {attempted}]', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} [tentatives : {attempted}]', '{action} [Versuche: {attempted}]', '{action} [попыток: {attempted}]', '{action} [試行 {attempted} 回]', '{action} [시도 {attempted}회]', '{action} [intentos: {attempted}]', '{action} [tentativas: {attempted}]'],
+    'auto.clickedFailed': ['{action} [attempted {attempted}, failed {failed}]', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} [tentatives : {attempted}, échecs : {failed}]', '{action} [Versuche: {attempted}, Fehler: {failed}]', '{action} [попыток: {attempted}, ошибок: {failed}]', '{action} [試行 {attempted} 回、失敗 {failed} 回]', '{action} [시도 {attempted}회, 실패 {failed}회]', '{action} [intentos: {attempted}, fallos: {failed}]', '{action} [tentativas: {attempted}, falhas: {failed}]'],
     'auto.resetShowMore': ['Reset Show more availability', '重置 Show more 按钮可用性', '重設 Show more 按鈕可用性', 'Rétablir le bouton Show more', 'Show-more-Schaltfläche zurücksetzen', 'Восстановить кнопку Show more', 'Show more ボタンを再有効化', 'Show more 버튼 사용 가능 상태 재설정', 'Restablecer botón Show more', 'Restaurar botão Show more'],
     'auto.resetCaution': ['The button appears available again, but the original request may still be running. Clicking again may load duplicates.', '按钮现可点击，但原请求可能仍在处理；再次点击可能重复加载。', '按鈕目前可點擊，但原請求可能仍在處理；再次點擊可能重複載入。', 'Le bouton semble de nouveau utilisable, mais la requête initiale peut encore être en cours. Un nouveau clic peut charger des doublons.', 'Die Schaltfläche scheint wieder nutzbar, aber die ursprüngliche Anfrage könnte noch laufen. Erneutes Klicken kann Bücher doppelt laden.', 'Кнопка снова выглядит доступной, но исходный запрос может ещё выполняться. Повторное нажатие может загрузить дубли.', 'ボタンは再び押せる状態ですが、元の処理は継続中かもしれません。再クリックすると重複して読み込む可能性があります。', '버튼을 다시 누를 수 있지만 기존 요청이 진행 중일 수 있습니다. 다시 누르면 중복으로 로드될 수 있습니다.', 'El botón parece disponible de nuevo, pero la solicitud inicial puede seguir activa. Otro clic puede cargar duplicados.', 'O botão parece disponível novamente, mas a solicitação original pode continuar. Outro clique pode carregar itens duplicados.'],
     'auto.resetFailed': ['Could not restore Show more. Refresh the page.', '无法恢复 Show more，请刷新页面。', '無法恢復 Show more，請重新整理頁面。', 'Impossible de rétablir Show more. Actualisez la page.', 'Show more konnte nicht wiederhergestellt werden. Seite neu laden.', 'Не удалось восстановить Show more. Обновите страницу.', 'Show more を復元できません。ページを再読み込みしてください。', 'Show more를 복구하지 못했습니다. 페이지를 새로고침하세요.', 'No se pudo restaurar Show more. Actualice la página.', 'Não foi possível restaurar Show more. Atualize a página.'],
     'auto.openAll': ['Open pages for all currently visible books', '打开当前显示的所有图书页面', '開啟目前顯示的所有圖書頁面', 'Ouvrir les pages de tous les livres actuellement visibles', 'Seiten aller derzeit sichtbaren Bücher öffnen', 'Открыть страницы всех видимых сейчас книг', '現在表示中の本のページをすべて開く', '현재 표시된 모든 책의 페이지 열기', 'Abrir las páginas de todos los libros visibles', 'Abrir as páginas de todos os livros visíveis'],
-    'auto.favorite': ['Add visible books to favorites', '批量加入收藏', '批次加入收藏', 'Ajouter les livres visibles aux favoris', 'Sichtbare Bücher zu Favoriten hinzufügen', 'Добавить видимые книги в избранное', '表示中の本をお気に入りに追加', '보이는 책을 즐겨찾기에 추가', 'Añadir libros visibles a favoritos', 'Adicionar livros visíveis aos favoritos'],
+    'auto.favorite': ['Add all books on this page to favorites', '本页全部加入收藏', '本頁全部加入收藏', 'Ajouter tous les livres de cette page aux favoris', 'Alle Bücher auf dieser Seite zu Favoriten hinzufügen', 'Добавить все книги на этой странице в избранное', 'このページの全書籍をお気に入りに追加', '이 페이지의 모든 책을 즐겨찾기에 추가', 'Añadir todos los libros de esta página a favoritos', 'Adicionar todos os livros desta página aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
     'auto.firstWarning': ['Try to open {count} pages? This may slow your browser or trigger site rate limits.', '尝试打开 {count} 个页面？浏览器可能变慢，站点也可能限流。', '嘗試開啟 {count} 個頁面？瀏覽器可能變慢，網站也可能限制請求。', 'Tenter d’ouvrir {count} pages ? Cela peut ralentir le navigateur ou déclencher une limitation du site.', '{count} Seiten öffnen versuchen? Das kann den Browser verlangsamen oder Zugriffsbeschränkungen auslösen.', 'Попытаться открыть {count} страниц? Браузер может замедлиться, а сайт — ограничить запросы.', '{count} ページを開こうとしますか？動作低下やアクセス制限の可能性があります。', '{count}개 페이지를 열어 볼까요? 브라우저가 느려지거나 사이트에서 요청을 제한할 수 있습니다.', '¿Intentar abrir {count} páginas? Puede ralentizar el navegador o activar límites del sitio.', 'Tentar abrir {count} páginas? Isso pode deixar o navegador lento ou acionar limites do site.'],
     'auto.repeatWarning': ['Already run on this page; {count} pages may open again.', '本页已执行过，可能重复打开 {count} 个页面。', '本頁已執行過，可能重複開啟 {count} 個頁面。', 'Déjà exécuté ici ; {count} pages pourraient rouvrir.', 'Hier bereits ausgeführt; {count} Seiten könnten erneut öffnen.', 'Уже запускалось здесь; {count} страниц могут открыться снова.', 'このページで実行済みです。{count} ページが再度開く可能性があります。', '이 페이지에서 이미 실행했습니다. {count}개 페이지가 다시 열릴 수 있습니다.', 'Ya se ejecutó aquí; podrían reabrirse {count} páginas.', 'Já foi executado aqui; {count} páginas podem abrir novamente.'],
@@ -199,12 +216,11 @@
     'auto.cancel': ['Cancel', '取消', '取消', 'Annuler', 'Abbrechen', 'Отмена', 'キャンセル', '취소', 'Cancelar', 'Cancelar'],
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
     'auto.close': ['Close', '关闭', '關閉', 'Fermer', 'Schließen', 'Закрыть', '閉じる', '닫기', 'Cerrar', 'Fechar'],
-    'auto.showMoreStatus': ['Show more: {completed}/5 batches, {added} new books.', 'Show more：已完成 {completed}/5 轮，新增 {added} 本。', 'Show more：完成 {completed}/5 輪，新增 {added} 本。', 'Show more : {completed}/5 lots, {added} livres ajoutés.', 'Show more: {completed}/5 Runden, {added} neue Bücher.', 'Show more: {completed}/5 этапов, добавлено {added} книг.', 'Show more：{completed}/5 回、{added} 冊追加。', 'Show more: {completed}/5회, {added}권 추가.', 'Show more: {completed}/5 tandas, {added} libros nuevos.', 'Show more: {completed}/5 lotes, {added} livros novos.'],
-    'auto.showMoreEnd': ['Reached the end of the list.', '已到达书单末尾。', '已到達書單末尾。', 'Fin de la liste atteinte.', 'Listenende erreicht.', 'Достигнут конец списка.', 'リストの末尾に到達しました。', '목록 끝에 도달했습니다.', 'Se llegó al final de la lista.', 'Fim da lista alcançado.'],
+    'auto.showMoreEnd': ['The whole booklist is displayed.', '书单显示完毕。', '書單顯示完畢。', 'Toute la liste de livres est affichée.', 'Die gesamte Bücherliste wird angezeigt.', 'Весь список книг показан.', '書籍リストの表示が完了しました。', '전체 도서 목록이 표시되었습니다.', 'Se muestra toda la lista de libros.', 'A lista inteira de livros foi exibida.'],
     'auto.showMoreTimeout': ['Stopped: no new books for 10 seconds.', '已停止：连续 10 秒没有新增书籍。', '已停止：連續 10 秒沒有新增書籍。', 'Arrêt : aucun nouveau livre depuis 10 secondes.', 'Gestoppt: 10 Sekunden lang keine neuen Bücher.', 'Остановлено: нет новых книг 10 секунд.', '停止：10 秒間、新しい本が追加されませんでした。', '중지: 10초 동안 새 책이 추가되지 않았습니다.', 'Detenido: 10 segundos sin libros nuevos.', 'Parou: 10 segundos sem novos livros.'],
-    'auto.showMoreUnavailable': ['Stopped: Show more is unavailable.', '已停止：Show more 不可用。', '已停止：Show more 無法使用。', 'Arrêt : Show more indisponible.', 'Gestoppt: Show more nicht verfügbar.', 'Остановлено: Show more недоступна.', '停止：Show more が利用できません。', '중지: Show more를 사용할 수 없습니다.', 'Se detuvo: Show more no está disponible.', 'Parou: Show more indisponível.'],
+    'auto.showMoreUnavailable': ['Show more is unavailable.', 'Show more 不可用。', 'Show more 無法使用。', 'Show more est indisponible.', 'Show more ist nicht verfügbar.', 'Кнопка Show more недоступна.', 'Show more が利用できません。', 'Show more를 사용할 수 없습니다.', 'Show more no está disponible.', 'Show more está indisponível.'],
     'auto.showMoreError': ['Stopped after an error.', '发生错误，已停止。', '發生錯誤，已停止。', 'Arrêt après une erreur.', 'Nach Fehler gestoppt.', 'Остановлено из-за ошибки.', 'エラーで停止しました。', '오류로 중지했습니다.', 'Se detuvo por un error.', 'Parou após um erro.'],
-    'auto.bulkDisabled': ['Enable bulk opening for this site in Settings.', '请先在设置中启用本站批量打开。', '請先在設定中啟用本站批次開啟。', 'Activez l’ouverture groupée pour ce site dans les paramètres.', 'Massenöffnung für diese Website in den Einstellungen aktivieren.', 'Включите массовое открытие для сайта в настройках.', '設定でこのサイトの一括開きを有効にしてください。', '설정에서 이 사이트의 일괄 열기를 활성화하세요.', 'Active la apertura masiva para este sitio en Configuración.', 'Ative a abertura em massa neste site em Configurações.'],
+    'auto.bulkDisabled': ['Enable bulk opening for this site in Automation settings.', '请先在自动化设置中启用本站批量打开。', '請先在自動化設定中啟用本站批次開啟。', 'Activez l’ouverture groupée pour ce site dans les réglages de l’automatisation.', 'Massenöffnung für diese Website in den Automatisierungseinstellungen aktivieren.', 'Включите массовое открытие для сайта в настройках автоматизации.', '自動操作の設定で、このサイトの一括開きを有効にしてください。', '자동화 설정에서 이 사이트의 일괄 열기를 활성화하세요.', 'Activa la apertura masiva para este sitio en la configuración de automatización.', 'Ative a abertura em massa neste site nas configurações da automação.'],
     'auto.bulkApi': ['GM_openInTab is unavailable.', '脚本管理器未提供 GM_openInTab。', '腳本管理器未提供 GM_openInTab。', 'GM_openInTab est indisponible.', 'GM_openInTab ist nicht verfügbar.', 'GM_openInTab недоступен.', 'GM_openInTab が利用できません。', 'GM_openInTab을 사용할 수 없습니다.', 'GM_openInTab no está disponible.', 'GM_openInTab indisponível.'],
     'auto.bulkFilters': ['Check filter rules and wait for download status.', '请检查筛选规则，并等待下载状态就绪。', '請檢查篩選規則，並等待下載狀態就緒。', 'Vérifiez les filtres et attendez l’état des téléchargements.', 'Filterregeln prüfen und auf den Downloadstatus warten.', 'Проверьте правила фильтрации и дождитесь статуса загрузки.', '絞り込み条件を確認し、ダウンロード状態をお待ちください。', '필터 조건을 확인하고 다운로드 상태를 기다리세요.', 'Revise los filtros y espere el estado de descarga.', 'Verifique os filtros e aguarde o status de download.'],
     'auto.bulkUnknown': ['Some download statuses are unknown; bulk opening is paused.', '部分下载状态未知，批量打开已暂停。', '部分下載狀態未知，批次開啟暫停。', 'Certains états de téléchargement sont inconnus ; ouverture en pause.', 'Einige Downloadstatus unbekannt; Öffnen pausiert.', 'Часть статусов неизвестна; открытие приостановлено.', '一部のダウンロード状態が不明です。一括開きを停止中。', '일부 다운로드 상태가 불명확하여 일괄 열기를 중지합니다.', 'Algunos estados son desconocidos; apertura en pausa.', 'Alguns status são desconhecidos; abertura pausada.'],
@@ -234,6 +250,7 @@
     'action.configureFormat': ['Configure file format filter', '配置文件格式筛选', '設定檔案格式篩選', 'Configurer le filtre des formats', 'Formatfilter konfigurieren', 'Настроить фильтр форматов', '形式フィルターを設定', '파일 형식 필터 설정', 'Configurar filtro de formato', 'Configurar filtro de formato'],
     'action.configureDownload': ['Configure download status filter', '配置下载状态筛选', '設定下載狀態篩選', 'Configurer le filtre des téléchargements', 'Downloadfilter konfigurieren', 'Настроить фильтр загрузок', 'ダウンロード状態フィルターを設定', '다운로드 상태 필터 설정', 'Configurar filtro de descarga', 'Configurar filtro de download'],
     'action.configureYear': ['Configure year filter', '配置年份筛选', '設定年份篩選', 'Configurer le filtre des années', 'Jahresfilter konfigurieren', 'Настроить фильтр года', '年フィルターを設定', '연도 필터 설정', 'Configurar filtro de año', 'Configurar filtro de ano'],
+    'action.configureAutomation': ['Configure automation', '配置自动化', '設定自動化', 'Configurer l’automatisation', 'Automatisierung konfigurieren', 'Настроить автоматизацию', '自動操作を設定', '자동화 설정', 'Configurar automatización', 'Configurar automação'],
     'action.collapse': ['Collapse panel', '折叠面板', '收合面板', 'Réduire le panneau', 'Panel einklappen', 'Свернуть панель', 'パネルを閉じる', '패널 접기', 'Contraer panel', 'Recolher painel'],
     'action.expand': ['Expand panel', '展开面板', '展開面板', 'Développer le panneau', 'Panel ausklappen', 'Развернуть панель', 'パネルを開く', '패널 펼치기', 'Expandir panel', 'Expandir painel'],
     'action.waitDownload': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'En attente de l’état de téléchargement', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
@@ -278,6 +295,7 @@
       result[host] = {
         welcomeEnabled: typeof prefs.welcomeEnabled === 'boolean' ? prefs.welcomeEnabled : true,
         bulkOpenEnabled: typeof prefs.bulkOpenEnabled === 'boolean' ? prefs.bulkOpenEnabled : false,
+        continuousEnabled: typeof prefs.continuousEnabled === 'boolean' ? prefs.continuousEnabled : false,
       };
     }
     return result;
@@ -336,7 +354,23 @@
         Number.isFinite(input.panelDock.offset) && input.panelDock.offset >= 0
         ? { edge: input.panelDock.edge, offset: input.panelDock.offset } : null,
       uiLanguage: LOCALES.includes(input.uiLanguage) ? input.uiLanguage : DEFAULT_SETTINGS.uiLanguage,
+      showMoreCount1: Number.isInteger(input.showMoreCount1) && input.showMoreCount1 >= 1 && input.showMoreCount1 <= 50
+        ? input.showMoreCount1 : DEFAULT_SETTINGS.showMoreCount1,
+      showMoreCount2: Number.isInteger(input.showMoreCount2) && input.showMoreCount2 >= 1 && input.showMoreCount2 <= 50
+        ? input.showMoreCount2 : DEFAULT_SETTINGS.showMoreCount2,
     };
+  }
+
+  function parseShowMoreCount(raw, fallback) {
+    const valid = typeof raw === 'string' && /^(?:[1-9]|[1-4][0-9]|50)$/.test(raw);
+    return { count: valid ? Number(raw) : fallback, valid };
+  }
+
+  function describeShowMoreCountInput(locale, raw, fallback) {
+    const { count, valid } = parseShowMoreCount(raw, fallback);
+    return { count, label: count === 1 ? translate(locale, 'auto.showMoreOne')
+      : translate(locale, 'auto.showMore', { count }),
+      error: valid ? '' : translate(locale, 'auto.countInvalid', { default: fallback }) };
   }
 
   function parseYearValue(raw) {
@@ -466,16 +500,23 @@
     return { phase: 'running', seconds: null };
   }
 
-  function formatShowMoreAction(locale, { phase = null, seconds = null, attempted = 0, failed = 0 } = {}) {
-    const action = translate(locale, 'auto.showMore');
-    if (phase === 'running') return translate(locale, 'auto.running', { action });
-    if (phase === 'warning') return translate(locale, 'auto.warning', { action, seconds });
+  function formatShowMoreAction(locale, { maxClicks = 5, phase = null, seconds = null,
+    attempted = 0, failed = 0, currentAttempted = 0 } = {}) {
+    const action = maxClicks === null ? translate(locale, 'auto.continuous')
+      : maxClicks === 1 ? translate(locale, 'auto.showMoreOne')
+        : translate(locale, 'auto.showMore', { count: maxClicks });
+    const clicked = Math.max(0, maxClicks === null ? currentAttempted : Math.min(maxClicks, currentAttempted));
+    const detail = maxClicks === null ? translate(locale, 'auto.continuousProgress', { clicked })
+      : translate(locale, 'auto.showMoreProgress', { clicked, remaining: maxClicks - clicked });
+    const progress = locale.startsWith('zh') ? `${action}（${detail}）` : `${action} (${detail})`;
+    if (phase === 'running') return translate(locale, 'auto.running', { action: progress });
+    if (phase === 'warning') return translate(locale, 'auto.warning', { action: progress, seconds });
     if (failed > 0) return translate(locale, 'auto.clickedFailed', { action, attempted, failed });
     if (attempted > 0) return translate(locale, 'auto.clicked', { action, attempted });
     return action;
   }
 
-  async function runShowMoreFive({ getCards, findButton, observe, clock = {
+  async function runShowMore({ maxClicks, getCards, findButton, observe, clock = {
     now: () => Date.now(), setTimeout: (callback, delay) => setTimeout(callback, delay),
     clearTimeout: id => clearTimeout(id),
   }, onProgress = () => {}, onAttempt = () => {}, isSourceAlive = () => true, signal = null }) {
@@ -484,9 +525,12 @@
     let attempted = 0;
     let failed = 0;
     const result = reason => ({ completed, added, attempted, failed, reason });
-    for (let round = 0; round < 5; round++) {
-      if (signal?.aborted || !isSourceAlive()) return result('source-gone');
+    const abortReason = () => signal?.reason === 'user-stop' ? 'cancelled' : 'source-gone';
+    for (let round = 0; maxClicks === null || round < maxClicks; round++) {
+      if (signal?.aborted) return result(abortReason());
+      if (!isSourceAlive()) return result('source-gone');
       const button = findButton();
+      if (!button && attempted > 0) return result('end');
       if (isNativeShowMoreUnavailable(button)) return result('button-unavailable');
       const beforeCards = new Set(getCards());
       const startedAt = clock.now();
@@ -505,10 +549,11 @@
           signal?.removeEventListener?.('abort', aborted);
           resolve({ reason, seenNew });
         }
-        function aborted() { finish('source-gone'); }
+        function aborted() { finish(abortReason()); }
         function check() {
           if (finished) return;
-          if (signal?.aborted || !isSourceAlive()) { finish('source-gone'); return; }
+          if (signal?.aborted) { finish(abortReason()); return; }
+          if (!isSourceAlive()) { finish('source-gone'); return; }
           const now = clock.now();
           const newCount = getCards().filter(card => !beforeCards.has(card)).length;
           if (newCount > seenNew) { seenNew = newCount; changedAt = now; }
@@ -546,6 +591,14 @@
     return result('complete');
   }
 
+  function classifyListCompletion({ reason, loadedCount, expectedTotal }) {
+    if (reason !== 'end') return { displayed: false, noticeKey: null };
+    if (!Number.isSafeInteger(expectedTotal) || expectedTotal < 0)
+      return { displayed: true, noticeKey: 'auto.showMoreCountUnknown' };
+    return { displayed: true, noticeKey: Math.abs(loadedCount - expectedTotal) > 10
+      ? 'auto.showMoreCountMismatch' : null };
+  }
+
   function isNativeShowMoreDisabled(button) {
     return !!button && (button.disabled === true || button.getAttribute?.('aria-disabled') === 'true');
   }
@@ -554,7 +607,11 @@
     if (!button || button.hidden || ('isConnected' in button && !button.isConnected) ||
         isNativeShowMoreDisabled(button) || button.style?.pointerEvents === 'none' ||
         (button.getClientRects && button.getClientRects().length === 0)) return true;
-    try { return typeof getComputedStyle === 'function' && getComputedStyle(button).pointerEvents === 'none'; }
+    try {
+      if (typeof getComputedStyle !== 'function') return false;
+      const style = getComputedStyle(button);
+      return style.pointerEvents === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse';
+    }
     catch { return false; }
   }
 
@@ -1142,7 +1199,8 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
-      sanitizeSettings, parseBookTotal, computeStats, classifyDownload, createDownloadGate,
+      sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
+      parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
       renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
@@ -1153,7 +1211,7 @@
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
       createExclusiveDisclosure,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
-      classifyShowMoreIdle, formatShowMoreAction, runShowMoreFive,
+      classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
       createShowMoreStallTracker, attemptShowMoreReset, classifyResetVerification,
       hasVerifiedResetAdapter,
       modalTabDestination, showMoreControlState,
@@ -1215,7 +1273,8 @@
             typeof navigator === 'undefined' ? [] : navigator.languages);
           notice = createNotice({ locale, host, now: Date.now, sessionStore,
             sitePrefs: prefs, onDisable() {
-              prefs[host] = { welcomeEnabled: false, bulkOpenEnabled: prefs[host]?.bulkOpenEnabled === true };
+              prefs[host] = { welcomeEnabled: false, bulkOpenEnabled: prefs[host]?.bulkOpenEnabled === true,
+                continuousEnabled: prefs[host]?.continuousEnabled === true };
               saveSitePrefs(prefs);
             } });
         }
@@ -1258,12 +1317,14 @@
     let disposed = false;
     let lastPanelData = null;
     let showMoreTask = null;
+    let showMoreController = null;
+    let activeShowMoreId = null;
+    let activeShowMoreLimit = null;
+    let showMoreDialogPending = false;
     let showMoreBusy = false;
     let showMoreTracker = null;
     let stallState = { resetEligible: false };
     let autoStatus = null;
-    let autoAttempts = 0;
-    let autoFailures = 0;
     let autoLastFailed = false;
     let bulkBusy = false;
     let bulkStatus = null;
@@ -1272,6 +1333,7 @@
     let resetMessageKey = '';
     let resetVerification = null;
     let bulkDialogPromise = null;
+    let refreshAutomationDialog = null;
     const verifiedResetAdapter = hasVerifiedResetAdapter(window.location.hostname,
       document.documentElement?.hasAttribute?.('data-zble-reset-fixture'));
     let hasOpenedOnThisPage = false;
@@ -1364,27 +1426,53 @@
     }
 
     function renderAutoStatus() {
-      const button = panelRoot?.querySelector('#zble-show-more-five');
-      if (!button) return;
-      const suffix = autoStatus?.reason === 'end' ? translate(locale, 'auto.showMoreEnd')
-        : autoStatus?.reason === 'timeout' ? translate(locale, 'auto.showMoreTimeout')
-          : autoStatus?.reason === 'button-unavailable' ? translate(locale, 'auto.showMoreUnavailable')
-            : ['error', 'source-gone'].includes(autoStatus?.reason) ? translate(locale, 'auto.showMoreError') : '';
-      button.textContent = formatShowMoreAction(locale, {
-        phase: autoStatus?.phase, seconds: autoStatus?.seconds,
-        attempted: autoAttempts, failed: autoFailures,
+      if (!panelRoot) return;
+      const descriptions = [1, 2].map(index => {
+        const input = panelRoot.querySelector(`#zble-show-more-count-${index}`);
+        const value = describeShowMoreCountInput(locale, input.value, index === 1 ? 5 : 10);
+        setText(`#zble-show-more-error-${index}`, value.error);
+        input.setAttribute('aria-invalid', String(!!value.error));
+        return value;
       });
-      button.title = suffix;
-      button.dataset.state = autoStatus?.phase === 'warning' || autoStatus?.phase === 'running'
-        ? 'running' : autoLastFailed ? 'failed' : '';
+      for (const [index, id] of [1, 2, 'continuous'].entries()) {
+        const button = panelRoot.querySelector(`#zble-show-more-${id}`);
+        const running = activeShowMoreId === id && showMoreBusy;
+        const label = id === 'continuous' ? translate(locale, 'auto.continuous') : descriptions[index].label;
+        button.textContent = running
+          ? `${formatShowMoreAction(locale, { maxClicks: activeShowMoreLimit,
+            phase: autoStatus?.phase || 'running', seconds: autoStatus?.seconds,
+            currentAttempted: autoStatus?.attempted ?? 0 })} · ${translate(locale, 'auto.stop')}`
+          : label;
+        button.dataset.state = running ? 'running' : activeShowMoreId === id && autoLastFailed ? 'failed' : '';
+      }
+      const reason = autoStatus?.reason;
+      const messageKey = reason === 'end' ? 'auto.showMoreEnd'
+        : reason === 'cancelled' ? 'auto.cancelled'
+          : reason === 'timeout' ? 'auto.showMoreTimeout'
+            : reason === 'button-unavailable' ? 'auto.showMoreUnavailable'
+              : ['error', 'source-gone'].includes(reason) ? 'auto.showMoreError' : '';
+      const message = autoStatus?.noticeKey
+        ? translate(locale, autoStatus.noticeKey, autoStatus) : messageKey ? translate(locale, messageKey)
+          : reason === 'complete' ? formatShowMoreAction(locale, { maxClicks: activeShowMoreLimit,
+            attempted: autoStatus.attempted, failed: autoStatus.failed }) : '';
+      panelRoot.querySelector('#zble-show-more-status').classList.toggle('error', !!autoStatus?.noticeKey);
+      setText('#zble-show-more-status', message);
     }
 
     function syncShowMoreControls() {
       if (!panelRoot) return;
-      const state = showMoreControlState({ nativeButton: isCurrentBooklist()
-        ? initialMain?.querySelector('.page-load-more') : null,
+      const nativeButton = isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null;
+      const state = showMoreControlState({ nativeButton,
       resetEligible: verifiedResetAdapter && stallState.resetEligible, busy: showMoreBusy, bulkBusy });
-      panelRoot.querySelector('#zble-show-more-five').disabled = state.autoDisabled;
+      setText('#zble-show-more-availability', !showMoreBusy && isCurrentBooklist() &&
+        isNativeShowMoreUnavailable(nativeButton)
+        ? translate(locale, 'auto.showMoreUnavailable') : '');
+      for (const id of [1, 2, 'continuous']) {
+        const button = panelRoot.querySelector(`#zble-show-more-${id}`);
+        button.disabled = showMoreBusy ? activeShowMoreId !== id
+          : bulkBusy || showMoreDialogPending || !isCurrentBooklist() ||
+            (id !== 'continuous' || sitePrefs[currentHost]?.continuousEnabled === true) && state.autoDisabled;
+      }
       panelRoot.querySelector('#zble-reset-show-more').disabled = state.resetDisabled;
     }
 
@@ -1432,7 +1520,7 @@
       if (!button) return;
       const gateResult = currentBulkGate();
       const targets = gateResult.allowed ? currentOpenTargets() : [];
-      button.disabled = bulkBusy || !!showMoreTask || !isCurrentBooklist();
+      button.disabled = bulkBusy || showMoreBusy || !!showMoreTask || showMoreDialogPending || !isCurrentBooklist();
       button.dataset.state = bulkBusy ? 'running' : bulkLastFailed ? 'failed' : '';
       const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
         'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
@@ -1446,7 +1534,7 @@
         : bulkStatus ? translate(locale, 'auto.bulkProgress', bulkStatus) : '');
     }
 
-    function showBulkDialog(step, { count, repeat }) {
+    function showAutomationDialog(action, step, { count = 0, repeat = false } = {}) {
       if (bulkDialogPromise) return bulkDialogPromise;
       bulkDialogPromise = new Promise(resolve => {
         if (automationAbort.signal.aborted || !isCurrentBooklist()) { resolve(false); return; }
@@ -1463,14 +1551,20 @@
         </style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-bulk-title" aria-describedby="zble-bulk-message"><h2 id="zble-bulk-title"></h2><p id="zble-bulk-message"></p><div class="actions"><button id="zble-bulk-cancel" type="button"></button><button id="zble-bulk-confirm" type="button"></button></div></div>`;
         const cancel = root.querySelector('#zble-bulk-cancel');
         const confirm = root.querySelector('#zble-bulk-confirm');
-        root.querySelector('#zble-bulk-title').textContent = translate(locale, 'auto.openAll');
-        root.querySelector('#zble-bulk-message').textContent = step === 0
-          ? translate(locale, 'auto.bulkDisabled') : step === 1
-            ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
-            : translate(locale, 'auto.secondWarning');
-        cancel.textContent = translate(locale, step === 0 ? 'auto.close' : 'auto.cancel');
-        confirm.hidden = step === 0;
-        confirm.textContent = translate(locale, 'auto.continue');
+        function renderDialog() {
+          root.querySelector('#zble-bulk-title').textContent = translate(locale,
+            action === 'continuous' ? 'auto.continuous' : 'auto.openAll');
+          root.querySelector('#zble-bulk-message').textContent = action === 'continuous'
+            ? translate(locale, step === 0 ? 'auto.continuousDisabled' : 'auto.continuousWarning')
+            : step === 0 ? translate(locale, 'auto.bulkDisabled') : step === 1
+              ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
+              : translate(locale, 'auto.secondWarning');
+          cancel.textContent = translate(locale, step === 0 ? 'auto.close' : 'auto.cancel');
+          confirm.hidden = step === 0;
+          confirm.textContent = translate(locale, 'auto.continue');
+        }
+        refreshAutomationDialog = renderDialog;
+        renderDialog();
         document.body.append(host);
         let settled = false;
         function finish(value) {
@@ -1480,6 +1574,7 @@
           host.remove();
           previousFocus?.focus?.();
           bulkDialogPromise = null;
+          refreshAutomationDialog = null;
           resolve(value);
         }
         function abort() { finish(false); }
@@ -1497,6 +1592,8 @@
       });
       return bulkDialogPromise;
     }
+
+    function showBulkDialog(step, data) { return showAutomationDialog('bulk', step, data); }
 
     function refreshPanelLocale(nextLocale = locale) {
       locale = nextLocale;
@@ -1522,6 +1619,9 @@
         control?.setAttribute('aria-label', translate(locale, key));
         control?.setAttribute('title', translate(locale, key));
       }
+      const automationControl = panelRoot.querySelector('#zble-configure-automation');
+      automationControl?.setAttribute('aria-label', translate(locale, 'action.configureAutomation'));
+      automationControl?.setAttribute('title', translate(locale, 'action.configureAutomation'));
       for (const [selector, key] of [['#zble-custom', 'setting.custom'], ['#zble-year-min', 'setting.minYear'],
         ['#zble-year-max', 'setting.maxYear']]) panelRoot.querySelector(selector)?.setAttribute('aria-label', translate(locale, key));
       panelRoot.querySelector('#zble-custom')?.setAttribute('placeholder', translate(locale, 'setting.customPlaceholder'));
@@ -1534,6 +1634,7 @@
         renderShowMore(main, stats, locale);
       }
       renderAutoStatus();
+      refreshAutomationDialog?.();
       setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
       renderBulkStatus();
       syncBulkControl();
@@ -1661,8 +1762,10 @@
           button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:var(--zble-accent-bg);color:var(--zble-accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--zble-accent);outline-offset:2px}.chevron{display:block;width:18px;height:18px;transition:transform .15s ease}#zble-collapse[aria-expanded="false"] .chevron{transform:rotate(180deg)}@media(prefers-reduced-motion:reduce){.chevron{transition:none}}
           .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
-          .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.configure{font-size:14px;line-height:1;padding:5px;flex:none}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
-          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
+          .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.filter-row .configure{font-size:14px;line-height:1;padding:5px;flex:none;color:var(--zble-muted)}.filter-row:has(input:checked) .configure{color:var(--zble-accent)}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
+          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.reset-link{display:block;font:inherit;font-size:11px;color:var(--zble-accent);text-decoration:underline;text-align:left;padding:1px 0;margin:0 0 7px}.reset-link:disabled{color:var(--zble-muted);cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.configure{color:GrayText}.filter-row:has(input:checked) .configure,.reset-link:not(:disabled){color:LinkText}.configure circle{fill:Canvas}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
+          .automation-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}.automation-heading .configure{color:var(--zble-accent)}.automation-config .setting-label:first-of-type{margin-top:5px}.automation-config input[type=text]{margin-top:3px}.automation-config .row{font-weight:400}
+          @media(forced-colors:active){.filter-row .configure{color:GrayText}.filter-row:has(input:checked) .configure,.automation-heading .configure{color:LinkText}}
         </style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 50 50" fill="currentColor" aria-hidden="true" focusable="false"><path d="M47.16,21.221l-5.91-0.966c-0.346-1.186-0.819-2.326-1.411-3.405l3.45-4.917c0.279-0.397,0.231-0.938-0.112-1.282l-3.889-3.887c-0.347-0.346-0.893-0.391-1.291-0.104l-4.843,3.481c-1.089-0.602-2.239-1.08-3.432-1.427l-1.031-5.886C28.607,2.35,28.192,2,27.706,2h-5.5c-0.49,0-0.908,0.355-0.987,0.839l-0.956,5.854c-1.2,0.345-2.352,0.818-3.437,1.412l-4.83-3.45c-0.399-0.285-0.942-0.239-1.289,0.106L6.82,10.648c-0.343,0.343-0.391,0.883-0.112,1.28l3.399,4.863c-0.605,1.095-1.087,2.254-1.438,3.46l-5.831,0.971c-0.482,0.08-0.836,0.498-0.836,0.986v5.5c0,0.485,0.348,0.9,0.825,0.985l5.831,1.034c0.349,1.203,0.831,2.362,1.438,3.46l-3.441,4.813c-0.284,0.397-0.239,0.942,0.106,1.289l3.888,3.891c0.343,0.343,0.884,0.391,1.281,0.112l4.87-3.411c1.093,0.601,2.248,1.078,3.445,1.424l0.976,5.861C21.3,47.647,21.717,48,22.206,48h5.5c0.485,0,0.9-0.348,0.984-0.825l1.045-5.89c1.199-0.353,2.348-0.833,3.43-1.435l4.905,3.441c0.398,0.281,0.938,0.232,1.282-0.111l3.888-3.891c0.346-0.347,0.391-0.894,0.104-1.292l-3.498-4.857c0.593-1.08,1.064-2.222,1.407-3.408l5.918-1.039c0.479-0.084,0.827-0.5,0.827-0.985v-5.5C47.999,21.718,47.644,21.3,47.16,21.221z M25,32c-3.866,0-7-3.134-7-7c0-3.866,3.134-7,7-7s7,3.134,7,7C32,28.866,28.866,32,25,32z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
@@ -1686,19 +1789,25 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><div id="zble-automation-actions"><button id="zble-show-more-five" class="action-button" type="button" data-i18n="auto.showMore" aria-live="polite">依次点击 Show more，最多 5 次</button><button id="zble-reset-show-more" class="action-button" type="button" data-i18n="auto.resetShowMore" disabled>重置 Show more 按钮可用性</button><div id="zble-reset-hint" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled><span data-i18n="auto.favorite">批量加入收藏</span> · <span data-i18n="auto.dev">开发中</span></button></div></div>
+          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><button id="zble-reset-show-more" class="reset-link" type="button" data-i18n="auto.resetShowMore" disabled>重置 Show more 按钮可用性</button><div id="zble-reset-hint" class="hint" role="status"></div><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
             <select id="zble-ui-language"><option value="auto" data-i18n="setting.autoLanguage">跟随浏览器/系统</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="pt-BR">Português (Brasil)</option></select>
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
-            <label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
             <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">为 Z-Library 书单提供灵活筛选、清晰的书籍信息和按需执行的操作。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div></div>
           </div>
           </div>
         </div>`;
+
+      const availabilityHint = document.createElement('div');
+      availabilityHint.id = 'zble-show-more-availability';
+      availabilityHint.className = 'hint';
+      availabilityHint.setAttribute('role', 'status');
+      panelRoot.querySelector('#zble-automation-actions').insertBefore(availabilityHint,
+        panelRoot.querySelector('#zble-reset-show-more'));
 
       const immediate = [
         ['#zble-show-switch', 'showFormat'], ['#zble-language-switch', 'showLanguage'],
@@ -1725,17 +1834,38 @@
       noticeInput.closest('label').hidden = !KNOWN_HOSTS.has(currentHost);
       noticeInput.addEventListener('change', () => {
         sitePrefs[currentHost] = { welcomeEnabled: noticeInput.checked,
-          bulkOpenEnabled: sitePrefs[currentHost]?.bulkOpenEnabled === true };
+          bulkOpenEnabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
+          continuousEnabled: sitePrefs[currentHost]?.continuousEnabled === true };
         saveSitePrefs(sitePrefs);
       });
       const bulkInput = panelRoot.querySelector('#zble-allow-bulk');
       bulkInput.checked = sitePrefs[currentHost]?.bulkOpenEnabled === true;
       bulkInput.addEventListener('change', () => {
         sitePrefs[currentHost] = { welcomeEnabled: sitePrefs[currentHost]?.welcomeEnabled !== false,
-          bulkOpenEnabled: bulkInput.checked };
+          bulkOpenEnabled: bulkInput.checked,
+          continuousEnabled: sitePrefs[currentHost]?.continuousEnabled === true };
         saveSitePrefs(sitePrefs);
         syncBulkControl();
       });
+      const continuousInput = panelRoot.querySelector('#zble-allow-continuous');
+      continuousInput.checked = sitePrefs[currentHost]?.continuousEnabled === true;
+      continuousInput.addEventListener('change', () => {
+        sitePrefs[currentHost] = { welcomeEnabled: sitePrefs[currentHost]?.welcomeEnabled !== false,
+          bulkOpenEnabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
+          continuousEnabled: continuousInput.checked };
+        saveSitePrefs(sitePrefs);
+        syncShowMoreControls();
+      });
+      for (const index of [1, 2]) {
+        const input = panelRoot.querySelector(`#zble-show-more-count-${index}`);
+        const key = `showMoreCount${index}`;
+        input.value = String(settings[key]);
+        input.addEventListener('input', () => {
+          const parsed = parseShowMoreCount(input.value, index === 1 ? 5 : 10);
+          if (parsed.valid) { settings[key] = parsed.count; saveSettings(); }
+          renderAutoStatus();
+        });
+      }
       for (const input of panelRoot.querySelectorAll('[data-format]')) {
         input.checked = settings.formats.includes(input.dataset.format);
         input.addEventListener('change', () => {
@@ -1743,7 +1873,6 @@
           saveSettings(); scheduleRefresh();
         });
       }
-      const showMoreButton = panelRoot.querySelector('#zble-show-more-five');
       showMoreTracker = createShowMoreStallTracker({ getCards: () => getActiveCards(document),
         getButton: () => isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null,
         onState(state) {
@@ -1781,17 +1910,25 @@
         syncShowMoreControls();
       });
       showMoreTracker.check();
-      showMoreButton.addEventListener('click', () => {
+      function startShowMore(id, maxClicks) {
         if (showMoreTask || bulkBusy || !isCurrentBooklist()) return;
+        const nativeButton = initialMain?.querySelector('.page-load-more');
+        if (isNativeShowMoreUnavailable(nativeButton)) { syncShowMoreControls(); return; }
         showMoreBusy = true;
+        activeShowMoreId = id;
+        activeShowMoreLimit = maxClicks;
         autoLastFailed = false;
         autoStatus = { phase: 'running' };
+        showMoreController = new AbortController();
+        const controller = showMoreController;
+        const sourceAbort = () => controller.abort('source-gone');
+        automationAbort.signal.addEventListener('abort', sourceAbort, { once: true });
         renderAutoStatus();
         syncShowMoreControls();
         syncBulkControl();
         const mainForTask = document.querySelector('.booklist-main.active');
         const listForTask = mainForTask?.querySelector('.readlist-view');
-        showMoreTask = runShowMoreFive({
+        showMoreTask = runShowMore({ maxClicks,
           getCards: () => listForTask ? [...listForTask.querySelectorAll(':scope > z-bookcard')] : [],
           findButton: () => mainForTask?.querySelector('.page-load-more'),
           observe(callback) {
@@ -1800,7 +1937,7 @@
             return () => observer.disconnect();
           },
           isSourceAlive: isCurrentBooklist,
-          signal: automationAbort.signal,
+          signal: controller.signal,
           onAttempt(button) {
             resetVerification = null;
             resetMessageKey = '';
@@ -1809,22 +1946,53 @@
           },
           onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
         }).then(result => {
-          autoAttempts += result.attempted;
-          autoFailures += result.failed;
           autoLastFailed = result.failed > 0;
-          autoStatus = result;
+          const loaded = getActiveCards(document).length;
+          const expected = parseBookTotal(document.querySelector('.booklist-header__tabs tab')?.textContent || '');
+          const completion = classifyListCompletion({ reason: result.reason,
+            loadedCount: loaded, expectedTotal: expected });
+          autoStatus = { ...result, loaded, expected, noticeKey: completion.noticeKey };
           renderAutoStatus();
           return result;
         }).finally(() => {
+          automationAbort.signal.removeEventListener('abort', sourceAbort);
+          showMoreController = null;
           showMoreTask = null;
           showMoreBusy = false;
-          if (!disposed) syncShowMoreControls();
+          if (!disposed) { renderAutoStatus(); syncShowMoreControls(); }
           syncBulkControl();
         });
+      }
+      for (const index of [1, 2]) {
+        panelRoot.querySelector(`#zble-show-more-${index}`).addEventListener('click', () => {
+          if (showMoreBusy && activeShowMoreId === index) { showMoreController?.abort('user-stop'); return; }
+          const input = panelRoot.querySelector(`#zble-show-more-count-${index}`);
+          startShowMore(index, parseShowMoreCount(input.value, index === 1 ? 5 : 10).count);
+        });
+      }
+      panelRoot.querySelector('#zble-show-more-continuous').addEventListener('click', async () => {
+        if (showMoreBusy && activeShowMoreId === 'continuous') {
+          showMoreController?.abort('user-stop'); return;
+        }
+        if (showMoreDialogPending || showMoreTask || bulkBusy || !isCurrentBooklist()) return;
+        const enabled = sitePrefs[currentHost]?.continuousEnabled === true;
+        showMoreDialogPending = true;
+        syncShowMoreControls();
+        syncBulkControl();
+        try {
+          const approved = await showAutomationDialog('continuous', enabled ? 1 : 0);
+          if (!approved || !isCurrentBooklist() ||
+            sitePrefs[currentHost]?.continuousEnabled !== true) return;
+          startShowMore('continuous', null);
+        } finally {
+          showMoreDialogPending = false;
+          syncShowMoreControls();
+          syncBulkControl();
+        }
       });
       const openAllButton = panelRoot.querySelector('#zble-open-all');
       openAllButton.addEventListener('click', async () => {
-        if (bulkBusy || showMoreTask || !isCurrentBooklist()) return;
+        if (bulkBusy || showMoreBusy || showMoreTask || showMoreDialogPending || !isCurrentBooklist()) return;
         const gate = currentBulkGate();
         const decision = bulkClickDecision({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
           gate, targetCount: gate.allowed ? currentOpenTargets().length : 0 });
@@ -1889,13 +2057,15 @@
       }
       const gear = panelRoot.querySelector('#zble-gear');
       const settingsPanel = panelRoot.querySelector('#zble-settings');
-      const disclosure = createExclusiveDisclosure(['global', 'format', 'download', 'year'], section => {
+      const disclosure = createExclusiveDisclosure(['global', 'format', 'download', 'year', 'automation'], section => {
         for (const flush of flushInputs[section] || []) flush();
       });
       function renderDisclosure() {
         const current = disclosure.current();
         settingsPanel.hidden = current !== 'global';
         gear.setAttribute('aria-expanded', String(current === 'global'));
+        panelRoot.querySelector('#zble-automation-config').hidden = current !== 'automation';
+        panelRoot.querySelector('#zble-configure-automation').setAttribute('aria-expanded', String(current === 'automation'));
         for (const name of ['format', 'download', 'year']) {
           panelRoot.querySelector(`#zble-${name}-config`).hidden = current !== name;
           panelRoot.querySelector(`#zble-configure-${name}`).setAttribute('aria-expanded', String(current === name));
@@ -1942,6 +2112,11 @@
           renderDisclosure();
         });
       }
+      panelRoot.querySelector('#zble-configure-automation').addEventListener('click', () => {
+        if (content.hidden) setCollapsed(false);
+        disclosure.toggle('automation');
+        renderDisclosure();
+      });
       panelRoot.querySelector('#zble-reset-position').addEventListener('click', () => {
         resetPanelDock(host, settings, saveSettings);
       });

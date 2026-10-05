@@ -6,7 +6,7 @@
 
 ### 这是什么？
 
-Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey 用户脚本。它让你更容易查看书籍信息、筛选当前书单，并了解已经加载了多少本书。你也可以选择让它依次点击「Show more」，或一次打开当前显示的多本书的详情页。
+Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey 用户脚本。它让你更容易查看书籍信息、筛选当前书单，并了解已经加载了多少本书。你也可以选择让它连点「Show more」，或一次打开当前显示的多本书的详情页。
 
 它不会替你下载图书，也不会修改书单内容。
 
@@ -22,13 +22,14 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 
 ### 怎么使用？
 
-- **筛选书籍：**在「筛选器」中选择文件格式、下载状态或出版年份。多个已启用条件会同时生效。点击某个筛选器旁的齿轮可设置它的具体规则。文件格式支持 PDF、EPUB、AZW3、MOBI、「其他全部」和自定义扩展名；年份可设置起止范围，也可选择是否显示缺少年份的书。
+- **筛选书籍：**在「筛选器」中选择文件格式、下载状态或出版年份。多个已启用条件会同时生效。点击某个筛选器旁的拉杆图标可设置它的具体规则。文件格式支持 PDF、EPUB、AZW3、MOBI、「其他全部」和自定义扩展名；年份可设置起止范围，也可选择是否显示缺少年份的书。
 - **调整信息显示：**在「信息显示」中显示或隐藏文件格式标签、语言和年份，也可以展开过长的书名与作者名。
 - **查看书单进度：**启用筛选器后，书单末尾会显示已加载数量、筛选后数量和书单总数。点击原站的「Show more」加载更多书时，按钮附近还会显示按每 20 本估算的页数进度。
-- **连续加载更多书：**在「自动化（beta）」中点击「依次点击 Show more，最多 5 次」。工具会等待新书加载后再点击下一次；如果长时间没有进展，会停止。按钮上会显示本页由工具发起的累计尝试次数和失败次数。
-- **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再到面板标题栏扳手图标中的全局设置，手动启用该站点的批量打开功能。执行前还需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
+- **连点 Show more：**「自动化（beta）」有两个定次连点器，默认分别点击 5 次和 10 次。点击标题旁的拉杆图标可在自动化设置中分别设为 1–50 次；只接受半角数字整数。输入不合法时会在输入框旁显示红字，本次按钮文案和运行次数使用该连点器的默认值（5 或 10），无效值不会保存。运行中按钮显示已点次数、剩余次数，点击「停止连点」可中止。工具会等待每轮新增书籍；长时间没有进展时会停止。
+- **显示整份书单：**第三个按钮「持续连点 Show more，直到书单显示完毕」默认可点击，但会提示先在自动化设置中启用本站持续连点。启用后，每次执行前确认一次。只有原站 Show more 消失才判定书单显示完毕，不受本工具筛选器隐藏条目的影响；与页面标出的总数相差超过 10 本，或无法读取总数时，会同时显示数量提示。按钮仍可用时，即使数量接近总数也会继续点击。可随时手动停止。
+- **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再在自动化设置中手动启用该站点的批量打开功能。执行前仍需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
 
-面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。标题栏的扳手图标用于界面语言等全局设置；筛选器旁的齿轮只设置对应筛选条件。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
+面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
 
 ### 目前没有什么功能？
 
@@ -38,11 +39,11 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 - 如果真实站点的「Show more」卡住，工具目前不能安全地重置它；请刷新页面。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `3.1.0-dev`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `3.2.0`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
-这是一个无需构建的单文件用户脚本，使用 Tampermonkey 保存显示、筛选、语言与面板位置偏好；启动提示和批量打开许可按域名保存。它不保存书籍链接、下载记录映射、阅读断点或批量打开历史。
+这是一个无需构建的单文件用户脚本，使用 Tampermonkey 保存显示、筛选、连点次数、语言与面板位置偏好；启动提示、持续连点和批量打开许可按域名保存。它不保存书籍链接、下载记录映射、阅读断点或批量打开历史。
 
 如需在其他镜像使用，请先自行核实镜像可信性，再在 Tampermonkey 的本脚本设置中添加精确的 [User matches](https://www.tampermonkey.net/faq.php?q=Q103)，例如 `https://your-mirror.example/booklist/*`（替换为实际域名）。未知镜像只有在 `/booklist/…` 路径且页面结构符合书单特征时才会启动工具；页面结构匹配不能证明镜像安全。
 
@@ -68,13 +69,14 @@ Built-in HTTPS site support covers `z-lib.sk`, `z-library.sk`, `1lib.sk`, `libb.
 
 ### How do I use it?
 
-- **Filter books:** Under “Filters,” choose file format, download status, or publication year. Enabled filters work together. Use the gear beside a filter to set its rule. Format choices include PDF, EPUB, AZW3, MOBI, all other formats, and custom extensions. You can set a year range and choose whether to include books without a year.
+- **Filter books:** Under “Filters,” choose file format, download status, or publication year. Enabled filters work together. Use the slider icon beside a filter to set its rule. Format choices include PDF, EPUB, AZW3, MOBI, all other formats, and custom extensions. You can set a year range and choose whether to include books without a year.
 - **Change what you see:** Under “Information display,” show or hide format badges, language, and year, or expand long titles and author names.
 - **Track booklist progress:** Once a filter is enabled, cards at the end of the list show the number of loaded books, the number remaining after filtering, and the booklist total. After you use the site's “Show more” button, you will also see estimated page progress based on 20 books per page.
-- **Load more books automatically:** Under “Automation (beta),” choose “Click Show more up to 5 times.” The tool waits for new books to load before trying the next click and stops if progress stalls. Its button shows how many attempts and failures the tool has recorded on the current page.
-- **Open several book detail pages:** Click “Open pages for all currently visible books” for an explanation, then enable bulk opening for that site in the global settings under the title-bar wrench. You must confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
+- **Click Show more a set number of times:** “Automation (beta)” has two clickers, set to 5 and 10 clicks by default. Use the slider icon beside the heading to set each to 1–50 clicks. Only ASCII digit integers are accepted. Invalid input shows a red error beside the field, and that clicker displays and uses its default of 5 or 10; invalid input is not saved. While running, its button shows clicks made and remaining. Click “Stop clicking” to cancel. The tool waits for new books after each click and stops if progress stalls.
+- **Display the whole booklist:** The third button, “Keep clicking Show more until the whole booklist is displayed,” can be clicked by default and guides you to enable continuous clicking for this site in Automation settings. Once enabled, each run requires one confirmation. The booklist is considered fully displayed only when the site's Show more button disappears, regardless of books hidden by this script's filters. A notice appears if the displayed count differs from the page's stated total by more than 10, or if the total cannot be read. The clicker continues while Show more remains available, even if the counts are close. You can stop it at any time.
+- **Open several book detail pages:** Click “Open pages for all currently visible books” for an explanation, then enable bulk opening for that site in Automation settings. You must still confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
 
-Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. The title-bar wrench opens global settings such as interface language; the gears beside filters configure individual rules. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
+Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
 
 ### What does it not do yet?
 
@@ -84,11 +86,11 @@ Click the panel title bar to collapse or expand it, or drag the panel toward a s
 - If “Show more” gets stuck on a real site, the tool cannot safely reset it yet; refresh the page.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `3.1.0-dev`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `3.2.0`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 
-This is a single-file userscript with no build step. Tampermonkey stores display, filter, language, and panel-position preferences; welcome-notice and bulk-opening choices are saved per domain. The script does not store book links, download-record mappings, reading positions, or bulk-opening history.
+This is a single-file userscript with no build step. Tampermonkey stores display, filter, click-count, language, and panel-position preferences; welcome-notice, continuous-clicking, and bulk-opening choices are saved per domain. The script does not store book links, download-record mappings, reading positions, or bulk-opening history.
 
 To use another mirror, first assess its trustworthiness, then add a specific [User matches](https://www.tampermonkey.net/faq.php?q=Q103) rule in this script's Tampermonkey settings, such as `https://your-mirror.example/booklist/*` (replace the example domain). On an unknown mirror, the tools start only on a `/booklist/…` path with a matching booklist structure. A matching structure does not establish that a mirror is safe.
 
