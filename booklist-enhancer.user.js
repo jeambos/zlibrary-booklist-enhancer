@@ -43,8 +43,8 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.2.1
-// @description      Enhance Z-Library booklist pages with richer metadata, filtering, loading progress, optional auto-loading, and bulk book-page opening.
+// @version      3.3.0
+// @description      Improve Z-Library booklists with clearer book details, filters, loading progress, optional automatic Show more clicks, and bulk opening of book pages.
 // @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
 // @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
 // @description:fr     Améliore les listes de livres Z-Library avec des informations supplémentaires, des filtres, la progression du chargement, le chargement automatique facultatif et l’ouverture groupée des pages de livres.
@@ -108,11 +108,17 @@
   const KNOWN_HOSTS = new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la', 'z-library.im', 'z-lib.fm']);
   const PAGE_SIZE = 20;
   const SETTING_FORMATS = new Set([...KNOWN_FORMATS, 'other', 'custom']);
+  const SIZE_BANDS = new Set(['lt1', '1to10', '10to50', '50to100', 'gte100', 'unknown']);
   const DEFAULT_SETTINGS = Object.freeze({
     showFormat: true,
+    showSize: false,
+    showProgress: true,
+    showSummary: true,
     filterFormat: false,
+    filterSize: false,
     filterDownload: false,
     formats: [],
+    sizeBands: [],
     custom: '',
     downloadRule: 'not-downloaded',
     showLanguage: true,
@@ -133,81 +139,92 @@
   // Entries are ordered as LOCALES. Keep one complete row per tool-owned message.
   const MESSAGES = {
     'section.filters': ['Filters', '筛选器', '篩選器', 'Filtres', 'Filter', 'Фильтры', 'フィルター', '필터', 'Filtros', 'Filtros'],
-    'section.info': ['Information display', '信息显示', '資訊顯示', 'Affichage des informations', 'Informationsanzeige', 'Отображение сведений', '情報表示', '정보 표시', 'Información visible', 'Exibição de informações'],
+    'section.info': ['Display options', '信息显示', '資訊顯示', 'Affichage des informations', 'Informationsanzeige', 'Отображение сведений', '情報表示', '정보 표시', 'Información visible', 'Exibição de informações'],
     'section.automation': ['Automation (beta)', '自动化（beta）', '自動化（beta）', 'Automatisation (bêta)', 'Automatisierung (Beta)', 'Автоматизация (бета)', '自動化（ベータ）', '자동화(베타)', 'Automatización (beta)', 'Automação (beta)'],
     'section.automationConfig': ['Automation settings', '自动化设置', '自動化設定', 'Réglages de l’automatisation', 'Automatisierungseinstellungen', 'Настройки автоматизации', '自動操作の設定', '자동화 설정', 'Configuración de automatización', 'Configurações da automação'],
     'section.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
-    'section.configuration': ['Filter configuration', '筛选配置', '篩選配置', 'Configuration du filtre', 'Filterkonfiguration', 'Настройка фильтра', 'フィルター設定', '필터 구성', 'Configuración del filtro', 'Configuração do filtro'],
+    'section.configuration': ['Filter settings', '筛选配置', '篩選配置', 'Configuration du filtre', 'Filterkonfiguration', 'Настройка фильтра', 'フィルター設定', '필터 구성', 'Configuración del filtro', 'Configuração do filtro'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
-    'about.description': ['Flexible filtering, clearer book details and optional actions for Z-Library booklists.', '为 Z-Library 书单提供灵活筛选、清晰的书籍信息和按需执行的操作。', '為 Z-Library 書單提供靈活篩選、清楚的書籍資訊與按需執行的操作。', 'Filtres souples, détails des livres plus clairs et actions facultatives pour les listes Z-Library.', 'Flexible Filter, klarere Buchangaben und optionale Aktionen für Z-Library-Listen.', 'Гибкие фильтры, сведения о книгах и дополнительные действия для списков Z-Library.', 'Z-Library の書籍リストに絞り込み、詳細表示、任意の操作を追加します。', 'Z-Library 책 목록에 필터, 자세한 책 정보, 선택 기능을 제공합니다.', 'Filtros flexibles, información clara y acciones opcionales para las listas de Z-Library.', 'Filtros flexíveis, detalhes claros e ações opcionais para listas da Z-Library.'],
+    'about.description': ['Filter Z-Library booklists, see clearer book details, and use optional automation.', '为 Z-Library 书单提供灵活筛选、清晰的书籍信息和按需执行的操作。', '為 Z-Library 書單提供靈活篩選、清楚的書籍資訊與按需執行的操作。', 'Filtres souples, détails des livres plus clairs et actions facultatives pour les listes Z-Library.', 'Flexible Filter, klarere Buchangaben und optionale Aktionen für Z-Library-Listen.', 'Гибкие фильтры, сведения о книгах и дополнительные действия для списков Z-Library.', 'Z-Library の書籍リストに絞り込み、詳細表示、任意の操作を追加します。', 'Z-Library 책 목록에 필터, 자세한 책 정보, 선택 기능을 제공합니다.', 'Filtros flexibles, información clara y acciones opcionales para las listas de Z-Library.', 'Filtros flexíveis, detalhes claros e ações opcionais para listas da Z-Library.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
     'about.github': ['GitHub page', 'GitHub 页面', 'GitHub 頁面', 'Page GitHub', 'GitHub-Seite', 'Страница GitHub', 'GitHub ページ', 'GitHub 페이지', 'Página de GitHub', 'Página no GitHub'],
     'about.placeholder': ['Not provided', '未提供', '未提供', 'Non renseigné', 'Nicht angegeben', 'Не указано', '未掲載', '제공되지 않음', 'No disponible', 'Não informado'],
     'control.formatBadge': ['File format badge', '文件格式标签', '檔案格式標籤', 'Étiquette du format', 'Dateiformat-Label', 'Метка формата файла', 'ファイル形式ラベル', '파일 형식 배지', 'Etiqueta de formato', 'Etiqueta do formato'],
+    'control.sizeBadge': ['File size badge', '文件大小标签', '檔案大小標籤', 'Étiquette de taille du fichier', 'Dateigröße als Label', 'Метка размера файла', 'ファイルサイズラベル', '파일 크기 배지', 'Etiqueta del tamaño del archivo', 'Etiqueta do tamanho do arquivo'],
+    'control.showProgress': ['Show estimated page progress near Show more', 'Show more 按钮显示页码', 'Show more 按鈕顯示頁碼', 'Afficher l’estimation des pages sur Show more', 'Geschätzte Seiten bei Show more anzeigen', 'Показывать оценку числа страниц на кнопке Show more', 'Show more に推定ページ数を表示', 'Show more에 예상 페이지 수 표시', 'Mostrar la estimación de páginas en Show more', 'Mostrar estimativa de páginas no botão Show more'],
+    'control.showSummary': ['Summary card at end of list', '列表末尾统计卡片', '清單末尾統計卡片', 'Carte récapitulative en fin de liste', 'Statistikkarte am Listenende', 'Карточка статистики в конце списка', 'リスト末尾の集計カード', '목록 끝 요약 카드', 'Tarjeta de resumen al final de la lista', 'Cartão de resumo no fim da lista'],
     'control.language': ['Book language (from site)', '书籍语言（页面自带）', '書籍語言（頁面自帶）', 'Langue du livre (site)', 'Buchsprache (von der Seite)', 'Язык книги (на странице)', '書籍の言語（サイト表示）', '책 언어(사이트 제공)', 'Idioma del libro (del sitio)', 'Idioma do livro (do site)'],
     'control.year': ['Publication year (from site)', '出版年份（页面自带）', '出版年份（頁面自帶）', 'Année de publication (site)', 'Erscheinungsjahr (von der Seite)', 'Год издания (на странице)', '出版年（サイト表示）', '출판 연도(사이트 제공)', 'Año de publicación (del sitio)', 'Ano de publicação (do site)'],
-    'control.fullTitle': ['Show full long titles', '完整显示超长书名', '完整顯示過長書名', 'Afficher les titres longs en entier', 'Lange Titel vollständig anzeigen', 'Показывать длинные названия полностью', '長い書名を省略せず表示', '긴 책 제목 전체 표시', 'Mostrar títulos largos completos', 'Mostrar títulos longos completos'],
-    'control.fullAuthor': ['Show full long author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を省略せず表示', '긴 저자 이름 전체 표시', 'Mostrar nombres de autor largos completos', 'Mostrar nomes longos de autores completos'],
-    'control.filterFormat': ['Only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '指定したファイル形式のみ表示', '선택한 파일 형식만 표시', 'Solo formatos seleccionados', 'Apenas formatos selecionados'],
-    'control.filterDownload': ['Only selected download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Afficher uniquement l’état de téléchargement choisi', 'Nur gewählten Downloadstatus', 'Только выбранный статус загрузки', '指定したダウンロード状態のみ表示', '선택한 다운로드 상태만 표시', 'Solo estado de descarga seleccionado', 'Apenas status de download selecionado'],
-    'control.filterYear': ['Only selected publication years', '只显示指定年份的书籍', '只顯示指定年份的書籍', 'Afficher uniquement les années choisies', 'Nur ausgewählte Erscheinungsjahre', 'Только выбранные годы издания', '指定した出版年のみ表示', '선택한 출판 연도만 표시', 'Solo años de publicación seleccionados', 'Apenas anos de publicação selecionados'],
-    'setting.formats': ['File formats (multiple)', '筛选文件格式（可多选）', '篩選檔案格式（可多選）', 'Formats (choix multiples)', 'Dateiformate (Mehrfachauswahl)', 'Форматы (можно несколько)', 'ファイル形式（複数選択可）', '파일 형식(복수 선택)', 'Formatos (selección múltiple)', 'Formatos (seleção múltipla)'],
+    'control.fullTitle': ['Show full book titles', '完整显示超长书名', '完整顯示過長書名', 'Afficher les titres longs en entier', 'Lange Titel vollständig anzeigen', 'Показывать длинные названия полностью', '長い書名を省略せず表示', '긴 책 제목 전체 표시', 'Mostrar títulos largos completos', 'Mostrar títulos longos completos'],
+    'control.fullAuthor': ['Show full author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を省略せず表示', '긴 저자 이름 전체 표시', 'Mostrar nombres de autor largos completos', 'Mostrar nomes longos de autores completos'],
+    'control.filterFormat': ['Show only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '指定したファイル形式のみ表示', '선택한 파일 형식만 표시', 'Solo formatos seleccionados', 'Apenas formatos selecionados'],
+    'control.filterSize': ['Show only selected file sizes', '只显示指定文件大小', '只顯示指定檔案大小', 'Afficher seulement les tailles de fichier choisies', 'Nur ausgewählte Dateigrößen anzeigen', 'Показывать только выбранные размеры файлов', '指定したファイルサイズのみ表示', '선택한 파일 크기만 표시', 'Mostrar solo los tamaños de archivo elegidos', 'Mostrar apenas os tamanhos de arquivo selecionados'],
+    'control.filterDownload': ['Filter by download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Afficher uniquement l’état de téléchargement choisi', 'Nur gewählten Downloadstatus', 'Только выбранный статус загрузки', '指定したダウンロード状態のみ表示', '선택한 다운로드 상태만 표시', 'Solo estado de descarga seleccionado', 'Apenas status de download selecionado'],
+    'control.filterYear': ['Filter by publication year', '只显示指定年份的书籍', '只顯示指定年份的書籍', 'Afficher uniquement les années choisies', 'Nur ausgewählte Erscheinungsjahre', 'Только выбранные годы издания', '指定した出版年のみ表示', '선택한 출판 연도만 표시', 'Solo años de publicación seleccionados', 'Apenas anos de publicação selecionados'],
+    'setting.formats': ['File formats (select all that apply)', '筛选文件格式（可多选）', '篩選檔案格式（可多選）', 'Formats (choix multiples)', 'Dateiformate (Mehrfachauswahl)', 'Форматы (можно несколько)', 'ファイル形式（複数選択可）', '파일 형식(복수 선택)', 'Formatos (selección múltiple)', 'Formatos (seleção múltipla)'],
+    'setting.sizeBands': ['File size ranges (select all that apply)', '文件大小范围（可多选）', '檔案大小範圍（可多選）', 'Plages de taille des fichiers (choix multiples)', 'Dateigrößenbereiche (Mehrfachauswahl)', 'Диапазоны размеров файлов (можно несколько)', 'ファイルサイズの範囲（複数選択可）', '파일 크기 범위 (복수 선택)', 'Rangos de tamaño de archivo (varios)', 'Faixas de tamanho de arquivo (várias opções)'],
+    'setting.size.lt1': ['Under 1 MB', '小于 1 MB', '小於 1 MB', 'Moins de 1 Mo', 'Unter 1 MB', 'Менее 1 МБ', '1 MB 未満', '1 MB 미만', 'Menos de 1 MB', 'Menos de 1 MB'],
+    'setting.size.1to10': ['1–10 MB', '1–10 MB', '1–10 MB', '1–10 Mo', '1–10 MB', '1–10 МБ', '1～10 MB', '1–10 MB', '1–10 MB', '1–10 MB'],
+    'setting.size.10to50': ['10–50 MB', '10–50 MB', '10–50 MB', '10–50 Mo', '10–50 MB', '10–50 МБ', '10～50 MB', '10–50 MB', '10–50 MB', '10–50 MB'],
+    'setting.size.50to100': ['50–100 MB', '50–100 MB', '50–100 MB', '50–100 Mo', '50–100 MB', '50–100 МБ', '50～100 MB', '50–100 MB', '50–100 MB', '50–100 MB'],
+    'setting.size.gte100': ['100 MB or more', '100 MB 及以上', '100 MB 及以上', '100 Mo ou plus', 'Ab 100 MB', '100 МБ и более', '100 MB 以上', '100 MB 이상', '100 MB o más', '100 MB ou mais'],
+    'setting.size.unknown': ['Unknown size', '未知大小', '未知大小', 'Taille inconnue', 'Unbekannte Größe', 'Размер неизвестен', 'サイズ不明', '크기 알 수 없음', 'Tamaño desconocido', 'Tamanho desconhecido'],
     'setting.other': ['All others', '其他全部', '其他全部', 'Tous les autres', 'Alle anderen', 'Все остальные', 'その他すべて', '기타 모두', 'Todos los demás', 'Todos os outros'],
     'setting.custom': ['Custom', '自定义', '自訂', 'Personnalisé', 'Benutzerdefiniert', 'Свой вариант', 'カスタム', '사용자 지정', 'Personalizado', 'Personalizado'],
-    'setting.customPlaceholder': ['e.g. djvu, txt; fb2', '如 djvu, txt; fb2', '例如 djvu, txt; fb2', 'ex. djvu, txt; fb2', 'z. B. djvu, txt; fb2', 'например djvu, txt; fb2', '例: djvu, txt; fb2', '예: djvu, txt; fb2', 'p. ej. djvu, txt; fb2', 'ex.: djvu, txt; fb2'],
+    'setting.customPlaceholder': ['e.g., djvu, txt; fb2', '如 djvu, txt; fb2', '例如 djvu, txt; fb2', 'ex. djvu, txt; fb2', 'z. B. djvu, txt; fb2', 'например djvu, txt; fb2', '例: djvu, txt; fb2', '예: djvu, txt; fb2', 'p. ej. djvu, txt; fb2', 'ex.: djvu, txt; fb2'],
     'setting.customHint': ['Separate formats with commas or semicolons.', '用逗号或分号分隔格式。', '以逗號或分號分隔格式。', 'Séparez les formats par des virgules ou des points-virgules.', 'Formate durch Kommas oder Semikolons trennen.', 'Разделяйте форматы запятыми или точками с запятой.', 'カンマまたはセミコロンで区切ります。', '쉼표나 세미콜론으로 구분하세요.', 'Separe los formatos con comas o punto y coma.', 'Separe os formatos com vírgulas ou ponto e vírgula.'],
-    'setting.downloadRule': ['Download status rule', '下载状态规则', '下載狀態規則', 'État de téléchargement à afficher', 'Downloadstatus-Regel', 'Правило статуса загрузки', 'ダウンロード状態の条件', '다운로드 상태 규칙', 'Estado de descarga a mostrar', 'Status de download a exibir'],
+    'setting.downloadRule': ['Download status', '下载状态规则', '下載狀態規則', 'État de téléchargement à afficher', 'Downloadstatus-Regel', 'Правило статуса загрузки', 'ダウンロード状態の条件', '다운로드 상태 규칙', 'Estado de descarga a mostrar', 'Status de download a exibir'],
     'setting.onlyUndownloaded': ['Not downloaded', '仅未下载', '僅未下載', 'Non téléchargés', 'Nicht heruntergeladen', 'Не загруженные', '未ダウンロード', '다운로드하지 않은 책', 'No descargados', 'Não baixados'],
     'setting.onlyDownloaded': ['Downloaded', '仅已下载', '僅已下載', 'Téléchargés', 'Heruntergeladen', 'Загруженные', 'ダウンロード済み', '다운로드한 책', 'Descargados', 'Baixados'],
     'setting.yearRange': ['Publication year range (inclusive)', '出版年份范围（含端点）', '出版年份範圍（含端點）', 'Années de publication (bornes incluses)', 'Erscheinungsjahre (einschließlich Grenzen)', 'Годы издания (границы включены)', '出版年の範囲（両端を含む）', '출판 연도 범위(양끝 포함)', 'Años de publicación (límites incluidos)', 'Anos de publicação (limites incluídos)'],
-    'setting.showMoreCount1': ['Clicker 1: number of clicks', '连点器 1 次数', '連點器 1 次數', 'Cliqueur 1 : nombre de clics', 'Klickfolge 1: Anzahl', 'Серия нажатий 1: число нажатий', '連続クリック 1：回数', '연속 클릭 1: 횟수', 'Clics automáticos 1: cantidad', 'Cliques automáticos 1: quantidade'],
-    'setting.showMoreCount2': ['Clicker 2: number of clicks', '连点器 2 次数', '連點器 2 次數', 'Cliqueur 2 : nombre de clics', 'Klickfolge 2: Anzahl', 'Серия нажатий 2: число нажатий', '連続クリック 2：回数', '연속 클릭 2: 횟수', 'Clics automáticos 2: cantidad', 'Cliques automáticos 2: quantidade'],
+    'setting.showMoreCount1': ['Show more clicks (first button)', '连点器 1 次数', '連點器 1 次數', 'Cliqueur 1 : nombre de clics', 'Klickfolge 1: Anzahl', 'Серия нажатий 1: число нажатий', '連続クリック 1：回数', '연속 클릭 1: 횟수', 'Clics automáticos 1: cantidad', 'Cliques automáticos 1: quantidade'],
+    'setting.showMoreCount2': ['Show more clicks (second button)', '连点器 2 次数', '連點器 2 次數', 'Cliqueur 2 : nombre de clics', 'Klickfolge 2: Anzahl', 'Серия нажатий 2: число нажатий', '連続クリック 2：回数', '연속 클릭 2: 횟수', 'Clics automáticos 2: cantidad', 'Cliques automáticos 2: quantidade'],
     'setting.continuousEnabled': ['Enable continuous clicking on this site', '在本站启用持续连点', '在本站啟用持續連點', 'Activer les clics continus sur ce site', 'Fortlaufendes Klicken auf dieser Website aktivieren', 'Включить непрерывные нажатия на этом сайте', 'このサイトで連続クリックを有効にする', '이 사이트에서 연속 클릭 사용', 'Activar los clics continuos en este sitio', 'Ativar cliques contínuos neste site'],
-    'setting.minYear': ['Earliest year', '起始年份', '起始年份', 'Première année', 'Frühestes Jahr', 'Начальный год', '開始年', '시작 연도', 'Año inicial', 'Ano inicial'],
-    'setting.maxYear': ['Latest year', '截止年份', '截止年份', 'Dernière année', 'Spätestes Jahr', 'Конечный год', '終了年', '마지막 연도', 'Año final', 'Ano final'],
-    'setting.yearPlaceholder': ['Blank = no limit', '留空不限', '留空不限', 'Vide = sans limite', 'Leer = keine Grenze', 'Пусто = без ограничения', '空欄＝制限なし', '빈칸 = 제한 없음', 'Vacío = sin límite', 'Vazio = sem limite'],
-    'setting.yearHint': ['Applies after a pause or Enter; either bound may be blank.', '停顿后或按回车生效；可只填一端。', '停頓後或按 Enter 生效；可只填一端。', 'Appliqué après une pause ou Entrée ; une borne peut rester vide.', 'Nach kurzer Pause oder mit Enter anwenden; eine Grenze kann leer bleiben.', 'Применяется после паузы или Enter; одну границу можно оставить пустой.', '入力後しばらく待つか Enter で適用。片側は空欄可。', '잠시 후 또는 Enter로 적용; 한쪽은 비워도 됩니다.', 'Se aplica tras una pausa o Intro; puede dejar un límite vacío.', 'Aplica após uma pausa ou Enter; um limite pode ficar vazio.'],
+    'setting.minYear': ['Start year', '起始年份', '起始年份', 'Première année', 'Frühestes Jahr', 'Начальный год', '開始年', '시작 연도', 'Año inicial', 'Ano inicial'],
+    'setting.maxYear': ['End year', '截止年份', '截止年份', 'Dernière année', 'Spätestes Jahr', 'Конечный год', '終了年', '마지막 연도', 'Año final', 'Ano final'],
+    'setting.yearPlaceholder': ['Leave blank for no limit', '留空不限', '留空不限', 'Vide = sans limite', 'Leer = keine Grenze', 'Пусто = без ограничения', '空欄＝制限なし', '빈칸 = 제한 없음', 'Vacío = sin límite', 'Vazio = sem limite'],
+    'setting.yearHint': ['Applies when you pause typing or press Enter. Either field may be blank.', '停顿后或按回车生效；可只填一端。', '停頓後或按 Enter 生效；可只填一端。', 'Appliqué après une pause ou Entrée ; une borne peut rester vide.', 'Nach kurzer Pause oder mit Enter anwenden; eine Grenze kann leer bleiben.', 'Применяется после паузы или Enter; одну границу можно оставить пустой.', '入力後しばらく待つか Enter で適用。片側は空欄可。', '잠시 후 또는 Enter로 적용; 한쪽은 비워도 됩니다.', 'Se aplica tras una pausa o Intro; puede dejar un límite vacío.', 'Aplica após uma pausa ou Enter; um limite pode ficar vazio.'],
     'setting.missingYear': ['Include books without a year', '显示年份缺失的书籍', '顯示缺少年份的書籍', 'Inclure les livres sans année', 'Bücher ohne Jahr einschließen', 'Включать книги без года', '出版年不明の本も表示', '연도 없는 책 포함', 'Incluir libros sin año', 'Incluir livros sem ano'],
     'setting.resetPosition': ['Reset panel position', '重置浮窗位置', '重設浮窗位置', 'Réinitialiser la position', 'Panelposition zurücksetzen', 'Сбросить положение панели', 'パネル位置をリセット', '패널 위치 초기화', 'Restablecer posición', 'Redefinir posição'],
     'setting.userMatches': ['Other mirrors: add User matches in Tampermonkey.', '其他镜像：请在 Tampermonkey 中添加 User matches。', '其他鏡像：請在 Tampermonkey 中加入 User matches。', 'Autres miroirs : ajoutez des User matches dans Tampermonkey.', 'Weitere Mirrors: User matches in Tampermonkey hinzufügen.', 'Другие зеркала: добавьте User matches в Tampermonkey.', '他のミラーは Tampermonkey の User matches に追加してください。', '다른 미러는 Tampermonkey의 User matches에 추가하세요.', 'Otros espejos: añada User matches en Tampermonkey.', 'Outros espelhos: adicione User matches no Tampermonkey.'],
     'setting.language': ['Interface language', '界面语言', '介面語言', 'Langue de l’interface', 'Oberflächensprache', 'Язык интерфейса', '表示言語', '인터페이스 언어', 'Idioma de la interfaz', 'Idioma da interface'],
-    'setting.autoLanguage': ['Follow browser/system', '跟随浏览器/系统', '跟隨瀏覽器／系統', 'Suivre le navigateur/système', 'Browser/System folgen', 'Как в браузере/системе', 'ブラウザー／システムに従う', '브라우저/시스템 따르기', 'Seguir navegador/sistema', 'Seguir navegador/sistema'],
+    'setting.autoLanguage': ['Use browser or system language', '跟随浏览器/系统', '跟隨瀏覽器／系統', 'Suivre le navigateur/système', 'Browser/System folgen', 'Как в браузере/системе', 'ブラウザー／システムに従う', '브라우저/시스템 따르기', 'Seguir navegador/sistema', 'Seguir navegador/sistema'],
     'setting.showNotice': ['Show welcome notice on this site', '在本站显示启动提示', '在本站顯示啟用提示', 'Afficher le message d’accueil sur ce site', 'Willkommenshinweis auf dieser Website anzeigen', 'Показывать приветственное уведомление на этом сайте', 'このサイトで案内を表示', '이 사이트에서 시작 안내 표시', 'Mostrar aviso de bienvenida en este sitio', 'Mostrar aviso de boas-vindas neste site'],
     'setting.allowBulk': ['Enable bulk opening on this site', '在本站启用批量打开', '在本站啟用批次開啟', 'Activer l’ouverture groupée sur ce site', 'Massenöffnung auf dieser Website aktivieren', 'Включить массовое открытие на этом сайте', 'このサイトで一括で開く機能を有効化', '이 사이트에서 일괄 열기 사용', 'Activar apertura masiva en este sitio', 'Ativar abertura em massa neste site'],
     'notice.message': ['Booklist tools are ready. Open any booklist to use them.', '工具已生效，打开任意书单即可使用。', '工具已啟用，開啟任意書單即可使用。', 'Les outils sont prêts. Ouvrez une liste de livres.', 'Die Werkzeuge sind bereit. Öffnen Sie eine Bücherliste.', 'Инструмент готов. Откройте любой список книг.', 'ツールは有効です。書籍リストを開くと使えます。', '도구가 준비되었습니다. 책 목록을 열어 사용하세요.', 'La herramienta está lista. Abra cualquier lista de libros.', 'A ferramenta está pronta. Abra qualquer lista de livros.'],
     'notice.link': ['Browse booklists', '浏览书单', '瀏覽書單', 'Parcourir les listes', 'Bücherlisten ansehen', 'Открыть списки книг', '書籍リストを見る', '책 목록 보기', 'Ver listas de libros', 'Ver listas de livros'],
-    'notice.listPage': ['Open any booklist to use the tools.', '打开任意书单即可启用工具。', '開啟任意書單即可啟用工具。', 'Ouvrez une liste de livres pour utiliser les outils.', 'Öffnen Sie eine Bücherliste, um die Werkzeuge zu nutzen.', 'Откройте любой список книг, чтобы использовать инструмент.', '書籍リストを開くと使えます。', '책 목록을 열면 사용할 수 있습니다.', 'Abra una lista de libros para usar la herramienta.', 'Abra uma lista de livros para usar a ferramenta.'],
+    'notice.listPage': ['Open a booklist to use these tools.', '打开任意书单即可启用工具。', '開啟任意書單即可啟用工具。', 'Ouvrez une liste de livres pour utiliser les outils.', 'Öffnen Sie eine Bücherliste, um die Werkzeuge zu nutzen.', 'Откройте любой список книг, чтобы использовать инструмент.', '書籍リストを開くと使えます。', '책 목록을 열면 사용할 수 있습니다.', 'Abra una lista de libros para usar la herramienta.', 'Abra uma lista de livros para usar a ferramenta.'],
     'notice.close': ['Close · {seconds}s', '关闭 · {seconds}秒', '關閉 · {seconds}秒', 'Fermer · {seconds}s', 'Schließen · {seconds}s', 'Закрыть · {seconds}с', '閉じる · {seconds}秒', '닫기 · {seconds}초', 'Cerrar · {seconds}s', 'Fechar · {seconds}s'],
     'notice.optout': ['Do not show this again', '不再显示该提示', '不再顯示此提示', 'Ne plus afficher cet avis', 'Diesen Hinweis nicht mehr anzeigen', 'Больше не показывать', '今後表示しない', '다시 표시하지 않기', 'No volver a mostrar', 'Não mostrar novamente'],
-    'summary.loaded': ['Loaded books', '当前已加载', '目前已載入', 'Livres chargés', 'Geladene Bücher', 'Загружено книг', '読み込み済み', '로드된 책', 'Libros cargados', 'Livros carregados'],
-    'summary.matched': ['After filtering', '本工具筛选后', '本工具篩選後', 'Après filtrage', 'Nach Filterung', 'После фильтрации', '絞り込み後', '필터링 후', 'Tras filtrar', 'Após filtrar'],
+    'summary.loaded': ['Books loaded', '当前已加载', '目前已載入', 'Livres chargés', 'Geladene Bücher', 'Загружено книг', '読み込み済み', '로드된 책', 'Libros cargados', 'Livros carregados'],
+    'summary.matched': ['Books shown after filtering', '本工具筛选后', '本工具篩選後', 'Après filtrage', 'Nach Filterung', 'После фильтрации', '絞り込み後', '필터링 후', 'Tras filtrar', 'Após filtrar'],
     'summary.total': ['Booklist total', '书单共', '書單共', 'Total de la liste', 'Bücher insgesamt', 'Всего в списке', 'リスト全体', '목록 전체', 'Total de la lista', 'Total da lista'],
     'summary.unknown': ['Unknown', '未知', '未知', 'Inconnu', 'Unbekannt', 'Неизвестно', '不明', '알 수 없음', 'Desconocido', 'Desconhecido'],
     'progress.empty': ['No books loaded yet', '尚无已加载书籍', '尚無已載入書籍', 'Aucun livre chargé', 'Noch keine Bücher geladen', 'Книги ещё не загружены', 'まだ本を読み込んでいません', '아직 로드된 책 없음', 'Aún no hay libros cargados', 'Nenhum livro carregado'],
-    'progress.text': ['Estimated from 20 books per page: about {expansions} extra loads; page {current}; {remaining} pages left; {pages} pages total', '按每页 20 本估算：额外加载约 {expansions} 批；当前约第 {current} 页，剩余约 {remaining} 页，共约 {pages} 页', '按每頁 20 本估算：額外載入約 {expansions} 批；目前約第 {current} 頁，剩餘約 {remaining} 頁，共約 {pages} 頁', 'Estimation à 20 livres par page : environ {expansions} chargements supplémentaires ; page {current} ; encore {remaining} pages sur {pages}', 'Geschätzt bei 20 Büchern pro Seite: etwa {expansions} weitere Ladevorgänge; Seite {current}; noch {remaining} von {pages} Seiten', 'Оценка по 20 книг на страницу: около {expansions} дополнительных загрузок; страница {current}; осталось {remaining} из {pages} страниц', '1ページ20冊で推定：追加読込約{expansions}回、現在約{current}ページ、残り約{remaining}ページ、全約{pages}ページ', '페이지당 20권 기준 추정: 추가 로드 약 {expansions}회, 현재 약 {current}페이지, 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Estimación de 20 libros por página: unas {expansions} cargas adicionales; página {current}; quedan {remaining} de {pages} páginas', 'Estimativa de 20 livros por página: cerca de {expansions} carregamentos extras; página {current}; faltam {remaining} de {pages} páginas'],
-    'progress.zero': ['No books loaded; about {remaining} pages left; about {pages} pages total', '尚无已加载书籍，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '尚無已載入書籍，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Aucun livre chargé ; environ {remaining} pages restantes sur {pages} au total', 'Noch keine Bücher geladen; etwa {remaining} Seiten übrig; insgesamt etwa {pages} Seiten', 'Книги ещё не загружены; осталось около {remaining} страниц; всего около {pages} страниц', 'まだ本を読み込んでいません。残り約 {remaining} ページ、全 {pages} ページ', '아직 로드된 책 없음; 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Aún no hay libros cargados; quedan unas {remaining} páginas de unas {pages} en total', 'Nenhum livro carregado; faltam cerca de {remaining} páginas de cerca de {pages} no total'],
-    'progress.unknown': ['Estimated from 20 books per page: about {expansions} extra loads; around page {current}; total pages unknown', '按每页 20 本估算：额外加载约 {expansions} 批；当前约第 {current} 页；总页数未知', '按每頁 20 本估算：額外載入約 {expansions} 批；目前約第 {current} 頁；總頁數未知', 'Estimation à 20 livres par page : environ {expansions} chargements supplémentaires ; page {current} ; total inconnu', 'Geschätzt bei 20 Büchern pro Seite: etwa {expansions} weitere Ladevorgänge; Seite {current}; Gesamtzahl unbekannt', 'Оценка по 20 книг на страницу: около {expansions} дополнительных загрузок; страница {current}; всего страниц неизвестно', '1ページ20冊で推定：追加読込約{expansions}回、現在約{current}ページ、総ページ数は不明', '페이지당 20권 기준 추정: 추가 로드 약 {expansions}회, 현재 약 {current}페이지, 총 페이지 수 알 수 없음', 'Estimación de 20 libros por página: unas {expansions} cargas adicionales; página {current}; total desconocido', 'Estimativa de 20 livros por página: cerca de {expansions} carregamentos extras; página {current}; total desconhecido'],
+    'progress.text': ['Estimated Show more clicks: {expansions}; page {current} of {pages}; pages remaining: {remaining} (20 books per page)', '已点 {expansions} 次，当前第 {current} 页，共 {pages} 页，剩余 {remaining} 页 （按每页 20 本估算）', '已點 {expansions} 次，目前第 {current} 頁，共 {pages} 頁，剩餘 {remaining} 頁 （按每頁 20 本估算）', 'Clics : {expansions} ; page actuelle : {current} sur {pages} ; pages restantes : {remaining} (estimation à 20 livres par page)', 'Klicks: {expansions}; aktuelle Seite: {current} von {pages}; verbleibende Seiten: {remaining} (geschätzt mit 20 Büchern pro Seite)', 'Нажатий: {expansions}; текущая страница: {current} из {pages}; осталось страниц: {remaining} (из расчёта 20 книг на страницу)', 'クリック回数：{expansions}、現在{current}ページ目、全{pages}ページ、残り{remaining}ページ（1ページ20冊で推定）', '클릭 횟수: {expansions}회, 현재 {current}/{pages}페이지, 남은 페이지: {remaining} (페이지당 20권 기준 추정)', 'Clics: {expansions}; página actual: {current} de {pages}; páginas restantes: {remaining} (estimado con 20 libros por página)', 'Cliques: {expansions}; página atual: {current} de {pages}; páginas restantes: {remaining} (estimativa de 20 livros por página)'],
+    'progress.zero': ['No books loaded; estimated total pages: {pages}; remaining: {remaining}', '尚无已加载书籍，尚未加载约 {remaining} 页，书单总长度约 {pages} 页', '尚無已載入書籍，尚未載入約 {remaining} 頁，書單總長約 {pages} 頁', 'Aucun livre chargé ; environ {remaining} pages restantes sur {pages} au total', 'Noch keine Bücher geladen; etwa {remaining} Seiten übrig; insgesamt etwa {pages} Seiten', 'Книги ещё не загружены; осталось около {remaining} страниц; всего около {pages} страниц', 'まだ本を読み込んでいません。残り約 {remaining} ページ、全 {pages} ページ', '아직 로드된 책 없음; 남은 약 {remaining}페이지, 총 약 {pages}페이지', 'Aún no hay libros cargados; quedan unas {remaining} páginas de unas {pages} en total', 'Nenhum livro carregado; faltam cerca de {remaining} páginas de cerca de {pages} no total'],
+    'progress.unknown': ['Estimated Show more clicks: {expansions}; page {current}; total pages unknown (20 books per page)', '已点 {expansions} 次，当前第 {current} 页，总页数未知（按每页 20 本估算）', '已點 {expansions} 次，目前第 {current} 頁，總頁數未知（按每頁 20 本估算）', 'Clics : {expansions} ; page actuelle : {current} ; nombre total de pages inconnu (estimation à 20 livres par page)', 'Klicks: {expansions}; aktuelle Seite: {current}; Gesamtzahl der Seiten unbekannt (geschätzt mit 20 Büchern pro Seite)', 'Нажатий: {expansions}; текущая страница: {current}; общее число страниц неизвестно (из расчёта 20 книг на страницу)', 'クリック回数：{expansions}、現在{current}ページ目、総ページ数は不明（1ページ20冊で推定）', '클릭 횟수: {expansions}회, 현재 {current}페이지, 전체 페이지 수 알 수 없음 (페이지당 20권 기준 추정)', 'Clics: {expansions}; página actual: {current}; total de páginas desconocido (estimado con 20 libros por página)', 'Cliques: {expansions}; página atual: {current}; total de páginas desconhecido (estimativa de 20 livros por página)'],
     'progress.zeroUnknown': ['No books loaded; total pages unknown', '尚无已加载书籍；书单总页数未知', '尚無已載入書籍；書單總頁數未知', 'Aucun livre chargé ; nombre total de pages inconnu', 'Noch keine Bücher geladen; Gesamtzahl der Seiten unbekannt', 'Книги ещё не загружены; всего страниц неизвестно', 'まだ本を読み込んでいません。総ページ数は不明', '아직 로드된 책 없음; 총 페이지 수 알 수 없음', 'Aún no hay libros cargados; total de páginas desconocido', 'Nenhum livro carregado; total de páginas desconhecido'],
     'auto.showMore': ['Click Show more {count} times', '连点 {count} 次 Show more', '連點 {count} 次 Show more', 'Cliquer {count} fois sur Show more', 'Show more {count}-mal anklicken', 'Нажать Show more {count} раз', 'Show more を {count} 回クリック', 'Show more를 {count}번 클릭', 'Pulsar Show more {count} veces', 'Clicar em Show more {count} vezes'],
     'auto.showMoreOne': ['Click Show more once', '连点 1 次 Show more', '連點 1 次 Show more', 'Cliquer 1 fois sur Show more', 'Show more 1-mal anklicken', 'Нажать Show more 1 раз', 'Show more を 1 回クリック', 'Show more를 1번 클릭', 'Pulsar Show more 1 vez', 'Clicar em Show more 1 vez'],
     'auto.continuous': ['Keep clicking Show more until the whole booklist is displayed', '持续连点 Show more，直到书单显示完毕', '持續連點 Show more，直到書單顯示完畢', 'Cliquer sur Show more jusqu’à afficher toute la liste de livres', 'Show more anklicken, bis die gesamte Bücherliste angezeigt wird', 'Нажимать Show more, пока не отобразится весь список книг', '書籍リスト全体が表示されるまで Show more を繰り返しクリック', '전체 도서 목록이 표시될 때까지 Show more 계속 클릭', 'Pulsar Show more hasta que se muestre toda la lista de libros', 'Clicar em Show more até que toda a lista de livros seja exibida'],
-    'auto.showMoreProgress': ['clicked {clicked}, {remaining} left', '已点 {clicked} 次，剩余 {remaining} 次', '已點 {clicked} 次，剩餘 {remaining} 次', '{clicked} clics, encore {remaining}', '{clicked} geklickt, {remaining} übrig', 'нажато {clicked}, осталось {remaining}', '{clicked} 回クリック、残り {remaining} 回', '{clicked}회 클릭, {remaining}회 남음', '{clicked} clics, faltan {remaining}', '{clicked} cliques, faltam {remaining}'],
-    'auto.continuousProgress': ['clicked {clicked} times', '已点 {clicked} 次', '已點 {clicked} 次', '{clicked} clics', '{clicked}-mal geklickt', 'нажато {clicked} раз', '{clicked} 回クリック', '{clicked}회 클릭', '{clicked} clics', '{clicked} cliques'],
-    'auto.countInvalid': ['Enter a whole number from 1–50; using the default of {default} clicks.', '请输入 1–50 的整数；当前使用默认 {default} 次。', '請輸入 1–50 的整數；目前使用預設的 {default} 次。', 'Saisissez un entier de 1 à 50 ; la valeur par défaut de {default} clics est utilisée.', 'Ganze Zahl von 1 bis 50 eingeben; derzeit gelten die voreingestellten {default} Klicks.', 'Введите целое число от 1 до 50; пока используется значение по умолчанию: {default}.', '1～50 の整数を入力してください。現在は既定の {default} 回で実行します。', '1~50의 정수를 입력하세요. 현재 기본값 {default}회로 실행합니다.', 'Introduce un número entero del 1 al 50; se usa el valor predeterminado de {default} clics.', 'Digite um número inteiro de 1 a 50; o padrão de {default} cliques está em uso.'],
+    'auto.showMoreProgress': ['Attempts: {clicked}; remaining: {remaining}', '已点 {clicked} 次，剩余 {remaining} 次', '已點 {clicked} 次，剩餘 {remaining} 次', '{clicked} clics, encore {remaining}', '{clicked} geklickt, {remaining} übrig', 'нажато {clicked}, осталось {remaining}', '{clicked} 回クリック、残り {remaining} 回', '{clicked}회 클릭, {remaining}회 남음', '{clicked} clics, faltan {remaining}', '{clicked} cliques, faltam {remaining}'],
+    'auto.continuousProgress': ['Attempts: {clicked}', '已点 {clicked} 次', '已點 {clicked} 次', '{clicked} clics', '{clicked}-mal geklickt', 'нажато {clicked} раз', '{clicked} 回クリック', '{clicked}회 클릭', '{clicked} clics', '{clicked} cliques'],
+    'auto.countInvalid': ['Enter a whole number from 1 to 50. Using the default: {default} clicks.', '请输入 1–50 的整数；当前使用默认 {default} 次。', '請輸入 1–50 的整數；目前使用預設的 {default} 次。', 'Saisissez un entier de 1 à 50 ; la valeur par défaut de {default} clics est utilisée.', 'Ganze Zahl von 1 bis 50 eingeben; derzeit gelten die voreingestellten {default} Klicks.', 'Введите целое число от 1 до 50; пока используется значение по умолчанию: {default}.', '1～50 の整数を入力してください。現在は既定の {default} 回で実行します。', '1~50의 정수를 입력하세요. 현재 기본값 {default}회로 실행합니다.', 'Introduce un número entero del 1 al 50; se usa el valor predeterminado de {default} clics.', 'Digite um número inteiro de 1 a 50; o padrão de {default} cliques está em uso.'],
     'auto.continuousDisabled': ['Enable continuous clicking for this site in Automation settings.', '请先在自动化设置中启用本站持续连点。', '請先在自動化設定中啟用本站持續連點。', 'Activez les clics continus pour ce site dans les réglages de l’automatisation.', 'Fortlaufendes Klicken für diese Website in den Automatisierungseinstellungen aktivieren.', 'Включите непрерывные нажатия для этого сайта в настройках автоматизации.', '自動操作の設定で、このサイトの連続クリックを有効にしてください。', '자동화 설정에서 이 사이트의 연속 클릭을 사용 설정하세요.', 'Activa los clics continuos para este sitio en la configuración de automatización.', 'Ative os cliques contínuos para este site nas configurações da automação.'],
     'auto.continuousWarning': ['Keep clicking Show more until the button disappears? This may take time or trigger site limits.', '将持续点击 Show more 直到按钮消失。可能耗时较长，也可能触发站点限制。继续？', '將持續點擊 Show more 直到按鈕消失。可能耗時較長，也可能觸發網站限制。繼續？', 'Cliquer sur Show more jusqu’à disparition du bouton ? Cela peut prendre du temps ou déclencher des limites du site.', 'Show more anklicken, bis die Schaltfläche verschwindet? Dies kann dauern oder Zugriffsbeschränkungen auslösen.', 'Нажимать Show more, пока кнопка не исчезнет? Это может занять время или вызвать ограничения сайта.', 'Show more ボタンが消えるまでクリックしますか？時間がかかるか、サイトの制限に達する可能性があります。', 'Show more 버튼이 사라질 때까지 클릭할까요? 시간이 걸리거나 사이트 제한이 적용될 수 있습니다.', '¿Pulsar Show more hasta que desaparezca el botón? Puede tardar o activar límites del sitio.', 'Clicar em Show more até o botão desaparecer? Isso pode demorar ou acionar limites do site.'],
     'auto.showMoreCountMismatch': ['The booklist is displayed, but the page has {loaded} books; expected {expected}.', '书单显示完毕，但页面有 {loaded} 本，预期为 {expected} 本，数量不符。', '書單顯示完畢，但頁面有 {loaded} 本，預期為 {expected} 本，數量不符。', 'La liste de livres est entièrement affichée, mais la page contient {loaded} livres au lieu des {expected} attendus.', 'Die Bücherliste wird vollständig angezeigt, aber die Seite enthält {loaded} statt der erwarteten {expected} Bücher.', 'Список книг показан полностью, но на странице {loaded} книг вместо ожидаемых {expected}.', '書籍リストの表示は終了しましたが、ページには {loaded} 冊あり、予想された {expected} 冊と一致しません。', '도서 목록 표시가 끝났지만 페이지에는 {loaded}권이 있으며 예상한 {expected}권과 다릅니다.', 'Se muestra toda la lista, pero la página tiene {loaded} libros en vez de los {expected} esperados.', 'A lista inteira foi exibida, mas a página tem {loaded} livros em vez dos {expected} esperados.'],
-    'auto.showMoreCountUnknown': ['The whole booklist is displayed; its expected total cannot be checked.', '书单显示完毕；无法核对预期总数。', '書單顯示完畢；無法核對預期總數。', 'Toute la liste de livres est affichée ; son total attendu ne peut pas être vérifié.', 'Die gesamte Bücherliste wird angezeigt; die erwartete Gesamtzahl lässt sich nicht prüfen.', 'Весь список книг показан; ожидаемое общее число проверить нельзя.', '書籍リスト全体の表示は終了しましたが、予想総数は確認できません。', '전체 도서 목록 표시가 끝났지만 예상 총수는 확인할 수 없습니다.', 'Se muestra toda la lista de libros; no se puede comprobar el total esperado.', 'A lista inteira foi exibida; não é possível conferir o total esperado.'],
+    'auto.showMoreCountUnknown': ['All books appear to be displayed, but the total cannot be verified.', '书单显示完毕；无法核对预期总数。', '書單顯示完畢；無法核對預期總數。', 'Toute la liste de livres est affichée ; son total attendu ne peut pas être vérifié.', 'Die gesamte Bücherliste wird angezeigt; die erwartete Gesamtzahl lässt sich nicht prüfen.', 'Весь список книг показан; ожидаемое общее число проверить нельзя.', '書籍リスト全体の表示は終了しましたが、予想総数は確認できません。', '전체 도서 목록 표시가 끝났지만 예상 총수는 확인할 수 없습니다.', 'Se muestra toda la lista de libros; no se puede comprobar el total esperado.', 'A lista inteira foi exibida; não é possível conferir o total esperado.'],
     'auto.stop': ['Stop clicking', '停止连点', '停止連點', 'Arrêter les clics', 'Klicken stoppen', 'Остановить нажатия', '連続クリックを停止', '연속 클릭 중지', 'Detener los clics', 'Parar os cliques'],
     'auto.cancelled': ['Stopped by you.', '已手动停止。', '已手動停止。', 'Arrêté à votre demande.', 'Von Ihnen gestoppt.', 'Остановлено вами.', '手動で停止しました。', '사용자가 중지했습니다.', 'Detenido por ti.', 'Interrompido por você.'],
-    'auto.running': ['[Running] {action}', '[运行中] {action}', '[執行中] {action}', '[En cours] {action}', '[Läuft] {action}', '[Выполняется] {action}', '[実行中] {action}', '[실행 중] {action}', '[En curso] {action}', '[Em execução] {action}'],
-    'auto.warning': ['[Possible failure; stopping in {seconds}s] {action}', '[可能失败，{seconds} 秒后停止] {action}', '[可能失敗，{seconds} 秒後停止] {action}', '[Échec possible ; arrêt dans {seconds} s] {action}', '[Möglicher Fehler; Stopp in {seconds} s] {action}', '[Возможный сбой; остановка через {seconds} с] {action}', '[失敗の可能性・{seconds} 秒後に中止] {action}', '[실패 가능성; {seconds}초 후 중단] {action}', '[Posible fallo; se detendrá en {seconds} s] {action}', '[Possível falha; parada em {seconds} s] {action}'],
-    'auto.clicked': ['{action} [clicks attempted: {attempted}]', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} [tentatives : {attempted}]', '{action} [Versuche: {attempted}]', '{action} [попыток: {attempted}]', '{action} [試行 {attempted} 回]', '{action} [시도 {attempted}회]', '{action} [intentos: {attempted}]', '{action} [tentativas: {attempted}]'],
-    'auto.clickedFailed': ['{action} [attempted {attempted}, failed {failed}]', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} [tentatives : {attempted}, échecs : {failed}]', '{action} [Versuche: {attempted}, Fehler: {failed}]', '{action} [попыток: {attempted}, ошибок: {failed}]', '{action} [試行 {attempted} 回、失敗 {failed} 回]', '{action} [시도 {attempted}회, 실패 {failed}회]', '{action} [intentos: {attempted}, fallos: {failed}]', '{action} [tentativas: {attempted}, falhas: {failed}]'],
+    'auto.running': ['Running: {action}', '[运行中] {action}', '[執行中] {action}', '[En cours] {action}', '[Läuft] {action}', '[Выполняется] {action}', '[実行中] {action}', '[실행 중] {action}', '[En curso] {action}', '[Em execução] {action}'],
+    'auto.warning': ['No new books yet; stopping in {seconds}s: {action}', '[可能失败，{seconds} 秒后停止] {action}', '[可能失敗，{seconds} 秒後停止] {action}', '[Échec possible ; arrêt dans {seconds} s] {action}', '[Möglicher Fehler; Stopp in {seconds} s] {action}', '[Возможный сбой; остановка через {seconds} с] {action}', '[失敗の可能性・{seconds} 秒後に中止] {action}', '[실패 가능성; {seconds}초 후 중단] {action}', '[Posible fallo; se detendrá en {seconds} s] {action}', '[Possível falha; parada em {seconds} s] {action}'],
+    'auto.clicked': ['{action} (clicks attempted: {attempted})', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} [tentatives : {attempted}]', '{action} [Versuche: {attempted}]', '{action} [попыток: {attempted}]', '{action} [試行 {attempted} 回]', '{action} [시도 {attempted}회]', '{action} [intentos: {attempted}]', '{action} [tentativas: {attempted}]'],
+    'auto.clickedFailed': ['{action} (attempted: {attempted}; failed: {failed})', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} [tentatives : {attempted}, échecs : {failed}]', '{action} [Versuche: {attempted}, Fehler: {failed}]', '{action} [попыток: {attempted}, ошибок: {failed}]', '{action} [試行 {attempted} 回、失敗 {failed} 回]', '{action} [시도 {attempted}회, 실패 {failed}회]', '{action} [intentos: {attempted}, fallos: {failed}]', '{action} [tentativas: {attempted}, falhas: {failed}]'],
     'auto.resetShowMore': ['Reset Show more availability', '重置 Show more 按钮可用性', '重設 Show more 按鈕可用性', 'Rétablir le bouton Show more', 'Show-more-Schaltfläche zurücksetzen', 'Восстановить кнопку Show more', 'Show more ボタンを再有効化', 'Show more 버튼 사용 가능 상태 재설정', 'Restablecer botón Show more', 'Restaurar botão Show more'],
     'auto.resetCaution': ['The button appears available again, but the original request may still be running. Clicking again may load duplicates.', '按钮现可点击，但原请求可能仍在处理；再次点击可能重复加载。', '按鈕目前可點擊，但原請求可能仍在處理；再次點擊可能重複載入。', 'Le bouton semble de nouveau utilisable, mais la requête initiale peut encore être en cours. Un nouveau clic peut charger des doublons.', 'Die Schaltfläche scheint wieder nutzbar, aber die ursprüngliche Anfrage könnte noch laufen. Erneutes Klicken kann Bücher doppelt laden.', 'Кнопка снова выглядит доступной, но исходный запрос может ещё выполняться. Повторное нажатие может загрузить дубли.', 'ボタンは再び押せる状態ですが、元の処理は継続中かもしれません。再クリックすると重複して読み込む可能性があります。', '버튼을 다시 누를 수 있지만 기존 요청이 진행 중일 수 있습니다. 다시 누르면 중복으로 로드될 수 있습니다.', 'El botón parece disponible de nuevo, pero la solicitud inicial puede seguir activa. Otro clic puede cargar duplicados.', 'O botão parece disponível novamente, mas a solicitação original pode continuar. Outro clique pode carregar itens duplicados.'],
     'auto.resetFailed': ['Could not restore Show more. Refresh the page.', '无法恢复 Show more，请刷新页面。', '無法恢復 Show more，請重新整理頁面。', 'Impossible de rétablir Show more. Actualisez la page.', 'Show more konnte nicht wiederhergestellt werden. Seite neu laden.', 'Не удалось восстановить Show more. Обновите страницу.', 'Show more を復元できません。ページを再読み込みしてください。', 'Show more를 복구하지 못했습니다. 페이지를 새로고침하세요.', 'No se pudo restaurar Show more. Actualice la página.', 'Não foi possível restaurar Show more. Atualize a página.'],
-    'auto.openAll': ['Open pages for all currently visible books', '打开当前显示的所有图书页面', '開啟目前顯示的所有圖書頁面', 'Ouvrir les pages de tous les livres actuellement visibles', 'Seiten aller derzeit sichtbaren Bücher öffnen', 'Открыть страницы всех видимых сейчас книг', '現在表示中の本のページをすべて開く', '현재 표시된 모든 책의 페이지 열기', 'Abrir las páginas de todos los libros visibles', 'Abrir as páginas de todos os livros visíveis'],
+    'auto.openAll': ['Open all currently visible book pages', '打开当前显示的所有图书页面', '開啟目前顯示的所有圖書頁面', 'Ouvrir les pages de tous les livres actuellement visibles', 'Seiten aller derzeit sichtbaren Bücher öffnen', 'Открыть страницы всех видимых сейчас книг', '現在表示中の本のページをすべて開く', '현재 표시된 모든 책의 페이지 열기', 'Abrir las páginas de todos los libros visibles', 'Abrir as páginas de todos os livros visíveis'],
     'auto.favorite': ['Add all books on this page to favorites', '本页全部加入收藏', '本頁全部加入收藏', 'Ajouter tous les livres de cette page aux favoris', 'Alle Bücher auf dieser Seite zu Favoriten hinzufügen', 'Добавить все книги на этой странице в избранное', 'このページの全書籍をお気に入りに追加', '이 페이지의 모든 책을 즐겨찾기에 추가', 'Añadir todos los libros de esta página a favoritos', 'Adicionar todos os livros desta página aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
     'auto.firstWarning': ['Try to open {count} pages? This may slow your browser or trigger site rate limits.', '尝试打开 {count} 个页面？浏览器可能变慢，站点也可能限流。', '嘗試開啟 {count} 個頁面？瀏覽器可能變慢，網站也可能限制請求。', 'Tenter d’ouvrir {count} pages ? Cela peut ralentir le navigateur ou déclencher une limitation du site.', '{count} Seiten öffnen versuchen? Das kann den Browser verlangsamen oder Zugriffsbeschränkungen auslösen.', 'Попытаться открыть {count} страниц? Браузер может замедлиться, а сайт — ограничить запросы.', '{count} ページを開こうとしますか？動作低下やアクセス制限の可能性があります。', '{count}개 페이지를 열어 볼까요? 브라우저가 느려지거나 사이트에서 요청을 제한할 수 있습니다.', '¿Intentar abrir {count} páginas? Puede ralentizar el navegador o activar límites del sitio.', 'Tentar abrir {count} páginas? Isso pode deixar o navegador lento ou acionar limites do site.'],
@@ -224,30 +241,33 @@
     'auto.bulkApi': ['GM_openInTab is unavailable.', '脚本管理器未提供 GM_openInTab。', '腳本管理器未提供 GM_openInTab。', 'GM_openInTab est indisponible.', 'GM_openInTab ist nicht verfügbar.', 'GM_openInTab недоступен.', 'GM_openInTab が利用できません。', 'GM_openInTab을 사용할 수 없습니다.', 'GM_openInTab no está disponible.', 'GM_openInTab indisponível.'],
     'auto.bulkFilters': ['Check filter rules and wait for download status.', '请检查筛选规则，并等待下载状态就绪。', '請檢查篩選規則，並等待下載狀態就緒。', 'Vérifiez les filtres et attendez l’état des téléchargements.', 'Filterregeln prüfen und auf den Downloadstatus warten.', 'Проверьте правила фильтрации и дождитесь статуса загрузки.', '絞り込み条件を確認し、ダウンロード状態をお待ちください。', '필터 조건을 확인하고 다운로드 상태를 기다리세요.', 'Revise los filtros y espere el estado de descarga.', 'Verifique os filtros e aguarde o status de download.'],
     'auto.bulkUnknown': ['Some download statuses are unknown; bulk opening is paused.', '部分下载状态未知，批量打开已暂停。', '部分下載狀態未知，批次開啟暫停。', 'Certains états de téléchargement sont inconnus ; ouverture en pause.', 'Einige Downloadstatus unbekannt; Öffnen pausiert.', 'Часть статусов неизвестна; открытие приостановлено.', '一部のダウンロード状態が不明です。一括開きを停止中。', '일부 다운로드 상태가 불명확하여 일괄 열기를 중지합니다.', 'Algunos estados son desconocidos; apertura en pausa.', 'Alguns status são desconhecidos; abertura pausada.'],
-    'auto.bulkEmpty': ['No eligible visible book links.', '当前没有可打开的可见书籍链接。', '目前沒有可開啟的可見書籍連結。', 'Aucun lien de livre visible valide.', 'Keine gültigen sichtbaren Buchlinks.', 'Нет подходящих видимых ссылок на книги.', '表示中の本に開けるリンクがありません。', '열 수 있는 보이는 책 링크가 없습니다.', 'No hay enlaces visibles válidos.', 'Nenhum link de livro visível elegível.'],
+    'auto.bulkEmpty': ['No visible book pages are eligible to open.', '当前没有可打开的可见书籍链接。', '目前沒有可開啟的可見書籍連結。', 'Aucun lien de livre visible valide.', 'Keine gültigen sichtbaren Buchlinks.', 'Нет подходящих видимых ссылок на книги.', '表示中の本に開けるリンクがありません。', '열 수 있는 보이는 책 링크가 없습니다.', 'No hay enlaces visibles válidos.', 'Nenhum link de livro visível elegível.'],
     'auto.bulkChanged': ['List or permission changed; nothing was opened.', '书单或权限已变化，本次没有打开页面。', '書單或權限已變更，本次未開啟頁面。', 'Liste ou autorisation modifiée ; aucune page ouverte.', 'Liste oder Berechtigung geändert; keine Seite geöffnet.', 'Список или разрешение изменились; страницы не открыты.', 'リストまたは権限が変わりました。開いていません。', '목록 또는 권한이 변경되어 페이지를 열지 않았습니다.', 'La lista o el permiso cambió; no se abrió nada.', 'Lista ou permissão mudou; nada foi aberto.'],
     'auto.bulkProgress': ['Attempted {attempted}; submitted {submitted}; failed {failed}. Submission does not mean loaded.', '已尝试 {attempted}；已提交打开 {submitted}；失败 {failed}。提交不等于加载成功。', '已嘗試 {attempted}；已提交開啟 {submitted}；失敗 {failed}。提交不等於載入成功。', 'Tentés {attempted} ; soumis {submitted} ; échecs {failed}. Une demande envoyée ne garantit pas le chargement.', 'Versucht {attempted}; gesendet {submitted}; fehlgeschlagen {failed}. Gesendet bedeutet nicht erfolgreich geladen.', 'Попыток {attempted}; отправлено {submitted}; ошибок {failed}. Отправка не означает загрузку.', '試行 {attempted}、送信 {submitted}、失敗 {failed}。送信は読み込み成功ではありません。', '시도 {attempted}, 요청 {submitted}, 실패 {failed}. 요청은 로드 성공이 아닙니다.', 'Intentos {attempted}; enviados {submitted}; fallos {failed}. Enviado no significa cargado.', 'Tentativas {attempted}; enviados {submitted}; falhas {failed}. Enviado não significa carregado.'],
     'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
-    'rule.conflict': ['Conflicting settings', '设置冲突', '設定衝突', 'Paramètres contradictoires', 'Widersprüchliche Einstellungen', 'Конфликт настроек', '設定が競合', '설정 충돌', 'Configuración contradictoria', 'Configurações conflitantes'],
+    'rule.conflict': ['Invalid year range', '设置冲突', '設定衝突', 'Paramètres contradictoires', 'Widersprüchliche Einstellungen', 'Конфликт настроек', '設定が競合', '설정 충돌', 'Configuración contradictoria', 'Configurações conflitantes'],
     'rule.waiting': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'En attente de l’état de téléchargement', 'Warte auf Downloadstatus', 'Ожидание статуса загрузки', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
     'rule.unconfirmed': ['Download status unconfirmed', '下载状态未确认', '下載狀態未確認', 'État des téléchargements non confirmé', 'Downloadstatus unbestätigt', 'Статус загрузки не подтверждён', 'ダウンロード状態を確認できません', '다운로드 상태 미확인', 'Estado de descarga no confirmado', 'Status de download não confirmado'],
     'rule.missingYear': ['include books without a year', '含无年份书籍', '包含未標年份的書籍', 'inclure les livres sans année', 'Bücher ohne Jahr einschließen', 'включая книги без года', '年不明の本を含む', '연도 없는 책 포함', 'incluir libros sin año', 'incluir livros sem ano'],
-    'hint.formatEmpty': ['Select formats; no books are hidden yet.', '请选择筛选格式；当前不隐藏条目', '請選擇格式；目前不隱藏條目', 'Choisissez des formats ; aucun livre n’est masqué.', 'Formate wählen; noch keine Bücher ausgeblendet.', 'Выберите форматы; книги пока не скрыты.', '形式を選択してください。まだ非表示にはしません。', '형식을 선택하세요. 아직 책을 숨기지 않습니다.', 'Elija formatos; aún no se ocultan libros.', 'Selecione formatos; nenhum livro está oculto.'],
-    'hint.invalidCustom': ['Invalid custom formats were ignored.', '部分自定义格式无效，已忽略', '部分自訂格式無效，已忽略', 'Formats personnalisés invalides ignorés.', 'Ungültige eigene Formate ignoriert.', 'Неверные форматы пропущены.', '無効なカスタム形式を無視しました。', '잘못된 사용자 형식을 무시했습니다.', 'Se ignoraron formatos personalizados no válidos.', 'Formatos personalizados inválidos ignorados.'],
-    'hint.yearEmpty': ['Set a year bound; no year filtering yet.', '请设置起始或截止年份；当前不按年份筛选', '請設定起始或截止年份；目前不依年份篩選', 'Indiquez une borne ; aucun filtrage par année.', 'Jahresgrenze festlegen; noch kein Jahresfilter.', 'Задайте границу года; фильтр пока не действует.', '開始年か終了年を入力してください。未入力の間は年で絞り込みません。', '연도 경계를 설정하세요. 아직 필터링하지 않습니다.', 'Defina un límite; aún no se filtra por año.', 'Defina um limite; ainda sem filtro por ano.'],
-    'hint.downloadWaiting': ['Waiting for download status; filter paused.', '等待下载状态加载；下载筛选暂停', '等待下載狀態載入；下載篩選暫停', 'En attente de l’état de téléchargement ; filtre en pause.', 'Warte auf Downloadstatus; Filter pausiert.', 'Ожидание статуса; фильтр приостановлен.', 'ダウンロード状態を待機中。フィルター停止中。', '다운로드 상태 대기 중; 필터 일시 중지.', 'Esperando el estado de descarga; filtro en pausa.', 'Aguardando o status de download; filtro pausado.'],
-    'hint.downloadAmbiguous': ['Empty site records and request failure cannot be distinguished; filter paused.', '站点空记录与请求失败无法区分；下载筛选暂停', '無法區分空紀錄與請求失敗；篩選暫停', 'Impossible de distinguer des données de téléchargement vides d’un échec de requête ; filtre en pause.', 'Leere Downloaddaten und Anfragefehler nicht unterscheidbar; Filter pausiert.', 'Пустые данные и сбой запроса неразличимы; фильтр остановлен.', '空の記録か通信失敗か不明です。フィルター停止中。', '빈 기록과 요청 실패를 구분할 수 없어 필터를 중지합니다.', 'No se distinguen registros de descarga vacíos de un error de solicitud; filtro en pausa.', 'Não é possível distinguir registros de download vazios de falha na solicitação; filtro pausado.'],
-    'hint.downloadTimeout': ['Status unconfirmed after 30 seconds; refresh or check login.', '下载状态 30 秒内未确认；请刷新页面或检查是否已登录', '30 秒內未確認下載狀態；請重新整理或檢查登入', 'État non confirmé après 30 s ; actualisez ou vérifiez la connexion.', 'Status nach 30 s unbestätigt; neu laden oder Anmeldung prüfen.', 'Статус не подтверждён за 30 с; обновите страницу или проверьте вход.', '30 秒後も未確認です。再読み込みかログイン確認を。', '30초 동안 확인되지 않았습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado sin confirmar tras 30 s; actualice o compruebe sesión.', 'Status não confirmado após 30 s; atualize ou confira o login.'],
-    'hint.downloadFailed': ['Status unavailable; refresh or check login.', '下载状态不可判定；请刷新页面或检查是否已登录', '無法判定下載狀態；請重新整理或檢查登入', 'État indisponible ; actualisez ou vérifiez la connexion.', 'Status nicht verfügbar; neu laden oder Anmeldung prüfen.', 'Статус недоступен; обновите страницу или проверьте вход.', '状態を確認できません。再読み込みかログイン確認を。', '상태를 확인할 수 없습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado no disponible; actualice o compruebe sesión.', 'Status indisponível; atualize ou confira o login.'],
-    'hint.downloadUnknown': ['Some statuses are unknown; those books remain visible.', '部分条目的下载状态未知，已保留显示', '部分書籍下載狀態未知，仍會顯示', 'Certains états sont inconnus ; livres conservés.', 'Einige Status unbekannt; Bücher bleiben sichtbar.', 'Часть статусов неизвестна; книги остаются видимыми.', '一部の状態は不明のため、表示を維持します。', '일부 상태를 알 수 없어 계속 표시합니다.', 'Algunos estados son desconocidos; se mantienen visibles.', 'Alguns status são desconhecidos; livros permanecem visíveis.'],
-    'hint.structure': ['Some card details were not found; the site layout may have changed.', '部分卡片信息位置未找到；页面结构可能已变', '部分卡片資訊找不到；頁面結構可能已變', 'Détails introuvables ; la page a peut-être changé.', 'Kartendetails fehlen; Seitenlayout könnte geändert sein.', 'Данные карточек не найдены; вёрстка могла измениться.', 'カード情報が見つかりません。ページ構造が変わった可能性があります。', '일부 카드 정보를 찾지 못했습니다. 페이지 구조가 바뀌었을 수 있습니다.', 'Faltan detalles; quizá cambió el diseño.', 'Detalhes não encontrados; o layout pode ter mudado.'],
+    'hint.formatEmpty': ['Select at least one format to apply this filter.', '请选择筛选格式；当前不隐藏条目', '請選擇格式；目前不隱藏條目', 'Choisissez des formats ; aucun livre n’est masqué.', 'Formate wählen; noch keine Bücher ausgeblendet.', 'Выберите форматы; книги пока не скрыты.', '形式を選択してください。まだ非表示にはしません。', '형식을 선택하세요. 아직 책을 숨기지 않습니다.', 'Elija formatos; aún no se ocultan libros.', 'Selecione formatos; nenhum livro está oculto.'],
+    'hint.sizeEmpty': ['Select a file size range to apply this filter.', '请选择文件大小范围，筛选才会生效。', '請選擇檔案大小範圍，篩選才會生效。', 'Choisissez une plage de taille pour activer ce filtre.', 'Wählen Sie einen Größenbereich, um diesen Filter anzuwenden.', 'Выберите диапазон размера, чтобы применить фильтр.', 'サイズ範囲を選ぶと絞り込みが有効になります。', '크기 범위를 선택하면 필터가 적용됩니다.', 'Elija un rango de tamaño para aplicar este filtro.', 'Escolha uma faixa de tamanho para aplicar este filtro.'],
+    'hint.invalidCustom': ['Invalid custom formats were skipped.', '部分自定义格式无效，已忽略', '部分自訂格式無效，已忽略', 'Formats personnalisés invalides ignorés.', 'Ungültige eigene Formate ignoriert.', 'Неверные форматы пропущены.', '無効なカスタム形式を無視しました。', '잘못된 사용자 형식을 무시했습니다.', 'Se ignoraron formatos personalizados no válidos.', 'Formatos personalizados inválidos ignorados.'],
+    'hint.yearEmpty': ['Enter a start or end year to apply this filter.', '请设置起始或截止年份；当前不按年份筛选', '請設定起始或截止年份；目前不依年份篩選', 'Indiquez une borne ; aucun filtrage par année.', 'Jahresgrenze festlegen; noch kein Jahresfilter.', 'Задайте границу года; фильтр пока не действует.', '開始年か終了年を入力してください。未入力の間は年で絞り込みません。', '연도 경계를 설정하세요. 아직 필터링하지 않습니다.', 'Defina un límite; aún no se filtra por año.', 'Defina um limite; ainda sem filtro por ano.'],
+    'hint.downloadWaiting': ['Waiting for download status. Filter paused.', '等待下载状态加载；下载筛选暂停', '等待下載狀態載入；下載篩選暫停', 'En attente de l’état de téléchargement ; filtre en pause.', 'Warte auf Downloadstatus; Filter pausiert.', 'Ожидание статуса; фильтр приостановлен.', 'ダウンロード状態を待機中。フィルター停止中。', '다운로드 상태 대기 중; 필터 일시 중지.', 'Esperando el estado de descarga; filtro en pausa.', 'Aguardando o status de download; filtro pausado.'],
+    'hint.downloadAmbiguous': ['Download records may be empty or unavailable. Filter paused.', '站点空记录与请求失败无法区分；下载筛选暂停', '無法區分空紀錄與請求失敗；篩選暫停', 'Impossible de distinguer des données de téléchargement vides d’un échec de requête ; filtre en pause.', 'Leere Downloaddaten und Anfragefehler nicht unterscheidbar; Filter pausiert.', 'Пустые данные и сбой запроса неразличимы; фильтр остановлен.', '空の記録か通信失敗か不明です。フィルター停止中。', '빈 기록과 요청 실패를 구분할 수 없어 필터를 중지합니다.', 'No se distinguen registros de descarga vacíos de un error de solicitud; filtro en pausa.', 'Não é possível distinguir registros de download vazios de falha na solicitação; filtro pausado.'],
+    'hint.downloadTimeout': ['Download status still unconfirmed after 30 seconds. Refresh the page or check that you are signed in.', '下载状态 30 秒内未确认；请刷新页面或检查是否已登录', '30 秒內未確認下載狀態；請重新整理或檢查登入', 'État non confirmé après 30 s ; actualisez ou vérifiez la connexion.', 'Status nach 30 s unbestätigt; neu laden oder Anmeldung prüfen.', 'Статус не подтверждён за 30 с; обновите страницу или проверьте вход.', '30 秒後も未確認です。再読み込みかログイン確認を。', '30초 동안 확인되지 않았습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado sin confirmar tras 30 s; actualice o compruebe sesión.', 'Status não confirmado após 30 s; atualize ou confira o login.'],
+    'hint.downloadFailed': ['Download status unavailable. Refresh the page or check that you are signed in.', '下载状态不可判定；请刷新页面或检查是否已登录', '無法判定下載狀態；請重新整理或檢查登入', 'État indisponible ; actualisez ou vérifiez la connexion.', 'Status nicht verfügbar; neu laden oder Anmeldung prüfen.', 'Статус недоступен; обновите страницу или проверьте вход.', '状態を確認できません。再読み込みかログイン確認を。', '상태를 확인할 수 없습니다. 새로고침하거나 로그인 상태를 확인하세요.', 'Estado no disponible; actualice o compruebe sesión.', 'Status indisponível; atualize ou confira o login.'],
+    'hint.downloadUnknown': ['Books with unknown download status remain visible.', '部分条目的下载状态未知，已保留显示', '部分書籍下載狀態未知，仍會顯示', 'Certains états sont inconnus ; livres conservés.', 'Einige Status unbekannt; Bücher bleiben sichtbar.', 'Часть статусов неизвестна; книги остаются видимыми.', '一部の状態は不明のため、表示を維持します。', '일부 상태를 알 수 없어 계속 표시합니다.', 'Algunos estados son desconocidos; se mantienen visibles.', 'Alguns status são desconhecidos; livros permanecem visíveis.'],
+    'hint.structure': ['Some book details could not be found. The site layout may have changed.', '部分卡片信息位置未找到；页面结构可能已变', '部分卡片資訊找不到；頁面結構可能已變', 'Détails introuvables ; la page a peut-être changé.', 'Kartendetails fehlen; Seitenlayout könnte geändert sein.', 'Данные карточек не найдены; вёрстка могла измениться.', 'カード情報が見つかりません。ページ構造が変わった可能性があります。', '일부 카드 정보를 찾지 못했습니다. 페이지 구조가 바뀌었을 수 있습니다.', 'Faltan detalles; quizá cambió el diseño.', 'Detalhes não encontrados; o layout pode ter mudado.'],
     'hint.unknownFormat': ['Unknown format', '未知格式', '未知格式', 'Format inconnu', 'Unbekanntes Format', 'Неизвестный формат', '形式不明', '알 수 없는 형식', 'Formato desconocido', 'Formato desconhecido'],
-    'hint.yearPending': ['Year rule pending', '年份规则待设置', '年份規則待設定', 'Règle d’année en attente', 'Jahresregel fehlt', 'Правило года не задано', '年の条件が未設定', '연도 규칙 미설정', 'Regla de año pendiente', 'Regra de ano pendente'],
-    'hint.formatPending': ['Format rule pending', '文件格式规则待设置', '格式規則待設定', 'Règle de format en attente', 'Formatregel fehlt', 'Правило формата не задано', '形式条件が未設定', '형식 규칙 미설정', 'Regla de formato pendiente', 'Regra de formato pendente'],
+    'hint.yearPending': ['Year filter needs a start or end year', '年份规则待设置', '年份規則待設定', 'Règle d’année en attente', 'Jahresregel fehlt', 'Правило года не задано', '年の条件が未設定', '연도 규칙 미설정', 'Regla de año pendiente', 'Regra de ano pendente'],
+    'hint.formatPending': ['Format filter needs a selection', '文件格式规则待设置', '格式規則待設定', 'Règle de format en attente', 'Formatregel fehlt', 'Правило формата не задано', '形式条件が未設定', '형식 규칙 미설정', 'Regla de formato pendiente', 'Regra de formato pendente'],
+    'hint.sizePending': ['File size filter needs a selection', '文件大小规则待设置', '檔案大小規則待設定', 'Règle de taille de fichier en attente', 'Dateigrößenregel fehlt', 'Правило размера файла не задано', 'ファイルサイズの条件が未設定', '파일 크기 규칙 미설정', 'Regla de tamaño de archivo pendiente', 'Regra de tamanho de arquivo pendente'],
     'hint.downloadPaused': ['Download filter paused', '下载状态筛选暂停', '下載狀態篩選暫停', 'Filtre de téléchargement en pause', 'Downloadfilter pausiert', 'Фильтр загрузки остановлен', 'ダウンロード絞り込み停止中', '다운로드 필터 일시 중지', 'Filtro de descarga en pausa', 'Filtro de download pausado'],
     'action.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
     'action.globalSettings': ['Global settings', '全局设置', '全域設定', 'Paramètres généraux', 'Globale Einstellungen', 'Общие настройки', '全体設定', '전역 설정', 'Ajustes generales', 'Configurações globais'],
     'action.configureFormat': ['Configure file format filter', '配置文件格式筛选', '設定檔案格式篩選', 'Configurer le filtre des formats', 'Formatfilter konfigurieren', 'Настроить фильтр форматов', '形式フィルターを設定', '파일 형식 필터 설정', 'Configurar filtro de formato', 'Configurar filtro de formato'],
+    'action.configureSize': ['Configure file size filter', '配置文件大小筛选', '設定檔案大小篩選', 'Configurer le filtre de taille des fichiers', 'Dateigrößenfilter konfigurieren', 'Настроить фильтр по размеру файла', 'ファイルサイズフィルターを設定', '파일 크기 필터 설정', 'Configurar filtro de tamaño de archivo', 'Configurar filtro de tamanho de arquivo'],
     'action.configureDownload': ['Configure download status filter', '配置下载状态筛选', '設定下載狀態篩選', 'Configurer le filtre des téléchargements', 'Downloadfilter konfigurieren', 'Настроить фильтр загрузок', 'ダウンロード状態フィルターを設定', '다운로드 상태 필터 설정', 'Configurar filtro de descarga', 'Configurar filtro de download'],
     'action.configureYear': ['Configure year filter', '配置年份筛选', '設定年份篩選', 'Configurer le filtre des années', 'Jahresfilter konfigurieren', 'Настроить фильтр года', '年フィルターを設定', '연도 필터 설정', 'Configurar filtro de año', 'Configurar filtro de ano'],
     'action.configureAutomation': ['Configure automation', '配置自动化', '設定自動化', 'Configurer l’automatisation', 'Automatisierung konfigurieren', 'Настроить автоматизацию', '自動操作を設定', '자동화 설정', 'Configurar automatización', 'Configurar automação'],
@@ -334,10 +354,16 @@
     const input = saved && typeof saved === 'object' ? saved : {};
     return {
       showFormat: typeof input.showFormat === 'boolean' ? input.showFormat : DEFAULT_SETTINGS.showFormat,
+      showSize: typeof input.showSize === 'boolean' ? input.showSize : DEFAULT_SETTINGS.showSize,
+      showProgress: typeof input.showProgress === 'boolean' ? input.showProgress : DEFAULT_SETTINGS.showProgress,
+      showSummary: typeof input.showSummary === 'boolean' ? input.showSummary : DEFAULT_SETTINGS.showSummary,
       filterFormat: typeof input.filterFormat === 'boolean' ? input.filterFormat : DEFAULT_SETTINGS.filterFormat,
+      filterSize: typeof input.filterSize === 'boolean' ? input.filterSize : DEFAULT_SETTINGS.filterSize,
       filterDownload: typeof input.filterDownload === 'boolean' ? input.filterDownload : DEFAULT_SETTINGS.filterDownload,
       formats: Array.isArray(input.formats)
         ? [...new Set(input.formats.filter(value => SETTING_FORMATS.has(value)))] : [],
+      sizeBands: Array.isArray(input.sizeBands)
+        ? [...new Set(input.sizeBands.filter(value => SIZE_BANDS.has(value)))] : [],
       custom: typeof input.custom === 'string' ? input.custom.slice(0, 1000) : '',
       downloadRule: ['downloaded', 'not-downloaded'].includes(input.downloadRule)
         ? input.downloadRule : DEFAULT_SETTINGS.downloadRule,
@@ -403,8 +429,9 @@
   }
 
   function parseBookTotal(text) {
-    const match = String(text ?? '').match(/\bbooks\s*\(\s*([\d,]+)\s*\)/i);
+    const match = String(text ?? '').match(/\bbooks\s*\(\s*(1k|[\d,]+)\s*\)/i);
     if (!match) return null;
+    if (match[1].toLowerCase() === '1k') return 999;
     const value = Number(match[1].replaceAll(',', ''));
     return Number.isSafeInteger(value) && value >= 0 ? value : null;
   }
@@ -414,12 +441,13 @@
     const visible = Number.isSafeInteger(matched) ? Math.min(count, Math.max(0, matched)) : 0;
     const validTotal = Number.isSafeInteger(total) && total >= count ? total : null;
     const current = Math.ceil(count / PAGE_SIZE);
+    const pages = validTotal === null ? null : Math.ceil(validTotal / PAGE_SIZE);
     return {
       loaded: count,
       matched: visible,
       total: validTotal,
-      pages: validTotal === null ? null : Math.ceil(validTotal / PAGE_SIZE),
-      remaining: validTotal === null ? null : Math.ceil((validTotal - count) / PAGE_SIZE),
+      pages,
+      remaining: pages === null ? null : pages - current,
       current,
       approxExpansions: Math.max(0, current - 1),
     };
@@ -823,6 +851,7 @@
     const cover = card.shadowRoot?.querySelector('z-cover');
     return {
       extension: normalizeExtension(card.getAttribute('extension')),
+      filesize: card.getAttribute('filesize') || '',
       coverId: cover?.getAttribute('id') || '',
       isbns: (cover?.getAttribute('isbn') || '').split(',').map(value => value.trim()).filter(Boolean),
       year: card.getAttribute('year'),
@@ -832,12 +861,15 @@
 
   function compileFilters(settings, downloadReady, lookup) {
     const selected = new Set(settings.formats);
+    const sizeBands = new Set(settings.sizeBands);
     const custom = parseCustomFormats(settings.custom);
     const yearRule = parseYearRule(settings);
     return {
       selected,
       custom,
       formatActive: settings.filterFormat && hasEffectiveFormatRule(selected, custom),
+      sizeBands,
+      sizeActive: settings.filterSize && sizeBands.size > 0,
       downloadActive: settings.filterDownload,
       downloadReady,
       downloadRule: settings.downloadRule,
@@ -850,6 +882,7 @@
 
   function evaluateCard(info, context) {
     const formatOk = !context.formatActive || matchesFormat(info.extension, context.selected, context.custom);
+    const sizeOk = !context.sizeActive || context.sizeBands.has(classifyFileSize(info.filesize));
     const download = context.downloadActive ? classifyDownload({
       ready: context.downloadReady,
       coverId: info.coverId,
@@ -859,7 +892,7 @@
     const downloadOk = !context.downloadActive || download === 'unknown' ||
       (context.downloadRule === 'downloaded' ? download === 'downloaded' : download === 'not-downloaded');
     const yearOk = !context.yearActive || matchesYear(info.year, context.yearRule, context.includeMissingYear);
-    return { visible: formatOk && downloadOk && yearOk, download };
+    return { visible: formatOk && sizeOk && downloadOk && yearOk, download };
   }
 
   function filterActiveCards(root, context) {
@@ -881,7 +914,8 @@
     const toolNode = node => node?.classList?.contains('zble-summary-card') ||
       node?.classList?.contains('zble-progress');
     return records.some(record => {
-      if (record.type !== 'childList') return true;
+      if (record.type !== 'childList') return !toolNode(record.target) &&
+        !record.target.closest?.('.zble-summary-card, .zble-progress');
       if (record.target.closest?.('.zble-summary-card, .zble-progress')) return false;
       return [...record.addedNodes, ...record.removedNodes].some(node => !toolNode(node));
     });
@@ -911,6 +945,9 @@
     const selected = settings.formats.filter(value => value !== 'custom');
     const formatValues = [...selected, ...(settings.formats.includes('custom') ? [...custom] : [])];
     const format = wrap(formatValues.length ? formatValues.join(zh ? '、' : ', ') : translate(locale, 'rule.manual'));
+    const size = wrap(settings.sizeBands.length
+      ? settings.sizeBands.map(band => translate(locale, `setting.size.${band}`)).join(zh ? '、' : ', ')
+      : translate(locale, 'rule.manual'));
     const downloadName = translate(locale, settings.downloadRule === 'downloaded' ? 'setting.onlyDownloaded' : 'setting.onlyUndownloaded');
     const waitName = gateState === 'ready' ? '' : gateState === 'waiting'
       ? `${separator}${translate(locale, 'rule.waiting')}` : `${separator}${translate(locale, 'rule.unconfirmed')}`;
@@ -923,7 +960,7 @@
         : (yearRule.min !== null ? `≥${yearRule.min}` : `≤${yearRule.max}`);
       year = wrap(`${range}${settings.includeMissingYear ? `${separator}${translate(locale, 'rule.missingYear')}` : ''}`);
     }
-    return { format, download, year };
+    return { format, size, download, year };
   }
 
   const summaryMessageCache = new WeakMap();
@@ -972,8 +1009,10 @@
     }
     if (cardMetrics && summary.style) {
       if (summary.style.flex !== cardMetrics.flex) summary.style.flex = cardMetrics.flex;
-      const minHeight = `${cardMetrics.height}px`;
-      if (summary.style.minHeight !== minHeight) summary.style.minHeight = minHeight;
+      for (const [key, value] of Object.entries({ height: `${cardMetrics.height}px`,
+        width: `${cardMetrics.width}px`, margin: cardMetrics.margin })) {
+        if (summary.style[key] !== value) summary.style[key] = value;
+      }
     }
     if (list.children[list.children.length - 1] !== summary) list.append(summary);
   }
@@ -989,10 +1028,11 @@
       current: stats.current, remaining, pages });
   }
 
-  function renderShowMore(main, stats, locale = 'zh-CN') {
+  function renderShowMore(main, stats, locale = 'zh-CN', enabled = true) {
     const more = main?.querySelector('.page-load-more');
     if (!more) return;
     let progress = more.querySelector('.zble-progress');
+    if (!enabled) { progress?.remove(); return; }
     if (!progress) {
       progress = more.ownerDocument.createElement('span');
       progress.className = 'zble-progress';
@@ -1074,6 +1114,20 @@
     };
   }
 
+  function bindSectionToggle(button, body, initiallyExpanded, onToggle = () => {}) {
+    let expanded = !!initiallyExpanded;
+    function render() {
+      body.hidden = !expanded;
+      button.setAttribute('aria-expanded', String(expanded));
+    }
+    button.addEventListener('click', () => {
+      expanded = !expanded;
+      render();
+      onToggle();
+    });
+    render();
+  }
+
   function createExclusiveDisclosure(items, flushPending = () => {}) {
     const allowed = new Set(items);
     let open = null;
@@ -1090,31 +1144,54 @@
     } };
   }
 
-  function renderFormatBadge(card, extension, show, locale = 'zh-CN') {
-    const root = card.shadowRoot;
+  function parseFileSizeMb(raw) {
+    const match = String(raw ?? '').trim().match(/^([\d]+(?:[.,]\d+)?)\s*(B|KB|MB|GB|TB)$/i);
+    if (!match) return null;
+    const value = Number(match[1].replace(',', '.'));
+    const factor = { B: 1 / 1048576, KB: 1 / 1024, MB: 1, GB: 1024, TB: 1048576 }[match[2].toUpperCase()];
+    return Number.isFinite(value) && value >= 0 ? value * factor : null;
+  }
+
+  function classifyFileSize(raw) {
+    const sizeMb = parseFileSizeMb(raw);
+    if (sizeMb === null) return 'unknown';
+    if (sizeMb < 1) return 'lt1';
+    if (sizeMb < 10) return '1to10';
+    if (sizeMb < 50) return '10to50';
+    if (sizeMb < 100) return '50to100';
+    return 'gte100';
+  }
+
+  function renderFormatBadge(card, extension, show, locale = 'zh-CN', rawSize = '', showSize = false) {
+    const cover = card.shadowRoot?.querySelector('z-cover');
+    const root = cover?.shadowRoot;
     if (!root) return false;
-    const targets = [...root.querySelectorAll('.meta .idle')];
-    if (!targets.length) return false;
-    let style = root.querySelector('#zble-format-style');
+    let style = root.querySelector('#zble-badge-style');
     if (!style) {
       style = card.ownerDocument.createElement('style');
-      style.id = 'zble-format-style';
-      style.textContent = '.zble-format{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:4px;background:#245e9b;color:#fff;font-size:11px;font-weight:700;line-height:1.5;vertical-align:middle}:host(:not([data-zble-show-format])) .zble-format{display:none}';
+      style.id = 'zble-badge-style';
+      style.textContent = ':host{position:relative}.zble-format,.zble-size{position:absolute;z-index:10;left:8px;top:8px;display:inline-block;max-width:calc(100% - 16px);padding:2px 6px;border-radius:4px;color:#fff;font:700 11px/1.5 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 1px 3px #0005}.zble-format{background:#245e9b}.zble-size--tiny{background:#18794e}.zble-size--small{background:#e5bc26;color:#342600}.zble-size--medium{background:#d66a1f}.zble-size--large{background:#b42318}.zble-size--huge{background:#7836b7}.zble-size--stacked{top:32px}@media(forced-colors:active){.zble-format,.zble-size{background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none}}';
       root.append(style);
     }
-    const label = extension ? extension.toUpperCase() : translate(locale, 'hint.unknownFormat');
-    for (const idle of targets) {
-      let badge = idle.querySelector('.zble-format');
+    const sizeMb = parseFileSizeMb(rawSize);
+    const sizeColor = { lt1: 'tiny', '1to10': 'small', '10to50': 'medium',
+      '50to100': 'large', gte100: 'huge' }[classifyFileSize(rawSize)] || 'tiny';
+    const badges = [
+      ['.zble-format', !!show, extension ? extension.toUpperCase() : translate(locale, 'hint.unknownFormat'), 'zble-format'],
+      ['.zble-size', !!showSize && sizeMb !== null, String(rawSize).trim(),
+        `zble-size zble-size--${sizeColor}${show ? ' zble-size--stacked' : ''}`],
+    ];
+    for (const [selector, visible, label, className] of badges) {
+      let badge = root.querySelector(selector);
+      if (!visible) { badge?.remove(); continue; }
       if (!badge) {
         badge = card.ownerDocument.createElement('span');
-        badge.className = 'zble-format';
-        idle.append(badge);
+        root.append(badge);
       }
+      if (badge.className !== className) badge.className = className;
       if (badge.textContent !== label) badge.textContent = label;
     }
-    if (card.hasAttribute('data-zble-show-format') !== !!show) {
-      card.toggleAttribute('data-zble-show-format', !!show);
-    }
+    card.toggleAttribute('data-zble-show-format', !!show);
     return true;
   }
 
@@ -1203,13 +1280,13 @@
       parseBookTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
-      renderFormatBadge, renderCardMeta, renderFullTitle, renderFullAuthor,
+      renderFormatBadge, parseFileSizeMb, classifyFileSize, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
       resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
-      createExclusiveDisclosure,
+      createExclusiveDisclosure, bindSectionToggle,
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
       classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
       createShowMoreStallTracker, attemptShowMoreReset, classifyResetVerification,
@@ -1396,12 +1473,14 @@
 
     function renderPanelState(context, unknownCards, unavailable) {
       const summaries = formatRuleSummary(settings, gate.state, context.yearRule, locale);
-      for (const name of ['format', 'download', 'year']) {
+      for (const name of ['format', 'size', 'download', 'year']) {
         setText(`#zble-${name}-summary`, summaries[name]);
       }
       setText('#zble-format-hint', settings.filterFormat && !context.formatActive
         ? translate(locale, 'hint.formatEmpty')
         : invalidCustomFormats(settings.custom).length ? translate(locale, 'hint.invalidCustom') : '');
+      setText('#zble-size-hint', settings.filterSize && !context.sizeActive
+        ? translate(locale, 'hint.sizeEmpty') : '');
       setText('#zble-year-hint', settings.filterYear
         ? (context.yearRule.error ? translate(locale, 'rule.conflict')
           : !context.yearRule.active ? translate(locale, 'hint.yearEmpty') : '') : '');
@@ -1419,6 +1498,7 @@
     function translatedNotices(context) {
       const notices = [];
       if (settings.filterFormat && !context.formatActive) notices.push(translate(locale, 'hint.formatPending'));
+      if (settings.filterSize && !context.sizeActive) notices.push(translate(locale, 'hint.sizePending'));
       if (settings.filterDownload && gate.state !== 'ready') notices.push(translate(locale, 'hint.downloadPaused'));
       if (settings.filterYear && !context.yearActive) notices.push(translate(locale,
         context.yearRule.error ? 'rule.conflict' : 'hint.yearPending'));
@@ -1500,7 +1580,8 @@
 
     function currentFilterSignature() {
       return JSON.stringify({ filterFormat: settings.filterFormat, formats: settings.formats,
-        custom: settings.custom, filterDownload: settings.filterDownload, downloadRule: settings.downloadRule,
+        custom: settings.custom, filterSize: settings.filterSize, sizeBands: settings.sizeBands,
+        filterDownload: settings.filterDownload, downloadRule: settings.downloadRule,
         filterYear: settings.filterYear, yearMin: settings.yearMin, yearMax: settings.yearMax,
         includeMissingYear: settings.includeMissingYear, downloadState: gate.state });
     }
@@ -1508,6 +1589,7 @@
     function currentBulkGate() {
       const context = lastPanelData?.context;
       const filtersReady = !!context && (!settings.filterFormat || context.formatActive) &&
+        (!settings.filterSize || context.sizeActive) &&
         (!settings.filterYear || context.yearActive) &&
         (!settings.filterDownload || gate.state === 'ready');
       return canOpenAll({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
@@ -1603,7 +1685,8 @@
         if (node.textContent !== value) node.textContent = value;
       }
       for (const card of getActiveCards(document))
-        renderFormatBadge(card, normalizeExtension(card.getAttribute('extension')), settings.showFormat, locale);
+        renderFormatBadge(card, normalizeExtension(card.getAttribute('extension')), settings.showFormat,
+          locale, card.getAttribute('filesize'), settings.showSize);
       const gear = panelRoot.querySelector('#zble-gear');
       const collapse = panelRoot.querySelector('#zble-collapse');
       for (const [node, key] of [[gear, 'action.globalSettings'],
@@ -1613,7 +1696,7 @@
         node?.setAttribute('aria-label', translate(locale, key));
         if (node === gear || node === collapse) node?.setAttribute('title', translate(locale, key));
       }
-      for (const [name, key] of [['format', 'action.configureFormat'],
+      for (const [name, key] of [['format', 'action.configureFormat'], ['size', 'action.configureSize'],
         ['download', 'action.configureDownload'], ['year', 'action.configureYear']]) {
         const control = panelRoot.querySelector(`#zble-configure-${name}`);
         control?.setAttribute('aria-label', translate(locale, key));
@@ -1630,8 +1713,8 @@
       if (lastPanelData) {
         const { context, unknownCards, unavailable, stats, activeFilter, list, main } = lastPanelData;
         renderPanelState(context, unknownCards, unavailable);
-        renderFilterSummary(list, stats, activeFilter, translatedNotices(context), lastCardMetrics, locale);
-        renderShowMore(main, stats, locale);
+        renderFilterSummary(list, stats, activeFilter && settings.showSummary, translatedNotices(context), lastCardMetrics, locale);
+        renderShowMore(main, stats, locale, settings.showProgress);
       }
       renderAutoStatus();
       refreshAutomationDialog?.();
@@ -1658,7 +1741,7 @@
       if (pageReady) startDownloadTimer();
       const list = main?.querySelector('.readlist-view');
       const previousSummary = list?.querySelector('.zble-summary-card');
-      if (previousSummary) previousSummary.style.minHeight = '0px';
+      if (previousSummary) previousSummary.style.height = '0px';
       let unknownCards = 0;
       const unavailable = { format: 0, meta: 0, title: 0, author: 0 };
       let lastVisibleCard = null;
@@ -1666,7 +1749,8 @@
       for (let index = 0; index < cards.length; index++) {
         const card = cards[index];
         const info = pass.infos[index];
-        if (!renderFormatBadge(card, info.extension, settings.showFormat, locale)) unavailable.format++;
+        if (!renderFormatBadge(card, info.extension, settings.showFormat, locale,
+          card.getAttribute('filesize'), settings.showSize)) unavailable.format++;
         if (!renderCardMeta(card, settings)) unavailable.meta++;
         if (!renderFullTitle(card, settings.showFullTitle)) unavailable.title++;
         if (!renderFullAuthor(card, settings.showFullAuthor) && settings.showFullAuthor) unavailable.author++;
@@ -1674,7 +1758,8 @@
         if (result.visible) lastVisibleCard = card;
         if (!fallbackMetrics && !card.classList.contains('zble-hidden')) {
           const rect = card.getBoundingClientRect();
-          if (rect.width && rect.height) fallbackMetrics = { flex: getComputedStyle(card).flex, height: rect.height };
+          if (rect.width && rect.height) fallbackMetrics = { flex: getComputedStyle(card).flex,
+            height: rect.height, width: rect.width, margin: getComputedStyle(card).margin };
         }
         if (settings.filterDownload && gate.state === 'ready' && result.download === 'unknown') unknownCards++;
         if (card.classList.contains('zble-hidden') === result.visible) {
@@ -1682,14 +1767,15 @@
         }
       }
       const stats = computeStats({ loaded: cards.length, matched: pass.matched, total: parsedTotal });
-      const activeFilter = settings.filterFormat || settings.filterDownload || settings.filterYear;
+      const activeFilter = settings.filterFormat || settings.filterSize || settings.filterDownload || settings.filterYear;
       const notices = translatedNotices(context);
       if (lastVisibleCard) {
         const rect = lastVisibleCard.getBoundingClientRect();
-        if (rect.width && rect.height) lastCardMetrics = { flex: getComputedStyle(lastVisibleCard).flex, height: rect.height };
+        if (rect.width && rect.height) lastCardMetrics = { flex: getComputedStyle(lastVisibleCard).flex,
+          height: rect.height, width: rect.width, margin: getComputedStyle(lastVisibleCard).margin };
       } else if (fallbackMetrics) lastCardMetrics = fallbackMetrics;
-      renderFilterSummary(list, stats, activeFilter, notices, lastCardMetrics, locale);
-      renderShowMore(main, stats, locale);
+      renderFilterSummary(list, stats, activeFilter && settings.showSummary, notices, lastCardMetrics, locale);
+      renderShowMore(main, stats, locale, settings.showProgress);
       const pendingShadow = unavailable.format + unavailable.meta + unavailable.title + unavailable.author;
       const shownUnavailable = shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0, author: 0 };
       renderPanelState(context, unknownCards, shownUnavailable);
@@ -1720,7 +1806,7 @@
         if (mutationNeedsRefresh(records)) scheduleRefresh();
       });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
-        attributeFilter: ['extension', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
+        attributeFilter: ['extension', 'filesize', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
         parentObserver.observe(main.parentElement, { childList: true });
@@ -1736,7 +1822,7 @@
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;min-height:320px;max-width:100%;padding:25px 22px;border:1px solid var(--card-border-color,#d3dce5);border-top:4px solid #2d79b8;border-radius:8px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -1760,7 +1846,7 @@
           @media(max-width:600px){:host{display:block;position:relative;right:auto;top:auto;width:calc(100% - 20px);max-height:70vh;margin:10px auto 14px}}
           *{box-sizing:border-box}[hidden]{display:none!important}.body{padding:10px 12px}.head{display:flex;align-items:center;justify-content:space-between;touch-action:none;cursor:grab;user-select:none}.title{font-weight:700;font-size:14px}.head-actions{display:flex;align-items:center;gap:2px}
           button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:var(--zble-accent-bg);color:var(--zble-accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--zble-accent);outline-offset:2px}.chevron{display:block;width:18px;height:18px;transition:transform .15s ease}#zble-collapse[aria-expanded="false"] .chevron{transform:rotate(180deg)}@media(prefers-reduced-motion:reduce){.chevron{transition:none}}
-          .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
+          .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.section-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:2px 0;border:0;background:transparent;text-align:left;cursor:pointer}.section-toggle[aria-expanded="true"]{background:transparent;color:var(--zble-group)}.section-toggle svg{width:14px;height:14px;flex:none;transition:transform .15s ease}.section-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}.automation-heading .section-toggle{flex:1}@media(prefers-reduced-motion:reduce){.section-toggle svg{transition:none}}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
           .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.filter-row .configure{font-size:14px;line-height:1;padding:5px;flex:none;color:var(--zble-muted)}.filter-row:has(input:checked) .configure{color:var(--zble-accent)}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
           input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.reset-link{display:block;font:inherit;font-size:11px;color:var(--zble-accent);text-decoration:underline;text-align:left;padding:1px 0;margin:0 0 7px}.reset-link:disabled{color:var(--zble-muted);cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.configure{color:GrayText}.filter-row:has(input:checked) .configure,.reset-link:not(:disabled){color:LinkText}.configure circle{fill:Canvas}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
@@ -1774,6 +1860,9 @@
             <div class="filter-row"><label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label><button id="zble-configure-format" class="configure" type="button" aria-controls="zble-format-config" aria-expanded="false" aria-label="配置文件格式筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div>
             <div id="zble-format-hint" class="hint error" role="status"></div>
             <div id="zble-format-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><div class="setting-label" data-i18n="setting.formats">筛选文件格式（可多选）</div><div class="grid"><label><input type="checkbox" data-format="pdf"> PDF</label><label><input type="checkbox" data-format="epub"> EPUB</label><label><input type="checkbox" data-format="azw3"> AZW3</label><label><input type="checkbox" data-format="mobi"> MOBI</label><label><input type="checkbox" data-format="other"> <span data-i18n="setting.other">其他全部</span></label><label><input type="checkbox" data-format="custom"> <span data-i18n="setting.custom">自定义</span></label></div><input id="zble-custom" type="text" aria-label="自定义文件格式" placeholder="如 djvu, txt; fb2"><div class="hint" data-i18n="setting.customHint">自定义格式用逗号或分号分隔。</div></div>
+            <div class="filter-row"><label class="row"><input id="zble-size-filter-switch" type="checkbox"><span><span data-i18n="control.filterSize">只显示指定文件大小</span> <span id="zble-size-summary" class="summary"></span></span></label><button id="zble-configure-size" class="configure" type="button" aria-controls="zble-size-config" aria-expanded="false" aria-label="配置文件大小筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div>
+            <div id="zble-size-hint" class="hint error" role="status"></div>
+            <div id="zble-size-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><div class="setting-label" data-i18n="setting.sizeBands">文件大小范围（可多选）</div><div class="grid"><label><input type="checkbox" data-size-band="lt1"> <span data-i18n="setting.size.lt1">小于 1 MB</span></label><label><input type="checkbox" data-size-band="1to10"> <span data-i18n="setting.size.1to10">1–10 MB</span></label><label><input type="checkbox" data-size-band="10to50"> <span data-i18n="setting.size.10to50">10–50 MB</span></label><label><input type="checkbox" data-size-band="50to100"> <span data-i18n="setting.size.50to100">50–100 MB</span></label><label><input type="checkbox" data-size-band="gte100"> <span data-i18n="setting.size.gte100">100 MB 及以上</span></label><label><input type="checkbox" data-size-band="unknown"> <span data-i18n="setting.size.unknown">未知大小</span></label></div></div>
             <div class="filter-row"><label class="row"><input id="zble-download-switch" type="checkbox"><span><span data-i18n="control.filterDownload">只显示指定下载状态</span> <span id="zble-download-summary" class="summary"></span></span><span id="zble-wait-icon" class="spin" aria-label="等待下载状态"></span><span id="zble-warn-icon" hidden aria-label="下载状态未确认">⚠️</span></label><button id="zble-configure-download" class="configure" type="button" aria-controls="zble-download-config" aria-expanded="false" aria-label="配置下载状态筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div>
             <div id="zble-download-hint" class="hint error" role="status"></div>
             <div id="zble-download-config" class="configuration" hidden><div class="configuration-title" data-i18n="section.configuration">筛选配置</div><label class="setting-label" for="zble-download-rule" data-i18n="setting.downloadRule">下载状态规则</label><select id="zble-download-rule"><option value="not-downloaded" data-i18n="setting.onlyUndownloaded">仅未下载</option><option value="downloaded" data-i18n="setting.onlyDownloaded">仅已下载</option></select></div>
@@ -1783,6 +1872,9 @@
           </div>
           <div class="group"><div class="group-title" data-i18n="section.info">信息显示</div>
             <label class="row"><input id="zble-show-switch" type="checkbox"><span data-i18n="control.formatBadge">文件格式标签</span></label>
+            <label class="row"><input id="zble-size-switch" type="checkbox"><span data-i18n="control.sizeBadge">文件大小标签</span></label>
+            <label class="row"><input id="zble-progress-switch" type="checkbox"><span data-i18n="control.showProgress">Show more 按钮显示页码</span></label>
+            <label class="row"><input id="zble-summary-switch" type="checkbox"><span data-i18n="control.showSummary">列表末尾统计卡片</span></label>
             <label class="row"><input id="zble-language-switch" type="checkbox"><span data-i18n="control.language">书籍语言（页面自带）</span></label>
             <label class="row"><input id="zble-year-show-switch" type="checkbox"><span data-i18n="control.year">出版年份（页面自带）</span></label>
             <label class="row"><input id="zble-title-switch" type="checkbox"><span data-i18n="control.fullTitle">完整显示超长书名</span></label>
@@ -1802,6 +1894,30 @@
           </div>
         </div>`;
 
+      for (const [name, expanded] of [['filters', true], ['info', false], ['automation', false]]) {
+        const title = [...panelRoot.querySelectorAll('[data-i18n]')]
+          .find(node => node.dataset.i18n === `section.${name}`);
+        const group = title.closest('.group');
+        const heading = name === 'automation' ? title.parentElement : null;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.id = `zble-${name}-toggle`;
+        button.className = 'group-title section-toggle';
+        button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 9l7 7 7-7"/></svg>';
+        const label = document.createElement('span');
+        label.dataset.i18n = `section.${name}`;
+        label.textContent = title.textContent;
+        button.prepend(label);
+        title.replaceWith(button);
+        const body = document.createElement('div');
+        body.id = `zble-${name}-body`;
+        button.setAttribute('aria-controls', body.id);
+        const anchor = heading || button;
+        while (anchor.nextSibling) body.append(anchor.nextSibling);
+        group.append(body);
+        bindSectionToggle(button, body, expanded, () => requestAnimationFrame(applySavedDock));
+      }
+
       const availabilityHint = document.createElement('div');
       availabilityHint.id = 'zble-show-more-availability';
       availabilityHint.className = 'hint';
@@ -1810,10 +1926,13 @@
         panelRoot.querySelector('#zble-reset-show-more'));
 
       const immediate = [
-        ['#zble-show-switch', 'showFormat'], ['#zble-language-switch', 'showLanguage'],
+        ['#zble-show-switch', 'showFormat'], ['#zble-size-switch', 'showSize'],
+        ['#zble-progress-switch', 'showProgress'], ['#zble-summary-switch', 'showSummary'],
+        ['#zble-language-switch', 'showLanguage'],
         ['#zble-year-show-switch', 'showYear'], ['#zble-title-switch', 'showFullTitle'],
         ['#zble-author-switch', 'showFullAuthor'],
-        ['#zble-format-switch', 'filterFormat'], ['#zble-download-switch', 'filterDownload'],
+        ['#zble-format-switch', 'filterFormat'], ['#zble-size-filter-switch', 'filterSize'],
+        ['#zble-download-switch', 'filterDownload'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
       ];
       for (const [selector, key] of immediate) {
@@ -1870,6 +1989,14 @@
         input.checked = settings.formats.includes(input.dataset.format);
         input.addEventListener('change', () => {
           settings.formats = [...panelRoot.querySelectorAll('[data-format]:checked')].map(item => item.dataset.format);
+          saveSettings(); scheduleRefresh();
+        });
+      }
+      for (const input of panelRoot.querySelectorAll('[data-size-band]')) {
+        input.checked = settings.sizeBands.includes(input.dataset.sizeBand);
+        input.addEventListener('change', () => {
+          settings.sizeBands = [...panelRoot.querySelectorAll('[data-size-band]:checked')]
+            .map(item => item.dataset.sizeBand);
           saveSettings(); scheduleRefresh();
         });
       }
@@ -2057,7 +2184,7 @@
       }
       const gear = panelRoot.querySelector('#zble-gear');
       const settingsPanel = panelRoot.querySelector('#zble-settings');
-      const disclosure = createExclusiveDisclosure(['global', 'format', 'download', 'year', 'automation'], section => {
+      const disclosure = createExclusiveDisclosure(['global', 'format', 'size', 'download', 'year', 'automation'], section => {
         for (const flush of flushInputs[section] || []) flush();
       });
       function renderDisclosure() {
@@ -2066,7 +2193,7 @@
         gear.setAttribute('aria-expanded', String(current === 'global'));
         panelRoot.querySelector('#zble-automation-config').hidden = current !== 'automation';
         panelRoot.querySelector('#zble-configure-automation').setAttribute('aria-expanded', String(current === 'automation'));
-        for (const name of ['format', 'download', 'year']) {
+        for (const name of ['format', 'size', 'download', 'year']) {
           panelRoot.querySelector(`#zble-${name}-config`).hidden = current !== name;
           panelRoot.querySelector(`#zble-configure-${name}`).setAttribute('aria-expanded', String(current === name));
         }
@@ -2105,7 +2232,7 @@
         disclosure.toggle('global');
         renderDisclosure();
       });
-      for (const name of ['format', 'download', 'year']) {
+      for (const name of ['format', 'size', 'download', 'year']) {
         panelRoot.querySelector(`#zble-configure-${name}`).addEventListener('click', () => {
           if (content.hidden) setCollapsed(false);
           disclosure.toggle(name);
@@ -2114,6 +2241,8 @@
       }
       panelRoot.querySelector('#zble-configure-automation').addEventListener('click', () => {
         if (content.hidden) setCollapsed(false);
+        if (panelRoot.querySelector('#zble-automation-body').hidden)
+          panelRoot.querySelector('#zble-automation-toggle').click();
         disclosure.toggle('automation');
         renderDisclosure();
       });
@@ -2197,7 +2326,7 @@
       if (panelResize) window.removeEventListener?.('resize', panelResize);
       for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
         card.classList.remove('zble-hidden');
-        renderFormatBadge(card, card.getAttribute('extension'), false, locale);
+        renderFormatBadge(card, card.getAttribute('extension'), false, locale, '', false);
         renderCardMeta(card, { showLanguage: true, showYear: true });
         renderFullTitle(card, false);
         renderFullAuthor(card, false);
