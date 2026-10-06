@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.3.1
+// @version      3.3.2
 // @description      Improve Z-Library booklists with clearer book details, filters, loading progress, optional automatic Show more clicks, and bulk opening of book pages.
 // @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
 // @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
@@ -428,12 +428,21 @@
     return (rule.min === null || year >= rule.min) && (rule.max === null || year <= rule.max);
   }
 
-  function parseBookTotal(text) {
+  function parseBookTotalLabel(text) {
     const match = String(text ?? '').match(/\bbooks\s*\(\s*(1k|[\d,]+)\s*\)/i);
-    if (!match) return null;
-    if (match[1].toLowerCase() === '1k') return 1000;
-    const value = Number(match[1].replaceAll(',', ''));
+    return match?.[1] ?? null;
+  }
+
+  function parseBookTotal(text) {
+    const label = parseBookTotalLabel(text);
+    if (label === null) return null;
+    if (label.toLowerCase() === '1k') return 1000;
+    const value = Number(label.replaceAll(',', ''));
     return Number.isSafeInteger(value) && value >= 0 ? value : null;
+  }
+
+  function parseProgressTotal(text) {
+    return parseBookTotalLabel(text)?.toLowerCase() === '1k' ? 999 : parseBookTotal(text);
   }
 
   function computeStats({ loaded, matched, total }) {
@@ -965,7 +974,7 @@
 
   const summaryMessageCache = new WeakMap();
 
-  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN') {
+  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN', totalLabel = null) {
     if (!list) return;
     let summary = list.querySelector('.zble-summary-card');
     if (!active) { summary?.remove(); return; }
@@ -975,14 +984,15 @@
       summary.setAttribute?.('role', 'status');
       list.append(summary);
     }
-    const total = stats.total === null ? translate(locale, 'summary.unknown') : String(stats.total);
+    const siteTotal = totalLabel ?? (stats.total === null ? null : new Intl.NumberFormat(locale).format(stats.total));
+    const total = siteTotal === null ? translate(locale, 'summary.unknown') : siteTotal;
     const unit = locale.startsWith('zh') ? ' 本' : '';
-    const totalUnit = stats.total === null ? '' : unit;
+    const totalUnit = siteTotal === null ? '' : unit;
     const message = `${translate(locale, 'summary.loaded')} ${stats.loaded}${unit}\n${translate(locale, 'summary.matched')} ${stats.matched}${unit}\n${translate(locale, 'summary.total')} ${total}${totalUnit}`;
     const next = notices.length ? `${message}\n${notices.join(locale.startsWith('zh') ? '；' : '; ')}` : message;
     if (summaryMessageCache.get(summary) !== next) {
       if (typeof summary.replaceChildren === 'function') {
-        const values = [stats.loaded, stats.matched, stats.total === null ? null : stats.total];
+        const values = [stats.loaded, stats.matched, siteTotal];
         const keys = ['summary.loaded', 'summary.matched', 'summary.total'];
         const rows = keys.map((key, index) => {
           const row = list.ownerDocument.createElement('div');
@@ -993,7 +1003,7 @@
           const value = list.ownerDocument.createElement('strong');
           value.className = 'zble-summary-value';
           value.textContent = values[index] === null ? translate(locale, 'summary.unknown')
-            : `${new Intl.NumberFormat(locale).format(values[index])}${locale.startsWith('zh') ? ' 本' : ''}`;
+            : `${index === 2 ? values[index] : new Intl.NumberFormat(locale).format(values[index])}${unit}`;
           row.append(label, value);
           return row;
         });
@@ -1277,7 +1287,7 @@
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
-      parseBookTotal, computeStats, classifyDownload, createDownloadGate,
+      parseBookTotal, parseBookTotalLabel, parseProgressTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
       renderFormatBadge, parseFileSizeMb, classifyFileSize, renderCardMeta, renderFullTitle, renderFullAuthor,
@@ -1711,9 +1721,9 @@
       for (const selector of ['#zble-year-min', '#zble-year-max'])
         panelRoot.querySelector(selector)?.setAttribute('placeholder', translate(locale, 'setting.yearPlaceholder'));
       if (lastPanelData) {
-        const { context, unknownCards, unavailable, stats, activeFilter, list, main } = lastPanelData;
+        const { context, unknownCards, unavailable, stats, activeFilter, list, main, totalLabel } = lastPanelData;
         renderPanelState(context, unknownCards, unavailable);
-        renderFilterSummary(list, stats, activeFilter && settings.showSummary, translatedNotices(context), lastCardMetrics, locale);
+        renderFilterSummary(list, stats, activeFilter && settings.showSummary, translatedNotices(context), lastCardMetrics, locale, totalLabel);
         renderShowMore(main, stats, locale, settings.showProgress);
       }
       renderAutoStatus();
@@ -1736,8 +1746,9 @@
       const pass = filterActiveCards(document, context);
       const { cards } = pass;
       const totalText = document.querySelector('.booklist-header__tabs tab')?.textContent || '';
-      const parsedTotal = parseBookTotal(totalText);
-      const pageReady = !!main && (cards.length > 0 || parsedTotal === 0);
+      const totalLabel = parseBookTotalLabel(totalText);
+      const parsedTotal = parseProgressTotal(totalText);
+      const pageReady = !!main && (cards.length > 0 || parseBookTotal(totalText) === 0);
       if (pageReady) startDownloadTimer();
       const list = main?.querySelector('.readlist-view');
       const previousSummary = list?.querySelector('.zble-summary-card');
@@ -1774,12 +1785,12 @@
         if (rect.width && rect.height) lastCardMetrics = { flex: getComputedStyle(lastVisibleCard).flex,
           height: rect.height, width: rect.width, margin: getComputedStyle(lastVisibleCard).margin };
       } else if (fallbackMetrics) lastCardMetrics = fallbackMetrics;
-      renderFilterSummary(list, stats, activeFilter && settings.showSummary, notices, lastCardMetrics, locale);
+      renderFilterSummary(list, stats, activeFilter && settings.showSummary, notices, lastCardMetrics, locale, totalLabel);
       renderShowMore(main, stats, locale, settings.showProgress);
       const pendingShadow = unavailable.format + unavailable.meta + unavailable.title + unavailable.author;
       const shownUnavailable = shadowRetries >= 20 ? unavailable : { format: 0, meta: 0, title: 0, author: 0 };
       renderPanelState(context, unknownCards, shownUnavailable);
-      lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main };
+      lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main, totalLabel };
       syncBulkControl();
       showMoreTracker?.check();
       syncShowMoreControls();
@@ -2075,10 +2086,12 @@
         }).then(result => {
           autoLastFailed = result.failed > 0;
           const loaded = getActiveCards(document).length;
-          const expected = parseBookTotal(document.querySelector('.booklist-header__tabs tab')?.textContent || '');
+          const totalText = document.querySelector('.booklist-header__tabs tab')?.textContent || '';
+          const expectedTotal = parseBookTotal(totalText);
           const completion = classifyListCompletion({ reason: result.reason,
-            loadedCount: loaded, expectedTotal: expected });
-          autoStatus = { ...result, loaded, expected, noticeKey: completion.noticeKey };
+            loadedCount: loaded, expectedTotal });
+          autoStatus = { ...result, loaded, expected: parseBookTotalLabel(totalText) ?? expectedTotal,
+            noticeKey: completion.noticeKey };
           renderAutoStatus();
           return result;
         }).finally(() => {

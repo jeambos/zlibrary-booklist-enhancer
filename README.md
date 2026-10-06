@@ -29,7 +29,7 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 - **显示整份书单：**第三个按钮「持续连点 Show more，直到书单显示完毕」默认可点击，但会提示先在自动化设置中启用本站持续连点。启用后，每次执行前确认一次。只有原站 Show more 消失才判定书单显示完毕，不受本工具筛选器隐藏条目的影响；与页面标出的总数相差超过 10 本，或无法读取总数时，会同时显示数量提示。按钮仍可用时，即使数量接近总数也会继续点击。可随时手动停止。
 - **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再在自动化设置中手动启用该站点的批量打开功能。执行前仍需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
 
-面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。「筛选器」「信息显示」「自动化」三个栏目也可分别收起；初始只展开筛选器。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。书单总数若显示为 `1K`，本工具按约 1000 本估算。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
+面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。「筛选器」「信息显示」「自动化」三个栏目也可分别收起；初始只展开筛选器。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。书单总数若显示为 `1K`，本工具仅在 Show more 页数估算中按 999 本计算；统计卡片保留网站显示的 `1K`。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
 
 ### 目前没有什么功能？
 
@@ -39,7 +39,7 @@ Z-lib Booklist Enhancer 是一个用于 Z-Library 书单页面的 Tampermonkey �
 - 如果真实站点的「Show more」卡住，工具目前不能安全地重置它；请刷新页面。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `3.3.1`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `3.3.2`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
@@ -76,7 +76,7 @@ Built-in HTTPS site support covers `z-lib.sk`, `z-library.sk`, `1lib.sk`, `libb.
 - **Display the whole booklist:** The third button, “Keep clicking Show more until the whole booklist is displayed,” can be clicked by default and guides you to enable continuous clicking for this site in Automation settings. Once enabled, each run requires one confirmation. The booklist is considered fully displayed only when the site's Show more button disappears, regardless of books hidden by this script's filters. A notice appears if the displayed count differs from the page's stated total by more than 10, or if the total cannot be read. The clicker continues while Show more remains available, even if the counts are close. You can stop it at any time.
 - **Open several book detail pages:** Click “Open all currently visible book pages” for an explanation, then enable bulk opening for that site in Automation settings. You must still confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
 
-Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. Filters, Display options, and Automation can also be collapsed independently; only Filters starts expanded. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. If a booklist total is shown as `1K`, the tool treats it as approximately 1,000 books. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
+Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. Filters, Display options, and Automation can also be collapsed independently; only Filters starts expanded. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. If a booklist total is shown as `1K`, the tool uses 999 only to estimate Show more page progress; the summary card keeps the site's `1K` label. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
 
 ### What does it not do yet?
 
@@ -86,7 +86,7 @@ Click the panel title bar to collapse or expand it, or drag the panel toward a s
 - If “Show more” gets stuck on a real site, the tool cannot safely reset it yet; refresh the page.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `3.3.1`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `3.3.2`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 
