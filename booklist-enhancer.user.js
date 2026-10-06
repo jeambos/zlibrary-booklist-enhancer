@@ -43,49 +43,49 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      3.3.2
-// @description      Improve Z-Library booklists with clearer book details, filters, loading progress, optional automatic Show more clicks, and bulk opening of book pages.
-// @description:zh-CN  为 Z-Library 书单页提供信息增强、筛选、加载进度、可选自动加载与批量打开书页功能。
-// @description:zh-TW  為 Z-Library 書單頁提供資訊增強、篩選、載入進度，以及選用的自動載入與批次開啟書頁功能。
-// @description:fr     Améliore les listes de livres Z-Library avec des informations supplémentaires, des filtres, la progression du chargement, le chargement automatique facultatif et l’ouverture groupée des pages de livres.
-// @description:de     Erweitert Z-Library-Bücherlisten um zusätzliche Angaben, Filter und Ladefortschritt sowie optionales automatisches Nachladen und gebündeltes Öffnen von Buchseiten.
-// @description:ru     Дополняет списки книг Z-Library сведениями, фильтрами и ходом загрузки, а также позволяет по желанию автоматически загружать новые книги и открывать страницы книг группами.
-// @description:ja     Z-Library の書籍リストに詳細情報、絞り込み、読み込み状況を追加。必要に応じて追加読み込みの自動化や書籍ページの一括表示もできます。
-// @description:ko     Z-Library 책 목록에 추가 정보, 필터, 로딩 진행 상황을 표시하고 필요할 때 자동 추가 로드와 책 페이지 일괄 열기를 사용할 수 있습니다.
-// @description:es     Mejora las listas de Z-Library con más datos, filtros y progreso de carga; permite cargar más libros automáticamente y abrir páginas de libros en lote de forma opcional.
-// @description:pt-BR  Melhora as listas de livros da Z-Library com mais informações, filtros e progresso de carregamento; permite carregar mais livros automaticamente e abrir páginas em lote de forma opcional.
-// @description:ar     يعزّز قوائم الكتب في Z-Library بمعلومات إضافية وفلاتر وتقدّم التحميل، مع خيار تحميل المزيد تلقائيًا وفتح صفحات الكتب دفعة واحدة.
-// @description:be     Дадае ў спісы кніг Z-Library дадатковыя звесткі, фільтры і паказ ходу загрузкі, а таксама неабавязковую аўтаматычную падгрузку і пакетнае адкрыццё старонак кніг.
-// @description:bg     Добавя към списъците с книги в Z-Library повече информация, филтри и напредък на зареждането, както и незадължително автоматично зареждане и групово отваряне на страниците на книгите.
-// @description:ckb    زانیاریی زیاتر، پاڵاوتن، پێشکەوتنی بارکردن و هەڵبژاردەکانی بارکردنی خۆکار و کردنەوەی بەکۆمەڵی لاپەڕەی کتێب بۆ لیستەکانی Z-Library زیاد دەکات.
-// @description:cs     Rozšiřuje seznamy knih Z-Library o další údaje, filtry a průběh načítání. Volitelně umožňuje automatické načítání dalších knih a hromadné otevírání jejich stránek.
-// @description:da     Udvider Z-Librarys boglister med flere oplysninger, filtre og indlæsningsstatus samt valgfri automatisk indlæsning og samlet åbning af bogsider.
-// @description:el     Προσθέτει περισσότερες πληροφορίες, φίλτρα και πρόοδο φόρτωσης στις λίστες βιβλίων του Z-Library, με προαιρετική αυτόματη φόρτωση περισσότερων βιβλίων και μαζικό άνοιγμα των σελίδων τους.
-// @description:eo     Plibonigas la librolistojn de Z-Library per pliaj informoj, filtriloj kaj progreso de ŝargado; laŭvole aŭtomate ŝargas pliajn librojn kaj amase malfermas libro-paĝojn.
-// @description:es-419 Mejora las listas de Z-Library con más datos, filtros y progreso de carga; permite cargar más libros automáticamente y abrir páginas de libros en lote de forma opcional.
-// @description:fi     Lisää Z-Libraryn kirjalistoihin tietoja, suodattimia ja latauksen edistymisen seurannan sekä valinnaisen automaattisen lisälatauksen ja kirjasivujen avaamisen joukolla.
-// @description:fil    Nagdaragdag ng impormasyon, mga filter, at progreso ng pag-load sa mga listahan ng aklat sa Z-Library; maaari ring awtomatikong mag-load ng higit pang aklat at magbukas ng maraming pahina ng aklat.
-// @description:fr-CA  Améliore les listes de livres Z-Library avec des renseignements supplémentaires, des filtres, la progression du chargement, le chargement automatique facultatif et l’ouverture groupée des pages de livres.
-// @description:he     מוסיף לרשימות הספרים של Z-Library פרטים, סינון והתקדמות טעינה, עם אפשרות לטעינה אוטומטית של ספרים נוספים ולפתיחה מרוכזת של דפי ספרים.
-// @description:hr     Dodaje više podataka, filtre i prikaz napretka učitavanja popisima knjiga na Z-Libraryju, uz opcionalno automatsko učitavanje i skupno otvaranje stranica knjiga.
-// @description:hu     További adatokat, szűrőket és betöltési folyamatjelzést ad a Z-Library könyvlistáihoz; igény szerint automatikus további betöltést és a könyvoldalak tömeges megnyitását is kínálja.
-// @description:id     Menambahkan informasi buku, filter, dan progres pemuatan ke daftar buku Z-Library, serta opsi memuat lebih banyak buku secara otomatis dan membuka halaman buku secara massal.
-// @description:it     Aggiunge dettagli, filtri e avanzamento del caricamento alle liste di libri di Z-Library, con opzioni per caricare automaticamente altri libri e aprire più pagine di libri insieme.
-// @description:ka     Z-Library-ის წიგნების სიებს ამატებს მეტ ინფორმაციას, ფილტრებსა და ჩატვირთვის პროგრესს; სურვილისამებრ ხელმისაწვდომია ავტომატური დამატებითი ჩატვირთვა და წიგნების გვერდების ჯგუფურად გახსნა.
-// @description:mr     Z-Library पुस्तक याद्यांमध्ये अधिक माहिती, फिल्टर व लोडिंगची प्रगती दाखवते; ऐच्छिक स्वयंचलित पुढील लोडिंग आणि पुस्तकांची पाने एकत्र उघडण्याची सुविधा देते.
-// @description:nb     Gir Z-Librarys boklister mer informasjon, filtre og visning av lastefremdrift, med valgfri automatisk innlasting av flere bøker og åpning av mange boksider samtidig.
-// @description:nl     Voegt extra boekgegevens, filters en laadvoortgang toe aan Z-Library-boekenlijsten, met optioneel automatisch meer laden en het tegelijk openen van boekpagina's.
-// @description:pl     Dodaje do list książek Z-Library więcej informacji, filtry i postęp wczytywania, a opcjonalnie także automatyczne doładowywanie oraz zbiorcze otwieranie stron książek.
-// @description:pt     Melhora as listas de livros da Z-Library com mais informações, filtros e progresso de carregamento; permite carregar mais livros automaticamente e abrir páginas em conjunto, se desejado.
-// @description:ro     Adaugă detalii, filtre și progresul încărcării în listele de cărți Z-Library, cu opțiuni de încărcare automată a mai multor cărți și deschidere în grup a paginilor acestora.
-// @description:sk     Pridáva do zoznamov kníh Z-Library ďalšie údaje, filtre a priebeh načítania; voliteľne automaticky načíta ďalšie knihy a hromadne otvorí ich stránky.
-// @description:sr     Додаје више података, филтере и приказ напретка учитавања списковима књига на Z-Library, уз опционално аутоматско учитавање и групно отварање страница књига.
-// @description:sv     Ger Z-Librarys boklistor fler uppgifter, filter och laddningsförlopp samt valfri automatisk inläsning av fler böcker och öppning av flera boksidor samtidigt.
-// @description:th     เพิ่มข้อมูลหนังสือ ตัวกรอง และความคืบหน้าการโหลดให้รายการหนังสือของ Z-Library พร้อมตัวเลือกโหลดหนังสือเพิ่มเติมอัตโนมัติและเปิดหน้าหนังสือหลายหน้าในคราวเดียว
-// @description:tr     Z-Library kitap listelerine ek bilgiler, filtreler ve yükleme ilerlemesi ekler; isteğe bağlı otomatik daha fazla yükleme ve kitap sayfalarını toplu açma sunar.
-// @description:ug     Z-Library كىتاب تىزىملىكىگە تېخىمۇ كۆپ ئۇچۇر، سۈزگۈچ ۋە يۈكلەش جەريانىنى قوشىدۇ؛ خالىغاندا ئاپتوماتىك داۋاملىق يۈكلەش ۋە كىتاب بەتلىرىنى توپلاپ ئېچىشقا بولىدۇ.
-// @description:uk     Додає до списків книг Z-Library докладніші відомості, фільтри та показ поступу завантаження, а також необов’язкове автоматичне підвантаження й групове відкриття сторінок книг.
-// @description:vi     Bổ sung thông tin sách, bộ lọc và tiến trình tải cho danh sách Z-Library; tùy chọn tự động tải thêm sách và mở hàng loạt trang sách.
+// @version      4.0
+// @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
+// @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
+// @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
+// @description:fr     Améliore les listes Z-Library avec des informations plus lisibles, des filtres et des outils Show more. Filtre aussi les résultats de recherche, ainsi que les recommandations et les livres populaires selon leur état de téléchargement.
+// @description:de     Verbessert Z-Library-Bücherlisten mit übersichtlicheren Angaben, Filtern und Show more-Werkzeugen. Filtert auch Suchergebnisse sowie Empfehlungen und beliebte Bücher nach Downloadstatus.
+// @description:ru     Улучшает списки книг Z-Library: сведения о книгах, фильтры и инструменты Show more. Также фильтрует результаты поиска, а рекомендации и популярные книги — по статусу загрузки.
+// @description:ja     Z-Library の書籍リストで情報表示、絞り込み、Show more 操作を改善します。検索結果も絞り込み、推薦・人気の本はダウンロード状態で絞り込めます。
+// @description:ko     Z-Library 책 목록의 정보 표시, 필터, Show more 기능을 개선합니다. 검색 결과도 필터링하고 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.
+// @description:es     Mejora las listas de Z-Library con datos más claros, filtros y herramientas de Show more. También filtra resultados de búsqueda y, por estado de descarga, recomendaciones y libros populares.
+// @description:pt-BR  Melhora as listas da Z-Library com informações mais claras, filtros e ferramentas de Show more. Também filtra resultados de busca e, pelo status de download, recomendações e livros populares.
+// @description:ar     يعزّز قوائم الكتب في Z-Library ويصفّي نتائج البحث؛ كما يصفّي التوصيات والكتب الشائعة حسب حالة التنزيل.
+// @description:be     Паляпшае спісы кніг Z-Library і фільтруе вынікі пошуку; рэкамендацыі і папулярныя кнігі — паводле стану спампоўвання.
+// @description:bg     Подобрява списъците с книги в Z-Library и филтрира резултатите от търсенето; филтрира препоръките и популярните книги по състояние на изтегляне.
+// @description:ckb    لیستی کتێبەکانی Z-Library باشتر دەکات و ئەنجامەکانی گەڕان پاڵاوتن دەکات؛ پێشنیارەکان و کتێبە باوەکانیش بەپێی دۆخی داگرتن پاڵاوتن دەکات.
+// @description:cs     Vylepšuje seznamy knih Z-Library a filtruje výsledky hledání; doporučené a oblíbené knihy filtruje podle stavu stažení.
+// @description:da     Forbedrer Z-Librarys boglister og filtrerer søgeresultater; anbefalinger og populære bøger filtreres efter downloadstatus.
+// @description:el     Βελτιώνει τις λίστες βιβλίων του Z-Library και φιλτράρει τα αποτελέσματα αναζήτησης· φιλτράρει προτάσεις και δημοφιλή βιβλία με βάση την κατάσταση λήψης.
+// @description:eo     Plibonigas la librolistojn de Z-Library kaj filtras serĉrezultojn; filtras rekomendojn kaj popularajn librojn laŭ elŝuta stato.
+// @description:es-419 Mejora las listas de Z-Library y filtra resultados de búsqueda; filtra recomendaciones y libros populares según su estado de descarga.
+// @description:fi     Parantaa Z-Libraryn kirjalistoja ja suodattaa hakutuloksia; suodattaa suosituksia ja suosittuja kirjoja lataustilan perusteella.
+// @description:fil    Pinapahusay ang mga listahan ng aklat sa Z-Library at sinasala ang mga resulta ng paghahanap; sinasala rin ang mga rekomendasyon at sikat na aklat ayon sa katayuan ng pag-download.
+// @description:fr-CA  Améliore les listes de livres Z-Library et filtre les résultats de recherche; filtre les recommandations et les livres populaires selon leur état de téléchargement.
+// @description:he     משפר רשימות ספרים ב-Z-Library ומסנן תוצאות חיפוש; מסנן המלצות וספרים פופולריים לפי מצב ההורדה.
+// @description:hr     Poboljšava popise knjiga na Z-Libraryju i filtrira rezultate pretraživanja; preporuke i popularne knjige filtrira prema statusu preuzimanja.
+// @description:hu     Javítja a Z-Library könyvlistáit és szűri a keresési találatokat; az ajánlott és népszerű könyveket letöltési állapot szerint szűri.
+// @description:id     Meningkatkan daftar buku Z-Library dan memfilter hasil pencarian; rekomendasi dan buku populer dapat difilter menurut status unduhan.
+// @description:it     Migliora le liste di libri di Z-Library e filtra i risultati di ricerca; filtra consigli e libri popolari in base allo stato di download.
+// @description:ka     აუმჯობესებს Z-Library-ის წიგნების სიებს და ფილტრავს ძიების შედეგებს; რეკომენდაციებსა და პოპულარულ წიგნებს ჩამოტვირთვის სტატუსით ფილტრავს.
+// @description:mr     Z-Library च्या पुस्तक याद्या सुधारते आणि शोध परिणाम फिल्टर करते; शिफारस केलेली व लोकप्रिय पुस्तके डाउनलोड स्थितीनुसार फिल्टर करते.
+// @description:nb     Forbedrer Z-Librarys boklister og filtrerer søkeresultater; anbefalte og populære bøker filtreres etter nedlastingsstatus.
+// @description:nl     Verbetert de boekenlijsten van Z-Library en filtert zoekresultaten; filtert aanbevelingen en populaire boeken op downloadstatus.
+// @description:pl     Ulepsza listy książek Z-Library i filtruje wyniki wyszukiwania; rekomendacje i popularne książki filtruje według stanu pobrania.
+// @description:pt     Melhora as listas de livros da Z-Library e filtra resultados de pesquisa; filtra recomendações e livros populares pelo estado de descarregamento.
+// @description:ro     Îmbunătățește listele de cărți Z-Library și filtrează rezultatele căutării; filtrează recomandările și cărțile populare după starea descărcării.
+// @description:sk     Vylepšuje zoznamy kníh Z-Library a filtruje výsledky vyhľadávania; odporúčané a obľúbené knihy filtruje podľa stavu stiahnutia.
+// @description:sr     Побољшава спискове књига на Z-Library и филтрира резултате претраге; препоруке и популарне књиге филтрира према статусу преузимања.
+// @description:sv     Förbättrar Z-Librarys boklistor och filtrerar sökresultat; rekommendationer och populära böcker filtreras efter nedladdningsstatus.
+// @description:th     ปรับปรุงรายการหนังสือของ Z-Library และกรองผลการค้นหา รวมถึงกรองหนังสือแนะนำและหนังสือยอดนิยมตามสถานะการดาวน์โหลด
+// @description:tr     Z-Library kitap listelerini geliştirir ve arama sonuçlarını filtreler; önerilen ve popüler kitapları indirme durumuna göre filtreler.
+// @description:ug     Z-Library كىتاب تىزىملىكلىرىنى ياخشىلايدۇ ۋە ئىزدەش نەتىجىلىرىنى سۈزەلەيدۇ؛ تەۋسىيە قىلىنغان ۋە ئالقىشلىق كىتابلارنى چۈشۈرۈش ھالىتى بويىچە سۈزەلەيدۇ.
+// @description:uk     Покращує списки книг Z-Library і фільтрує результати пошуку; рекомендації та популярні книги фільтрує за станом завантаження.
+// @description:vi     Cải thiện danh sách sách trên Z-Library và lọc kết quả tìm kiếm; lọc sách được đề xuất và sách phổ biến theo trạng thái tải xuống.
 // @match        https://z-lib.sk/*
 // @match        https://z-library.sk/*
 // @match        https://1lib.sk/*
@@ -144,8 +144,10 @@
     'section.automationConfig': ['Automation settings', '自动化设置', '自動化設定', 'Réglages de l’automatisation', 'Automatisierungseinstellungen', 'Настройки автоматизации', '自動操作の設定', '자동화 설정', 'Configuración de automatización', 'Configurações da automação'],
     'section.settings': ['Settings', '设置', '設定', 'Paramètres', 'Einstellungen', 'Настройки', '設定', '설정', 'Configuración', 'Configurações'],
     'section.configuration': ['Filter settings', '筛选配置', '篩選配置', 'Paramètres du filtre', 'Filtereinstellungen', 'Настройки фильтра', 'フィルター設定', '필터 설정', 'Ajustes del filtro', 'Configurações do filtro'],
+    'hint.siteMissing': ['Site does not provide this information', '站点未提供该信息', '網站未提供此資訊', 'Le site ne fournit pas cette information', 'Die Website stellt diese Information nicht bereit', 'Сайт не предоставляет эти сведения', 'サイトからこの情報は提供されていません', '사이트에서 이 정보를 제공하지 않습니다', 'El sitio no proporciona esta información', 'O site não fornece esta informação'],
+    'hint.booklistOnly': ['Only available on booklist pages', '仅书单页面可用', '僅書單頁面可用', 'Disponible uniquement sur les pages de listes de livres', 'Nur auf Bücherlistenseiten verfügbar', 'Доступно только на страницах списков книг', '書籍リストのページでのみ利用できます', '책 목록 페이지에서만 사용할 수 있습니다', 'Solo disponible en páginas de listas de libros', 'Disponível apenas em páginas de listas de livros'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
-    'about.description': ['Filter Z-Library booklists, see clearer book details, and use optional automation.', '为 Z-Library 书单提供灵活筛选、清晰的书籍信息和按需执行的操作。', '為 Z-Library 書單提供靈活篩選、清楚的書籍資訊與按需執行的操作。', 'Filtrez les listes Z-Library, consultez plus facilement les informations des livres et utilisez les actions automatiques facultatives.', 'Z-Library-Bücherlisten filtern, Buchangaben übersichtlicher anzeigen und bei Bedarf Aktionen automatisieren.', 'Фильтруйте списки Z-Library, удобнее просматривайте сведения о книгах и при необходимости автоматизируйте действия.', 'Z-Library の書籍リストを絞り込み、書籍情報を見やすく表示します。必要に応じて自動操作も利用できます。', 'Z-Library 책 목록을 필터링하고 책 정보를 더 보기 쉽게 표시합니다. 필요할 때 자동화 기능도 사용할 수 있습니다.', 'Filtra listas de Z-Library, consulta los datos de los libros con más claridad y usa la automatización cuando la necesites.', 'Filtre listas de livros da Z-Library, veja as informações com mais clareza e use a automação quando precisar.'],
+    'about.description': ['Enhance booklists and filter search results; filter recommendations and popular books by download status.', '增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。', '增強書單並篩選搜尋結果；推薦與熱門書籍可依下載狀態篩選。', 'Améliorez les listes de livres et filtrez les résultats de recherche; filtrez les recommandations et les livres populaires selon leur état de téléchargement.', 'Bücherlisten verbessern und Suchergebnisse filtern; Empfehlungen und beliebte Bücher nach Downloadstatus filtern.', 'Улучшайте списки книг и фильтруйте результаты поиска; рекомендации и популярные книги фильтруйте по статусу загрузки.', '書籍リストを便利にし、検索結果を絞り込めます。推薦・人気の本はダウンロード状態で絞り込めます。', '책 목록을 개선하고 검색 결과를 필터링합니다. 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.', 'Mejora las listas de libros y filtra los resultados de búsqueda; filtra recomendaciones y libros populares por estado de descarga.', 'Melhore as listas de livros e filtre resultados de busca; filtre recomendações e livros populares pelo status de download.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
     'about.github': ['GitHub page', 'GitHub 页面', 'GitHub 頁面', 'Page GitHub', 'GitHub-Seite', 'Страница GitHub', 'GitHub ページ', 'GitHub 페이지', 'Página de GitHub', 'Página no GitHub'],
     'about.placeholder': ['Not provided', '未提供', '未提供', 'Non renseigné', 'Nicht angegeben', 'Не указано', '未掲載', '제공되지 않음', 'No disponible', 'Não informado'],
@@ -191,7 +193,7 @@
     'setting.autoLanguage': ['Use browser or system language', '跟随浏览器/系统', '跟隨瀏覽器／系統', 'Utiliser la langue du navigateur ou du système', 'Browser- oder Systemsprache verwenden', 'Использовать язык браузера или системы', 'ブラウザーまたはシステムの言語を使用', '브라우저 또는 시스템 언어 사용', 'Usar el idioma del navegador o del sistema', 'Usar o idioma do navegador ou do sistema'],
     'setting.showNotice': ['Show welcome notice on this site', '在本站显示启动提示', '在本站顯示啟用提示', 'Afficher le message d’accueil sur ce site', 'Willkommenshinweis auf dieser Website anzeigen', 'Показывать приветственное уведомление на этом сайте', 'このサイトで案内を表示', '이 사이트에서 시작 안내 표시', 'Mostrar aviso de bienvenida en este sitio', 'Mostrar aviso de boas-vindas neste site'],
     'setting.allowBulk': ['Enable bulk opening on this site', '在本站启用批量打开', '在本站啟用批次開啟', 'Activer l’ouverture groupée sur ce site', 'Öffnen mehrerer Buchseiten auf dieser Website aktivieren', 'Разрешить открытие нескольких страниц книг на этом сайте', 'このサイトで書籍ページをまとめて開く機能を有効にする', '이 사이트에서 책 페이지 한꺼번에 열기 사용', 'Activar apertura masiva en este sitio', 'Ativar abertura de várias páginas neste site'],
-    'notice.message': ['Booklist tools are ready. Open any booklist to use them.', '工具已生效，打开任意书单即可使用。', '工具已啟用，開啟任意書單即可使用。', 'Les outils sont prêts. Ouvrez une liste de livres.', 'Die Werkzeuge sind bereit. Öffnen Sie eine Bücherliste.', 'Инструменты для списков книг готовы. Откройте любой список, чтобы пользоваться ими.', '書籍リスト用のツールを使えます。書籍リストを開いてください。', '책 목록용 도구를 사용할 수 있습니다. 책 목록을 열어 주세요.', 'Las herramientas para listas están listas. Abre una lista de libros para usarlas.', 'As ferramentas para listas estão prontas. Abra uma lista de livros para usá-las.'],
+    'notice.message': ['Booklist tools are ready. Filters also work on search results, recommendations, and popular books.', '书单工具已就绪；搜索结果、推荐和热门书籍也可筛选。', '書單工具已就緒；搜尋結果、推薦與熱門書籍也可篩選。', 'Les outils pour les listes de livres sont prêts. Les filtres fonctionnent aussi sur les résultats de recherche, les recommandations et les livres populaires.', 'Die Bücherlisten-Werkzeuge sind bereit. Filter funktionieren auch bei Suchergebnissen, Empfehlungen und beliebten Büchern.', 'Инструменты для списков книг готовы. Фильтры также работают в результатах поиска, рекомендациях и списках популярных книг.', '書籍リスト用のツールを使えます。検索結果や推薦・人気の本も絞り込めます。', '책 목록 도구를 사용할 수 있습니다. 검색 결과와 추천·인기 도서에도 필터를 적용할 수 있습니다.', 'Las herramientas para listas están listas. Los filtros también funcionan en resultados de búsqueda, recomendaciones y libros populares.', 'As ferramentas para listas estão prontas. Os filtros também funcionam nos resultados de busca, nas recomendações e nos livros populares.'],
     'notice.link': ['Browse booklists', '浏览书单', '瀏覽書單', 'Parcourir les listes', 'Bücherlisten ansehen', 'Открыть списки книг', '書籍リストを見る', '책 목록 보기', 'Ver listas de libros', 'Ver listas de livros'],
     'notice.listPage': ['Open a booklist to use these tools.', '打开任意书单即可启用工具。', '開啟任意書單即可啟用工具。', 'Ouvrez une liste de livres pour utiliser les outils.', 'Öffnen Sie eine Bücherliste, um die Werkzeuge zu nutzen.', 'Откройте любой список книг, чтобы использовать инструмент.', '書籍リストを開くと、このツールを使えます。', '책 목록을 열면 이 도구를 사용할 수 있습니다.', 'Abre una lista de libros para usar estas herramientas.', 'Abra uma lista de livros para usar estas ferramentas.'],
     'notice.close': ['Close · {seconds}s', '关闭 · {seconds}秒', '關閉 · {seconds}秒', 'Fermer · {seconds}s', 'Schließen · {seconds}s', 'Закрыть · {seconds}с', '閉じる · {seconds}秒', '닫기 · {seconds}초', 'Cerrar · {seconds}s', 'Fechar · {seconds}s'],
@@ -502,6 +504,104 @@
     if (!main?.querySelector('.readlist-view')) return false;
     if (getActiveCards(root).length > 0) return true;
     return parseBookTotal(root.querySelector('.booklist-header__tabs tab')?.textContent) === 0;
+  }
+
+  function detectListPage(root, hostname, pathname) {
+    const path = String(pathname || '');
+    const host = String(hostname || '').toLowerCase();
+    if (path.startsWith('/booklist/')) {
+      const container = root.querySelector('.booklist-main.active');
+      return container && hasBooklistFingerprint(root) ? { kind: 'booklist', container } : null;
+    }
+    if (!KNOWN_HOSTS.has(host)) return null;
+    if (path === '/s' || path === '/s/') {
+      const container = root.querySelector('#searchResultBox');
+      return container ? { kind: 'search', container } : null;
+    }
+    if (path === '/users/zrecommended') {
+      const container = root.querySelector('[class*="RecommendationBlock__EndlessMasonry"]');
+      return container ? { kind: 'zrecommended', container } : null;
+    }
+    const source = path === '/popular' ? 'mostpopular'
+      : path === '/' || path.startsWith('/book/') ? 'recommend' : null;
+    if (!source) return null;
+    const container = root.querySelector(`z-masonry[source="${source}"]`);
+    if (!container) return null;
+    return { kind: path === '/popular' ? 'popular'
+      : path === '/' ? 'home-recommend' : 'detail-recommend', container };
+  }
+
+  function getPageEntries(root, kind) {
+    const selectors = {
+      booklist: '.booklist-main.active .readlist-view > z-bookcard',
+      search: '#searchResultBox .resItemBoxBooks > z-bookcard',
+      'home-recommend': 'z-masonry[source="recommend"] > a:has(> z-cover)',
+      'detail-recommend': 'z-masonry[source="recommend"] > a:has(> z-cover)',
+      zrecommended: '[class*="RecommendationBlock__EndlessMasonry"] a.item:has(> z-cover)',
+      popular: 'z-masonry[source="mostpopular"] > a:has(> z-cover)',
+    };
+    return selectors[kind] ? [...root.querySelectorAll(selectors[kind])] : [];
+  }
+
+  function pageCapabilities(kind) {
+    const booklist = kind === 'booklist';
+    const search = kind === 'search';
+    const supported = booklist || search;
+    return { format: supported, size: supported, download: true, year: supported,
+      information: booklist, booklistAutomation: booklist, bulkOpen: true };
+  }
+
+  function effectiveSettings(settings, capabilities) {
+    return { ...settings,
+      filterFormat: capabilities.format && settings.filterFormat,
+      filterSize: capabilities.size && settings.filterSize,
+      filterDownload: capabilities.download && settings.filterDownload,
+      filterYear: capabilities.year && settings.filterYear };
+  }
+
+  function applyPanelCapabilities(panel, kind, locale) {
+    if (!panel) return;
+    const capabilities = pageCapabilities(kind);
+    for (const [name, suffix] of [['format', 'format'], ['size', 'size-filter'],
+      ['download', 'download'], ['year', 'year-filter']]) {
+      const supported = capabilities[name];
+      const input = panel.querySelector(`#zble-${suffix}-switch`);
+      if (input) {
+        if (!supported) {
+          input.disabled = true;
+          input.checked = false;
+        }
+      }
+      const configure = panel.querySelector(`#zble-configure-${name}`);
+      if (configure) configure.disabled = !supported;
+      if (!supported) {
+        const summary = panel.querySelector(`#zble-${name}-summary`);
+        if (summary) summary.textContent = `（${translate(locale, 'hint.siteMissing')}）`;
+      }
+    }
+    const info = panel.querySelector('#zble-info-toggle');
+    const infoBody = panel.querySelector('#zble-info-body');
+    if (info) {
+      info.disabled = !capabilities.information;
+      if (!capabilities.information) info.setAttribute('aria-expanded', 'false');
+    }
+    if (infoBody && !capabilities.information) infoBody.hidden = true;
+    const infoHint = panel.querySelector('#zble-info-availability');
+    if (infoHint) infoHint.textContent = capabilities.information ? ''
+      : `（${translate(locale, 'hint.booklistOnly')}）`;
+    if (!capabilities.booklistAutomation) {
+      for (const selector of ['#zble-show-more-1', '#zble-show-more-2',
+        '#zble-show-more-continuous', '#zble-reset-show-more', '#zble-reset-hint',
+        '#zble-show-more-status', '#zble-show-more-availability', '#zble-favorite',
+        '#zble-show-more-count-1', '#zble-show-more-count-2',
+        '#zble-show-more-error-1', '#zble-show-more-error-2',
+        'label[for="zble-show-more-count-1"]', 'label[for="zble-show-more-count-2"]']) {
+        const element = panel.querySelector(selector);
+        if (element) element.hidden = true;
+      }
+      const continuous = panel.querySelector('#zble-allow-continuous');
+      if (continuous?.parentElement) continuous.parentElement.hidden = true;
+    }
   }
 
   function classifyPage(hostname, pathname, fingerprint) {
@@ -868,6 +968,18 @@
     };
   }
 
+  function readPageEntry(entry, kind) {
+    if (kind === 'booklist' || kind === 'search') return readCardData(entry);
+    const cover = entry.querySelector?.('z-cover');
+    const ready = !!cover?.classList?.contains('ready') && !!cover.shadowRoot;
+    return {
+      coverId: cover?.getAttribute('id') || '',
+      isbns: (cover?.getAttribute('isbn') || '').split(',').map(value => value.trim()).filter(Boolean),
+      download: !ready ? 'unknown' : cover.shadowRoot.querySelector('.mark.downloaded')
+        ? 'downloaded' : 'not-downloaded',
+    };
+  }
+
   function compileFilters(settings, downloadReady, lookup) {
     const selected = new Set(settings.formats);
     const sizeBands = new Set(settings.sizeBands);
@@ -917,6 +1029,24 @@
       if (result.visible) matched++;
     }
     return { cards, infos, results, matched };
+  }
+
+  function filterPageEntries(entries, kind, context) {
+    const infos = [];
+    const results = [];
+    let matched = 0;
+    for (const entry of entries) {
+      const info = readPageEntry(entry, kind);
+      const result = kind === 'booklist' || kind === 'search' ? evaluateCard(info, context) : {
+        visible: !context.downloadActive || info.download === 'unknown' ||
+          info.download === context.downloadRule,
+        download: info.download,
+      };
+      infos.push(info);
+      results.push(result);
+      if (result.visible) matched++;
+    }
+    return { entries, infos, results, matched };
   }
 
   function mutationNeedsRefresh(records) {
@@ -1288,7 +1418,9 @@
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
       parseBookTotal, parseBookTotalLabel, parseProgressTotal, computeStats, classifyDownload, createDownloadGate,
-      getActiveCards, hasBooklistFingerprint, readCardData, compileFilters, evaluateCard, filterActiveCards,
+      getActiveCards, hasBooklistFingerprint, detectListPage, getPageEntries,
+      pageCapabilities, effectiveSettings, applyPanelCapabilities,
+      readCardData, readPageEntry, compileFilters, evaluateCard, filterActiveCards, filterPageEntries,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
       renderFormatBadge, parseFileSizeMb, classifyFileSize, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
@@ -1329,10 +1461,12 @@
     function startRoute() {
       const location = window.location || { hostname: '', pathname: '/booklist/' };
       const pathname = location.pathname || '/';
-      const main = document.querySelector('.booklist-main.active');
-      const kind = classifyPage(location.hostname, pathname, hasBooklistFingerprint(document));
+      const page = detectListPage(document, location.hostname, pathname);
+      const waitingForList = pathname.startsWith('/booklist/') || KNOWN_HOSTS.has(location.hostname?.toLowerCase()) &&
+        (['/', '/s', '/s/', '/popular', '/users/zrecommended'].includes(pathname) || pathname.startsWith('/book/'));
+      const kind = page?.kind || classifyPage(location.hostname, pathname, false);
       if (currentRoute && currentRoute.kind === kind && currentRoute.pathname === pathname &&
-          (kind !== 'booklist' || currentRoute.main === main)) return;
+          (!page || currentRoute.container === page.container)) return;
       stopRoute();
       if (kind === 'pending') {
         let observer = null;
@@ -1343,13 +1477,20 @@
           timeoutId = setTimeout(() => observer.disconnect(), 30000);
         }
         currentRoute = { kind, pathname, dispose() { observer?.disconnect(); clearTimeout(timeoutId); } };
-      } else if (kind === 'booklist') {
-        const instance = activate(startRoute);
-        currentRoute = { kind, pathname, main, dispose: () => instance.dispose() };
+      } else if (page) {
+        const instance = activate(startRoute, page);
+        currentRoute = { kind, pathname, container: page.container, dispose: () => instance.dispose() };
       } else if (kind === 'notice') {
         const host = location.hostname.toLowerCase();
         const prefs = loadSitePrefs();
         let notice = null;
+        let observer = null;
+        let timeoutId = null;
+        if (waitingForList && document.documentElement) {
+          observer = new MutationObserver(startRoute);
+          observer.observe(document.documentElement, { childList: true, subtree: true });
+          timeoutId = setTimeout(() => observer.disconnect(), 30000);
+        }
         let sessionStore = null;
         try { sessionStore = window.sessionStorage; } catch { /* Storage access blocked. */ }
         if (document.body && shouldShowNotice(host, prefs[host]?.welcomeEnabled !== false,
@@ -1365,7 +1506,9 @@
               saveSitePrefs(prefs);
             } });
         }
-        currentRoute = { kind, pathname, dispose: () => notice?.dispose() };
+        currentRoute = { kind, pathname, dispose() {
+          observer?.disconnect(); clearTimeout(timeoutId); notice?.dispose();
+        } };
       } else {
         currentRoute = { kind, pathname, dispose() {} };
       }
@@ -1379,10 +1522,13 @@
     window.addEventListener('hashchange', startRoute);
     window.addEventListener('urlchange', startRoute);
 
-    function activate(onStale) {
+    function activate(onStale, page) {
     const STORAGE_KEY = 'zble-settings-v2';
+    const pageKind = page.kind;
+    const capabilities = pageCapabilities(pageKind);
     const initialPathname = window.location?.pathname || '/booklist/';
-    const initialMain = document.querySelector('.booklist-main.active');
+    const initialMain = pageKind === 'booklist' ? page.container : null;
+    const initialContainer = page.container;
     let stored;
     try { stored = GM_getValue(STORAGE_KEY, {}); } catch { stored = {}; }
     const settings = sanitizeSettings(stored);
@@ -1399,6 +1545,7 @@
     let parentObserver = null;
     let startupObserver = null;
     let classObservers = [];
+    const coverObservers = new Map();
     let lastCardMetrics = null;
     let panelResize = null;
     let disposed = false;
@@ -1426,9 +1573,13 @@
     let hasOpenedOnThisPage = false;
     const automationAbort = new AbortController();
 
-    function isCurrentBooklist() {
+    function isCurrentRoute() {
       return !disposed && (window.location?.pathname || '/booklist/') === initialPathname &&
-        document.querySelector('.booklist-main.active') === initialMain;
+        detectListPage(document, window.location?.hostname, initialPathname)?.container === initialContainer;
+    }
+
+    function isCurrentBooklist() {
+      return pageKind === 'booklist' && isCurrentRoute();
     }
 
     function saveSettings() {
@@ -1476,9 +1627,10 @@
       const input = panelRoot?.querySelector('#zble-download-switch');
       if (!input) return;
       input.checked = settings.filterDownload;
-      input.disabled = gate.state !== 'ready';
-      panelRoot.querySelector('#zble-wait-icon').hidden = gate.state !== 'waiting';
-      panelRoot.querySelector('#zble-warn-icon').hidden = !['timed-out', 'failed'].includes(gate.state);
+      input.disabled = capabilities.format && gate.state !== 'ready';
+      panelRoot.querySelector('#zble-wait-icon').hidden = !capabilities.format || gate.state !== 'waiting';
+      panelRoot.querySelector('#zble-warn-icon').hidden = !capabilities.format ||
+        !['timed-out', 'failed'].includes(gate.state);
     }
 
     function renderPanelState(context, unknownCards, unavailable) {
@@ -1503,6 +1655,7 @@
       setText('#zble-info-hint', unavailable.format || unavailable.meta || unavailable.title || unavailable.author
         ? translate(locale, 'hint.structure') : '');
       syncDownloadControl();
+      applyPanelCapabilities(panelRoot, pageKind, locale);
     }
 
     function translatedNotices(context) {
@@ -1584,8 +1737,8 @@
     }
 
     function currentOpenTargets() {
-      if (!isCurrentBooklist()) return [];
-      return collectOpenTargets(getActiveCards(document), window.location.origin, isCardSiteVisible);
+      if (!isCurrentRoute()) return [];
+      return collectOpenTargets(getPageEntries(document, pageKind), window.location.origin, isCardSiteVisible);
     }
 
     function currentFilterSignature() {
@@ -1598,10 +1751,11 @@
 
     function currentBulkGate() {
       const context = lastPanelData?.context;
-      const filtersReady = !!context && (!settings.filterFormat || context.formatActive) &&
-        (!settings.filterSize || context.sizeActive) &&
-        (!settings.filterYear || context.yearActive) &&
-        (!settings.filterDownload || gate.state === 'ready');
+      const active = effectiveSettings(settings, capabilities);
+      const filtersReady = !!context && (!active.filterFormat || context.formatActive) &&
+        (!active.filterSize || context.sizeActive) &&
+        (!active.filterYear || context.yearActive) &&
+        (!active.filterDownload || !capabilities.format || gate.state === 'ready');
       return canOpenAll({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
         filtersReady, unknownDownloads: lastPanelData?.unknownCards || 0,
         openTabAvailable: typeof GM_openInTab === 'function' });
@@ -1612,7 +1766,7 @@
       if (!button) return;
       const gateResult = currentBulkGate();
       const targets = gateResult.allowed ? currentOpenTargets() : [];
-      button.disabled = bulkBusy || showMoreBusy || !!showMoreTask || showMoreDialogPending || !isCurrentBooklist();
+      button.disabled = bulkBusy || showMoreBusy || !!showMoreTask || showMoreDialogPending || !isCurrentRoute();
       button.dataset.state = bulkBusy ? 'running' : bulkLastFailed ? 'failed' : '';
       const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
         'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
@@ -1629,7 +1783,7 @@
     function showAutomationDialog(action, step, { count = 0, repeat = false } = {}) {
       if (bulkDialogPromise) return bulkDialogPromise;
       bulkDialogPromise = new Promise(resolve => {
-        if (automationAbort.signal.aborted || !isCurrentBooklist()) { resolve(false); return; }
+        if (automationAbort.signal.aborted || !isCurrentRoute()) { resolve(false); return; }
         const previousFocus = panelRoot?.activeElement || document.activeElement;
         const host = document.createElement('div');
         host.id = 'zble-bulk-dialog-host';
@@ -1694,7 +1848,7 @@
         const value = translate(locale, node.dataset.i18n);
         if (node.textContent !== value) node.textContent = value;
       }
-      for (const card of getActiveCards(document))
+      for (const card of pageKind === 'booklist' ? getActiveCards(document) : [])
         renderFormatBadge(card, normalizeExtension(card.getAttribute('extension')), settings.showFormat,
           locale, card.getAttribute('filesize'), settings.showSize);
       const gear = panelRoot.querySelector('#zble-gear');
@@ -1723,8 +1877,14 @@
       if (lastPanelData) {
         const { context, unknownCards, unavailable, stats, activeFilter, list, main, totalLabel } = lastPanelData;
         renderPanelState(context, unknownCards, unavailable);
-        renderFilterSummary(list, stats, activeFilter && settings.showSummary, translatedNotices(context), lastCardMetrics, locale, totalLabel);
-        renderShowMore(main, stats, locale, settings.showProgress);
+        if (pageKind === 'booklist') {
+          renderFilterSummary(list, stats, activeFilter && settings.showSummary,
+            translatedNotices(context), lastCardMetrics, locale, totalLabel);
+          renderShowMore(main, stats, locale, settings.showProgress);
+        } else if (!capabilities.format) {
+          setText('#zble-download-summary', formatRuleSummary(settings, 'ready', context.yearRule, locale).download);
+          setText('#zble-download-hint', '');
+        }
       }
       renderAutoStatus();
       refreshAutomationDialog?.();
@@ -1732,12 +1892,41 @@
       renderBulkStatus();
       syncBulkControl();
       syncShowMoreControls();
+      syncDownloadControl();
+      applyPanelCapabilities(panelRoot, pageKind, locale);
     }
 
     function refresh() {
       if (!panelRoot || disposed) return;
-      if (!isCurrentBooklist()) { onStale(); return; }
+      if (!isCurrentRoute()) { onStale(); return; }
       attachObservers();
+      if (pageKind !== 'booklist') {
+        const active = effectiveSettings(settings, capabilities);
+        const library = siteLibrary();
+        const lookup = typeof library?.checkIsDownloaded === 'function'
+          ? library.checkIsDownloaded.bind(library) : null;
+        const context = compileFilters(active, gate.state === 'ready', lookup);
+        const entries = getPageEntries(document, pageKind);
+        const pass = filterPageEntries(entries, pageKind, context);
+        if (capabilities.format && entries.length) startDownloadTimer();
+        let unknownCards = 0;
+        for (let index = 0; index < entries.length; index++) {
+          const entry = entries[index];
+          const result = pass.results[index];
+          const target = pageKind === 'search' ? entry.parentElement : entry;
+          target?.classList?.toggle('zble-hidden', !result.visible);
+          if (active.filterDownload && result.download === 'unknown') unknownCards++;
+        }
+        attachCoverObservers(entries);
+        renderPanelState(context, unknownCards, { format: 0, meta: 0, title: 0, author: 0 });
+        if (!capabilities.format) {
+          setText('#zble-download-summary', formatRuleSummary(settings, 'ready', context.yearRule, locale).download);
+          setText('#zble-download-hint', '');
+        }
+        lastPanelData = { context, unknownCards, unavailable: { format: 0, meta: 0, title: 0, author: 0 } };
+        syncBulkControl();
+        return;
+      }
       const main = document.querySelector('.booklist-main.active');
       const library = siteLibrary();
       const lookup = typeof library?.checkIsDownloaded === 'function'
@@ -1801,7 +1990,8 @@
     }
 
     function attachObservers() {
-      const main = document.querySelector('.booklist-main.active');
+      const main = pageKind === 'booklist' ? document.querySelector('.booklist-main.active')
+        : detectListPage(document, window.location?.hostname, initialPathname)?.container;
       if (main === observedMain) return;
       mainObserver?.disconnect();
       parentObserver?.disconnect();
@@ -1810,14 +2000,18 @@
       observedMain = main;
       lastCardMetrics = null;
       if (!main) return;
-      startupObserver?.disconnect();
-      startupObserver = null;
+      // Non-booklist lists can replace their entire container without changing the URL.
+      if (pageKind === 'booklist') {
+        startupObserver?.disconnect();
+        startupObserver = null;
+      }
       mainObserver = new MutationObserver(records => {
-        showMoreTracker?.check();
+        if (pageKind === 'booklist') showMoreTracker?.check();
         if (mutationNeedsRefresh(records)) scheduleRefresh();
       });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
         attributeFilter: ['extension', 'filesize', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
+      if (pageKind !== 'booklist') return;
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
         parentObserver.observe(main.parentElement, { childList: true });
@@ -1829,25 +2023,39 @@
       }
     }
 
+    function attachCoverObservers(entries) {
+      if (capabilities.format) return;
+      const roots = new Set(entries.map(entry => entry.querySelector?.('z-cover')?.shadowRoot).filter(Boolean));
+      for (const [root, observer] of coverObservers) {
+        if (!roots.has(root)) { observer.disconnect(); coverObservers.delete(root); }
+      }
+      for (const root of roots) {
+        if (coverObservers.has(root)) continue;
+        const observer = new MutationObserver(scheduleRefresh);
+        observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+        coverObservers.set(root, observer);
+      }
+    }
+
     function createPanel() {
       if (document.getElementById('zble-panel-host')) return;
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
-      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
+      pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden,#searchResultBox .resItemBoxBooks.zble-hidden,z-masonry > a.zble-hidden,[class*="RecommendationBlock__EndlessMasonry"] a.item.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
       host.id = 'zble-panel-host';
       for (const eventName of ['click', 'change', 'input', 'pointerdown']) {
         host.addEventListener(eventName, event => {
-          if (isCurrentBooklist()) return;
+          if (isCurrentRoute()) return;
           event.stopImmediatePropagation();
           event.preventDefault();
           onStale();
         }, true);
       }
-      const main = document.querySelector('.booklist-main.active');
-      if (main?.parentElement) main.parentElement.insertBefore(host, main);
+      const main = initialContainer;
+      if (pageKind === 'booklist' && main?.parentElement) main.parentElement.insertBefore(host, main);
       else document.body.append(host);
       panelRoot = host.attachShadow({ mode: 'open' });
       panelRoot.innerHTML = `
@@ -1900,7 +2108,7 @@
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
-            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">为 Z-Library 书单提供灵活筛选、清晰的书籍信息和按需执行的操作。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div></div>
+            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div></div>
           </div>
           </div>
         </div>`;
@@ -1928,6 +2136,12 @@
         group.append(body);
         bindSectionToggle(button, body, expanded, () => requestAnimationFrame(applySavedDock));
       }
+
+      const infoAvailability = document.createElement('span');
+      infoAvailability.id = 'zble-info-availability';
+      infoAvailability.className = 'summary';
+      const infoToggle = panelRoot.querySelector('#zble-info-toggle');
+      infoToggle.insertBefore(infoAvailability, infoToggle.querySelector('svg'));
 
       const availabilityHint = document.createElement('div');
       availabilityHint.id = 'zble-show-more-availability';
@@ -2132,7 +2346,7 @@
       });
       const openAllButton = panelRoot.querySelector('#zble-open-all');
       openAllButton.addEventListener('click', async () => {
-        if (bulkBusy || showMoreBusy || showMoreTask || showMoreDialogPending || !isCurrentBooklist()) return;
+        if (bulkBusy || showMoreBusy || showMoreTask || showMoreDialogPending || !isCurrentRoute()) return;
         const gate = currentBulkGate();
         const decision = bulkClickDecision({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
           gate, targetCount: gate.allowed ? currentOpenTargets().length : 0 });
@@ -2151,9 +2365,9 @@
           const approved = await confirmBulkOpen({ urls,
             getCurrentTargets: () => currentBulkGate().allowed ? currentOpenTargets() : [],
             getDomainEnabled: () => sitePrefs[currentHost]?.bulkOpenEnabled === true,
-            showDialog: showBulkDialog, isSourceAlive: isCurrentBooklist,
+            showDialog: showBulkDialog, isSourceAlive: isCurrentRoute,
             getFilterSignature: currentFilterSignature,
-            getCardSnapshot: () => getActiveCards(document),
+            getCardSnapshot: () => getPageEntries(document, pageKind),
             onInvalid() { bulkMessageKey = 'auto.bulkChanged'; },
             repeat: hasOpenedOnThisPage });
           if (!approved) {
@@ -2161,7 +2375,7 @@
             return;
           }
           const result = await runOpenAll({ urls, openTab: (url, options) => GM_openInTab(url, options),
-            isSourceAlive: isCurrentBooklist,
+            isSourceAlive: isCurrentRoute,
             onProgress(progress) { bulkStatus = progress; renderBulkStatus(); } });
           if (result.attempted > 0) hasOpenedOnThisPage = true;
           bulkLastFailed = result.failed > 0;
@@ -2308,7 +2522,7 @@
       if (!document.body || disposed) return;
       createPanel();
       syncShowMoreControls();
-      startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentBooklist()) onStale(); });
+      startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentRoute()) onStale(); });
       startupObserver.observe(document.documentElement, { childList: true, subtree: true });
       attachObservers();
       scheduleRefresh();
@@ -2336,7 +2550,12 @@
       mainObserver?.disconnect();
       parentObserver?.disconnect();
       for (const observer of classObservers) observer.disconnect();
+      for (const observer of coverObservers.values()) observer.disconnect();
       if (panelResize) window.removeEventListener?.('resize', panelResize);
+      for (const entry of getPageEntries(document, pageKind)) {
+        if (pageKind === 'search') entry.parentElement?.classList?.remove('zble-hidden');
+        else entry.classList?.remove('zble-hidden');
+      }
       for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
         card.classList.remove('zble-hidden');
         renderFormatBadge(card, card.getAttribute('extension'), false, locale, '', false);
