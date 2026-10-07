@@ -39,6 +39,12 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 
 面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。「筛选器」「信息显示」「自动化」三个栏目也可分别收起；初始只展开筛选器。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。书单总数若显示为 `1K`，本工具仅在 Show more 页数估算中按 999 本计算；统计卡片保留网站显示的 `1K`。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
 
+### 与 UI Enhance 脚本并用
+
+如果本工具在书单或搜索页观察到 [Z-Library UI Enhance](https://greasyfork.org/scripts/497146-z-library-ui-enhance) 正在运行，面板标题下会出现兼容性提示；首页和 Z-Recommend 显示条件提示，不表示检测到用户安装了该脚本。点击「了解详情」可一次查看所有已知风险。提示可在当前标签页会话内关闭，之后仍能从全局设置的「兼容性说明」打开同一详情。
+
+UI Enhance 的语言筛选或推荐过滤可能直接移除图书，本工具只能统计和筛选**当前页面仍存在的条目**；书单语言选择清空后，已移除的卡片可能需要刷新页面才能恢复。搜索页启用相同 ISBN 折叠时，本工具仍可能筛选被隐藏的版本。UI Enhance 的复制书单与批量下载通过站点接口读取书单，不遵循本工具的页面筛选；其按钮旁的「⚠脚本冲突提示」也会打开同一说明。下载状态变更后，本工具的筛选与统计可能未立即刷新；如有不符，请刷新页面核对。提示依据仓库内 UI Enhance 2026.9.7 代码，真实页面的并装行为仍待验证。
+
 ### 目前没有什么功能？
 
 - 工具只处理**当前已加载**的书。筛选不会自动加载整份书单或跨页合并搜索结果；进度数字也不是访问历史或下次可恢复的阅读断点。
@@ -47,7 +53,7 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 - 如果点击「Show more」后 10 秒没有新增书籍，且原按钮仍处于 `disabled` 或 `aria-disabled` 状态，可在自动化栏目尝试「重置 Show more 按钮可用性」。重置只尝试清除这两种禁用状态，无法确认站点是否会继续接受请求；操作后会弹窗说明结果。若按钮仍无法使用，请刷新页面。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `4.0.2`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `4.0.3`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
@@ -94,6 +100,12 @@ The same panel is used on every page. Filters for data unavailable on the curren
 
 Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. Filters, Display options, and Automation can also be collapsed independently; only Filters starts expanded. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. If a booklist total is shown as `1K`, the tool uses 999 only to estimate Show more page progress; the summary card keeps the site's `1K` label. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
 
+### Using it with UI Enhance
+
+When this tool observes [Z-Library UI Enhance](https://greasyfork.org/scripts/497146-z-library-ui-enhance) running on a booklist or search page, it shows a compatibility notice beneath the panel title. Home and Z-Recommend show a conditional notice; that notice does not mean another script was detected. “Learn more” opens one explanation of all known risks. You can dismiss the notice for the current tab session and reopen the explanation from “Compatibility information” in global settings.
+
+UI Enhance may remove books through its language or recommendation filters. This tool can count and filter only **books still present on the page**; clearing UI Enhance’s language choice may require a page refresh to restore removed cards. On search pages, this tool may still filter editions hidden by UI Enhance’s same-ISBN grouping. UI Enhance’s copy and batch-download actions read the booklist through site APIs and do not follow this tool’s page filters. The warning links beside those buttons open the same explanation. Download-status changes may not immediately update this tool’s filters or counts; refresh the page if they differ. These notices are based on the repository copy of UI Enhance 2026.9.7; real-site co-installation still needs validation.
+
 ### What does it not do yet?
 
 - The tool works with **books already loaded** on the page. Filtering does not load the whole booklist or append later search pages. Progress figures are not browsing history or a reading position you can resume later.
@@ -102,7 +114,7 @@ Click the panel title bar to collapse or expand it, or drag the panel toward a s
 - If no books appear for 10 seconds after clicking “Show more” and the native button remains `disabled` or `aria-disabled`, you can try “Reset Show more availability” under Automation. The reset only clears those button states and cannot confirm that the site will accept another request; a dialog reports the result. Refresh the page if the button still does not work.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `4.0.2`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `4.0.3`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 

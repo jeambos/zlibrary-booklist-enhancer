@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.0.2
+// @version      4.0.3
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -278,6 +278,24 @@
     'action.expand': ['Expand panel', '展开面板', '展開面板', 'Développer le panneau', 'Panel ausklappen', 'Развернуть панель', 'パネルを展開する', '패널 펼치기', 'Expandir panel', 'Expandir painel'],
     'action.waitDownload': ['Waiting for download status', '等待下载状态', '等待下載狀態', 'En attente de l’état de téléchargement', 'Warte auf Downloadstatus', 'Ожидание статуса скачивания', 'ダウンロード状態を待機中', '다운로드 상태 대기 중', 'Esperando estado de descarga', 'Aguardando status de download'],
     'action.downloadUnconfirmed': ['Download status unconfirmed', '下载状态未确认', '下載狀態未確認', 'État non confirmé', 'Status unbestätigt', 'Статус скачивания не подтверждён', '状態未確認', '상태 미확인', 'Estado no confirmado', 'Status não confirmado'],
+    'coexist.detectedBefore': ['The', '检测到', '偵測到', 'Le', 'Das', 'На этой странице работает', 'このページで', '이 페이지에서', 'El', 'O'],
+    'coexist.script': ['UI Enhance script', 'UI Enhance 脚本', 'UI Enhance 腳本', 'script UI Enhance', 'UI-Enhance-Skript', 'скрипт UI Enhance', 'UI Enhance スクリプト', 'UI Enhance 스크립트', 'script UI Enhance', 'script UI Enhance'],
+    'coexist.detectedAfter': ['is running on this page. Compatibility issues are possible.', '在此页运行，可能存在兼容性问题。', '正在此頁執行，可能有相容性問題。', 'est actif sur cette page. Des incompatibilités sont possibles.', 'ist auf dieser Seite aktiv. Kompatibilitätsprobleme sind möglich.', '. Возможны проблемы совместимости.', 'が動作しています。互換性の問題が起こる可能性があります。', '가 실행 중입니다. 호환성 문제가 생길 수 있습니다.', 'está activo en esta página. Puede haber incompatibilidades.', 'está em execução nesta página. Pode haver incompatibilidades.'],
+    'coexist.conditionalBefore': ['This tool may have compatibility issues with the', '本工具与', '本工具與', 'Cet outil et le', 'Dieses Tool und das', 'Этот инструмент и', 'このツールは', '이 도구는', 'Esta herramienta y el', 'Esta ferramenta e o'],
+    'coexist.conditionalAfter': ['.', '可能有兼容性问题。', '可能有相容性問題。', 'peuvent être incompatibles.', 'könnten inkompatibel sein.', 'могут быть несовместимы.', 'との互換性に問題が生じる可能性があります。', '와 호환성 문제가 발생할 수 있습니다.', 'pueden ser incompatibles.', 'podem ser incompatíveis.'],
+    'coexist.details': ['Learn more', '了解详情', '瞭解詳情', 'En savoir plus', 'Details', 'Подробнее', '詳しく見る', '자세히 보기', 'Más información', 'Saiba mais'],
+    'coexist.dismiss': ['Dismiss warning', '关闭提示', '關閉提示', 'Masquer l’avertissement', 'Hinweis schließen', 'Скрыть предупреждение', '通知を閉じる', '알림 닫기', 'Cerrar aviso', 'Dispensar aviso'],
+    'coexist.link': ['⚠ Script conflict notice', '⚠脚本冲突提示', '⚠腳本衝突提示', '⚠ Conflit entre scripts', '⚠ Hinweis auf Skriptkonflikt', '⚠ Предупреждение о конфликте скриптов', '⚠ スクリプト競合の注意', '⚠ 스크립트 충돌 안내', '⚠ Aviso de conflicto entre scripts', '⚠ Aviso de conflito entre scripts'],
+    'coexist.title': ['Compatibility with UI Enhance', '与 UI Enhance 的兼容性', '與 UI Enhance 的相容性', 'Compatibilité avec UI Enhance', 'Kompatibilität mit UI Enhance', 'Совместимость с UI Enhance', 'UI Enhance との互換性', 'UI Enhance 호환성', 'Compatibilidad con UI Enhance', 'Compatibilidade com UI Enhance'],
+    'coexist.intro': ['This tool counts and filters books currently on the page. Books removed by another script are excluded. The effects below depend on which UI Enhance features are enabled.', '本工具依据当前页面上的书籍进行统计和筛选；被其他脚本移除的书籍不在其中。以下影响取决于 UI Enhance 启用了哪些功能。', '本工具依據目前頁面上的書籍進行統計和篩選；被其他腳本移除的書籍不在其中。以下影響取決於 UI Enhance 啟用了哪些功能。', 'Cet outil compte et filtre les livres présents sur la page. Ceux qu’un autre script retire sont exclus. Les effets ci-dessous dépendent des fonctions activées dans UI Enhance.', 'Dieses Tool zählt und filtert die Bücher auf der aktuellen Seite. Von einem anderen Skript entfernte Bücher sind ausgeschlossen. Welche Folgen auftreten, hängt von den aktivierten UI-Enhance-Funktionen ab.', 'Этот инструмент считает и фильтрует книги на странице. Книги, удалённые другим скриптом, не учитываются. Последствия зависят от включённых функций UI Enhance.', 'このツールは現在のページにある本を集計・絞り込みます。他のスクリプトが削除した本は対象外です。以下の影響は UI Enhance で有効にした機能によって異なります。', '이 도구는 현재 페이지에 있는 책을 집계하고 필터링합니다. 다른 스크립트가 제거한 책은 제외됩니다. 아래 영향은 UI Enhance에서 켠 기능에 따라 달라집니다.', 'Esta herramienta cuenta y filtra los libros presentes en la página. Excluye los que elimine otro script. Los efectos siguientes dependen de las funciones activadas en UI Enhance.', 'Esta ferramenta conta e filtra os livros presentes na página. Livros removidos por outro script ficam de fora. Os efeitos abaixo dependem das funções ativadas no UI Enhance.'],
+    'coexist.booklist': ['Booklists: UI Enhance’s language filter removes nonmatching cards. This tool’s loaded count may drop, and automatic Show more clicks may stop if new cards are removed. Clearing the language selection does not restore those cards; reload the page if needed.', '书单：UI Enhance 的语言筛选会移除不匹配的书卡。本工具的已加载数量可能减少；若新书卡被移除，自动连点 Show more 也可能停止。清空语言选择不会恢复这些书卡，必要时请刷新页面。', '書單：UI Enhance 的語言篩選會移除不符的書卡。本工具的已載入數量可能減少；若新書卡被移除，自動連點 Show more 也可能停止。清除語言選擇不會還原這些書卡，必要時請重新整理頁面。', 'Listes : le filtre de langue d’UI Enhance retire les cartes non correspondantes. Le nombre de livres chargés peut baisser et les clics automatiques sur Show more peuvent s’arrêter si les nouvelles cartes sont retirées. Effacer la sélection ne restaure pas ces cartes ; rechargez la page si besoin.', 'Bücherlisten: Der Sprachfilter von UI Enhance entfernt nicht passende Karten. Die Zahl geladener Bücher kann sinken; automatische Show-more-Klicks können stoppen, wenn neue Karten entfernt werden. Das Aufheben der Sprachauswahl stellt sie nicht wieder her. Laden Sie die Seite bei Bedarf neu.', 'Списки: языковой фильтр UI Enhance удаляет неподходящие карточки. Число загруженных книг может снизиться, а автоматические нажатия Show more — остановиться, если новые карточки удалены. Сброс выбора языка не вернёт их; при необходимости обновите страницу.', '書籍リスト：UI Enhance の言語フィルターは条件に合わないカードを削除します。このツールの読込済み件数が減り、新しいカードも削除されると Show more の自動クリックが停止する場合があります。言語の選択を解除してもカードは戻りません。必要ならページを再読み込みしてください。', '책 목록: UI Enhance의 언어 필터는 조건에 맞지 않는 카드를 제거합니다. 이 도구의 불러온 책 수가 줄고, 새 카드도 제거되면 Show more 자동 클릭이 멈출 수 있습니다. 언어 선택을 해제해도 카드는 복원되지 않으니 필요하면 새로고침하세요.', 'Listas: el filtro de idioma de UI Enhance elimina las tarjetas que no coinciden. Puede bajar el número de libros cargados y detenerse los clics automáticos en Show more si se eliminan tarjetas nuevas. Quitar la selección de idioma no las restaura; recarga la página si hace falta.', 'Listas: o filtro de idioma do UI Enhance remove cartões que não correspondem. A contagem de livros carregados pode cair, e os cliques automáticos em Show more podem parar se novos cartões forem removidos. Limpar a seleção de idioma não os restaura; recarregue a página se necessário.'],
+    'coexist.recommend': ['Home and Z-Recommend: when its recommendation filter is enabled, UI Enhance may remove downloaded books. This tool cannot recover them for the downloaded-only filter.', '首页与 Z-Recommend：启用推荐过滤时，UI Enhance 可能移除已下载图书；本工具的“仅已下载”无法找回这些书。', '首頁與 Z-Recommend：啟用推薦篩選時，UI Enhance 可能移除已下載書籍；本工具的「僅已下載」無法找回這些書。', 'Accueil et Z-Recommend : si son filtre de recommandations est actif, UI Enhance peut retirer les livres téléchargés. Le filtre « téléchargés uniquement » ne peut pas les récupérer.', 'Startseite und Z-Recommend: Bei aktivem Empfehlungsfilter kann UI Enhance heruntergeladene Bücher entfernen. Der Filter „nur heruntergeladene“ kann sie nicht zurückholen.', 'Главная и Z-Recommend: при включённом фильтре рекомендаций UI Enhance может удалить скачанные книги. Фильтр «только скачанные» не может их вернуть.', 'ホームと Z-Recommend：推薦フィルターが有効な場合、UI Enhance はダウンロード済みの本を削除することがあります。「ダウンロード済みのみ」では戻せません。', '홈과 Z-Recommend: 추천 필터가 켜져 있으면 UI Enhance가 다운로드한 책을 제거할 수 있습니다. 이 도구의 다운로드한 책만 보기로는 복원할 수 없습니다.', 'Inicio y Z-Recommend: con su filtro de recomendaciones activo, UI Enhance puede quitar libros descargados. «Solo descargados» no puede recuperarlos.', 'Início e Z-Recommend: com o filtro de recomendações ativo, o UI Enhance pode remover livros baixados. O filtro «somente baixados» não consegue recuperá-los.'],
+    'coexist.search': ['Search: UI Enhance may collapse books with the same ISBN. This tool may still filter the hidden editions, so the filter can affect more books than you see.', '搜索：UI Enhance 可能折叠相同 ISBN 的书籍。本工具仍可能筛选被隐藏的版本，因此筛选范围可能大于当前可见的结果。', '搜尋：UI Enhance 可能收合相同 ISBN 的書籍。本工具仍可能篩選被隱藏的版本，因此篩選範圍可能大於目前可見的結果。', 'Recherche : UI Enhance peut regrouper les livres ayant le même ISBN. Cet outil peut aussi filtrer les éditions masquées ; le filtre peut donc toucher plus de livres que ceux affichés.', 'Suche: UI Enhance kann Bücher mit gleicher ISBN einklappen. Dieses Tool kann auch ausgeblendete Ausgaben filtern; der Filter kann daher mehr Bücher erfassen als sichtbar sind.', 'Поиск: UI Enhance может сворачивать книги с одинаковым ISBN. Этот инструмент может фильтровать и скрытые издания, поэтому фильтр может затронуть больше книг, чем видно.', '検索：UI Enhance は同じ ISBN の本を折りたたむことがあります。このツールは非表示の版も絞り込む場合があり、表示中の本より多くの本が対象になることがあります。', '검색: UI Enhance가 ISBN이 같은 책을 접을 수 있습니다. 이 도구는 숨겨진 판본도 필터링할 수 있어, 화면에 보이는 책보다 더 많은 책이 영향을 받을 수 있습니다.', 'Búsqueda: UI Enhance puede agrupar libros con el mismo ISBN. Esta herramienta también puede filtrar ediciones ocultas, por lo que el filtro puede afectar a más libros de los visibles.', 'Busca: o UI Enhance pode agrupar livros com o mesmo ISBN. Esta ferramenta também pode filtrar edições ocultas, então o filtro pode afetar mais livros do que os visíveis.'],
+    'coexist.download': ['Download status: after UI Enhance downloads or opens a book for online reading, this tool’s filters and counts may not update immediately. Refresh the page if they appear stale.', '下载状态：UI Enhance 下载图书或打开在线阅读后，本工具的筛选与统计可能未立即刷新；若状态不符，请刷新页面核对。', '下載狀態：UI Enhance 下載書籍或開啟線上閱讀後，本工具的篩選與統計可能未立即更新；若狀態不符，請重新整理頁面核對。', 'État des téléchargements : après un téléchargement ou une lecture en ligne via UI Enhance, les filtres et comptes peuvent tarder à se mettre à jour. Rechargez la page si besoin.', 'Downloadstatus: Nach einem Download oder dem Öffnen zum Online-Lesen über UI Enhance können Filter und Zählungen verzögert aktualisiert werden. Laden Sie die Seite bei Bedarf neu.', 'Статус скачивания: после скачивания или открытия онлайн-чтения через UI Enhance фильтры и счётчики могут обновиться не сразу. При расхождении обновите страницу.', 'ダウンロード状態：UI Enhance でダウンロードやオンライン閲覧を行った後、絞り込みと件数がすぐに更新されない場合があります。状態が違う場合はページを再読み込みしてください。', '다운로드 상태: UI Enhance로 다운로드하거나 온라인 읽기를 연 뒤 필터와 집계가 바로 갱신되지 않을 수 있습니다. 상태가 다르면 새로고침하세요.', 'Estado de descarga: tras descargar o leer en línea con UI Enhance, los filtros y recuentos pueden tardar en actualizarse. Recarga la página si no coinciden.', 'Estado de download: após baixar ou ler on-line com o UI Enhance, filtros e contagens podem demorar a atualizar. Recarregue a página se houver divergência.'],
+    'coexist.actions': ['Copy and batch download: these UI Enhance buttons read the booklist through site APIs. They do not follow this tool’s page filters and may process books that are hidden here. Check UI Enhance’s own options before continuing.', '复制与批量下载：UI Enhance 的这两个按钮通过站点接口读取书单，不遵循本工具的页面筛选，可能处理当前未显示的图书。操作前请核对 UI Enhance 自己的设置。', '複製與批次下載：UI Enhance 的這兩個按鈕透過網站介面讀取書單，不遵循本工具的頁面篩選，可能處理目前未顯示的書籍。操作前請核對 UI Enhance 自己的設定。', 'Copie et téléchargement groupé : ces boutons d’UI Enhance lisent la liste via les API du site, sans suivre les filtres de cet outil. Ils peuvent traiter des livres masqués ; vérifiez leurs options avant de continuer.', 'Kopieren und Stapeldownload: Diese UI-Enhance-Schaltflächen lesen die Liste über die Website-API. Sie beachten die Seitenfilter dieses Tools nicht und können ausgeblendete Bücher verarbeiten. Prüfen Sie vorher die UI-Enhance-Optionen.', 'Копирование и пакетное скачивание: эти кнопки UI Enhance читают список через API сайта, не учитывая фильтры этого инструмента. Они могут обработать скрытые книги; проверьте настройки UI Enhance.', 'コピーと一括ダウンロード：UI Enhance のボタンはサイト API から書籍リストを読み込み、このツールのページ絞り込みを反映しません。非表示の本も処理され得るため、実行前に設定を確認してください。', '복사와 일괄 다운로드: UI Enhance 버튼은 사이트 API에서 책 목록을 읽으며 이 도구의 페이지 필터를 따르지 않습니다. 숨긴 책도 처리할 수 있으니 실행 전에 설정을 확인하세요.', 'Copiar y descargar en lote: estos botones de UI Enhance leen la lista mediante la API del sitio, sin seguir los filtros de esta herramienta. Pueden procesar libros ocultos; revisa sus opciones antes de continuar.', 'Copiar e baixar em lote: esses botões do UI Enhance leem a lista pela API do site e não seguem os filtros desta ferramenta. Podem processar livros ocultos; confira as opções antes de continuar.'],
+    'coexist.signature': ['This notice is from Z-lib Booklist Enhancer.', '此提示由 Z-lib Booklist Enhancer（Z-Library 书单增强）提供。', '此提示由 Z-lib Booklist Enhancer（Z-Library 書單增強）提供。', 'Cet avis est fourni par Z-lib Booklist Enhancer.', 'Dieser Hinweis stammt von Z-lib Booklist Enhancer.', 'Это уведомление от Z-lib Booklist Enhancer.', 'この案内は Z-lib Booklist Enhancer が提供しています。', '이 안내는 Z-lib Booklist Enhancer에서 제공합니다.', 'Este aviso es de Z-lib Booklist Enhancer.', 'Este aviso é do Z-lib Booklist Enhancer.'],
+    'coexist.about': ['Compatibility information', '兼容性说明', '相容性說明', 'Informations de compatibilité', 'Kompatibilitätsinformationen', 'Сведения о совместимости', '互換性について', '호환성 안내', 'Información de compatibilidad', 'Informações de compatibilidade'],
+    'coexist.close': ['Close', '关闭', '關閉', 'Fermer', 'Schließen', 'Закрыть', '閉じる', '닫기', 'Cerrar', 'Fechar'],
   };
   const TRANSLATION_KEYS = Object.keys(MESSAGES);
   const TRANSLATIONS = Object.fromEntries(LOCALES.map((locale, index) => [locale,
@@ -504,7 +522,14 @@
     const main = root.querySelector('.booklist-main.active');
     if (!main?.querySelector('.readlist-view')) return false;
     if (getActiveCards(root).length > 0) return true;
-    return parseBookTotal(root.querySelector('.booklist-header__tabs tab')?.textContent) === 0;
+    return parseBookTotal(root.querySelector('.booklist-header__tabs tab')?.textContent) === 0 ||
+      coexistenceNoticeMode(root, 'booklist') === 'detected';
+  }
+
+  function sameBooklistContainer(root, pathname, initialPathname, container) {
+    return String(pathname || '') === initialPathname && !!container &&
+      root.querySelector('.booklist-main.active') === container &&
+      !!container.querySelector('.readlist-view');
   }
 
   function detectListPage(root, hostname, pathname) {
@@ -583,6 +608,37 @@
     const supported = booklist || search;
     return { format: supported, size: supported, download: true, year: supported,
       information: booklist, booklistAutomation: booklist, bulkOpen: true };
+  }
+
+  function coexistenceNoticeMode(root, kind) {
+    if (kind === 'home-recommend' || kind === 'zrecommended') return 'conditional';
+    if (kind === 'booklist') return ['#plugin_copy_booklist', '#plugin_download_booklist', '#wrapLang']
+      .some(selector => !!root.querySelector(selector)) ? 'detected' : 'none';
+    if (kind === 'search') return getPageEntries(root, 'search').some(card =>
+      !!card.shadowRoot?.querySelector('.icon-open-book-by-script')) ? 'detected' : 'none';
+    return 'none';
+  }
+
+  function attachUiEnhanceButtonLinks(root, label, open, owned) {
+    for (const selector of ['#plugin_copy_booklist', '#plugin_download_booklist']) {
+      const anchor = root.querySelector(selector);
+      if (!anchor) continue;
+      let link = anchor.nextElementSibling;
+      if (link?.dataset?.zbleCoexistence !== '1') {
+        link = root.createElement('button');
+        link.type = 'button';
+        link.className = 'zble-ui-enhance-link';
+        link.dataset.zbleCoexistence = '1';
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          event.stopPropagation();
+          open(link);
+        });
+        anchor.after(link);
+        owned.add(link);
+      }
+      if (link.textContent !== label) link.textContent = label;
+    }
   }
 
   function effectiveSettings(settings, capabilities) {
@@ -1448,9 +1504,11 @@
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
       parseBookTotal, parseBookTotalLabel, parseProgressTotal, computeStats, classifyDownload, createDownloadGate,
-      getActiveCards, hasBooklistFingerprint, detectListPage, getPageEntries, setPageEntryHidden,
+      getActiveCards, hasBooklistFingerprint, sameBooklistContainer,
+      detectListPage, getPageEntries, setPageEntryHidden,
       watchMasonryShadow, ensureMasonryShadowWatch,
-      pageCapabilities, effectiveSettings, applyPanelCapabilities,
+      pageCapabilities, effectiveSettings, applyPanelCapabilities, coexistenceNoticeMode,
+      attachUiEnhanceButtonLinks,
       readCardData, readPageEntry, compileFilters, evaluateCard, filterActiveCards, filterPageEntries,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
       renderFormatBadge, parseFileSizeMb, classifyFileSize, renderCardMeta, renderFullTitle, renderFullAuthor,
@@ -1495,6 +1553,8 @@
       const waitingForList = pathname.startsWith('/booklist/') || KNOWN_HOSTS.has(location.hostname?.toLowerCase()) &&
         (['/', '/s', '/s/', '/popular', '/users/zrecommended'].includes(pathname) || pathname.startsWith('/book/'));
       const kind = page?.kind || classifyPage(location.hostname, pathname, false);
+      if (!page && currentRoute?.kind === 'booklist' &&
+          sameBooklistContainer(document, pathname, currentRoute.pathname, currentRoute.container)) return;
       if (currentRoute && currentRoute.kind === kind && currentRoute.pathname === pathname &&
           (!page || currentRoute.container === page.container)) return;
       stopRoute();
@@ -1577,6 +1637,13 @@
     let startupObserver = null;
     let classObservers = [];
     const coverObservers = new Map();
+    const coexistenceLinks = new Set();
+    const coexistenceDismissKey = 'zble-ui-enhance-warning-dismissed-v1';
+    let coexistenceDismissed = false;
+    try { coexistenceDismissed = window.sessionStorage?.getItem(coexistenceDismissKey) === '1'; }
+    catch { /* Keep dismissal within this document when storage is blocked. */ }
+    let coexistenceDialogHost = null;
+    let searchCoexistenceTimer = null;
     let lastCardMetrics = null;
     let panelResize = null;
     let disposed = false;
@@ -1605,7 +1672,10 @@
     const automationAbort = new AbortController();
 
     function isCurrentRoute() {
-      return !disposed && (window.location?.pathname || '/booklist/') === initialPathname &&
+      if (disposed) return false;
+      if (pageKind === 'booklist') return sameBooklistContainer(document,
+        window.location?.pathname || '/booklist/', initialPathname, initialContainer);
+      return (window.location?.pathname || '/booklist/') === initialPathname &&
         detectListPage(document, window.location?.hostname, initialPathname)?.container === initialContainer;
     }
 
@@ -1890,9 +1960,76 @@
 
     function showBulkDialog(step, data) { return showAutomationDialog('bulk', step, data); }
 
+    function showCoexistenceDialog(trigger) {
+      if (coexistenceDialogHost || disposed || !isCurrentRoute()) return;
+      const previousFocus = trigger || panelRoot?.activeElement || document.activeElement;
+      const host = document.createElement('div');
+      host.id = 'zble-coexistence-dialog-host';
+      const root = host.attachShadow({ mode: 'open' });
+      root.innerHTML = `<style>
+        :host{all:initial;position:fixed;inset:0;z-index:2147483003;display:grid;place-items:center;padding:16px;background:#0009;font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+        *{box-sizing:border-box}.dialog{width:min(600px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #a33d32;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere}h2{font-size:18px;margin:0 0 10px}p{margin:8px 0}li{margin:8px 0}.signature{border-top:1px solid #b5c0ca;padding-top:10px}.actions{text-align:right}button{font:inherit;padding:6px 14px;border:1px solid #7e9bb0;border-radius:6px;background:#eef5fb;color:#173950;cursor:pointer}button:focus-visible{outline:3px solid #1878bd;outline-offset:2px}
+        @media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#e28f83}button{background:#294357;color:#eef3f8;border-color:#759ab4}}
+        @media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}}
+      </style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-coexistence-title"><h2 id="zble-coexistence-title"></h2><p id="zble-coexistence-intro"></p><ul id="zble-coexistence-list"></ul><p class="signature" id="zble-coexistence-signature"></p><div class="actions"><button id="zble-coexistence-close" type="button"></button></div></div>`;
+      root.querySelector('#zble-coexistence-title').textContent = translate(locale, 'coexist.title');
+      root.querySelector('#zble-coexistence-intro').textContent = translate(locale, 'coexist.intro');
+      const list = root.querySelector('#zble-coexistence-list');
+      for (const key of ['coexist.booklist', 'coexist.recommend', 'coexist.search',
+        'coexist.download', 'coexist.actions']) {
+        const item = document.createElement('li');
+        item.textContent = translate(locale, key);
+        list.append(item);
+      }
+      root.querySelector('#zble-coexistence-signature').textContent = translate(locale, 'coexist.signature');
+      const close = root.querySelector('#zble-coexistence-close');
+      close.textContent = translate(locale, 'coexist.close');
+      function finish() {
+        if (coexistenceDialogHost !== host) return;
+        automationAbort.signal.removeEventListener('abort', finish);
+        coexistenceDialogHost = null;
+        host.remove();
+        previousFocus?.focus?.();
+      }
+      close.addEventListener('click', finish);
+      root.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); finish(); }
+        else if (event.key === 'Tab') { event.preventDefault(); close.focus(); }
+      });
+      automationAbort.signal.addEventListener('abort', finish, { once: true });
+      document.body.append(host);
+      coexistenceDialogHost = host;
+      close.focus();
+    }
+
+    function refreshCoexistence() {
+      if (!panelRoot || disposed) return;
+      const mode = coexistenceNoticeMode(document, pageKind);
+      const notice = panelRoot.querySelector('#zble-coexistence-notice');
+      notice.hidden = mode === 'none' || coexistenceDismissed;
+      if (!notice.hidden) {
+        const beforeSpace = ' ';
+        const afterText = translate(locale,
+          mode === 'detected' ? 'coexist.detectedAfter' : 'coexist.conditionalAfter');
+        const afterSpace = ['zh-CN', 'zh-TW', 'ja', 'ko'].includes(locale) || /^[.,。]/.test(afterText)
+          ? '' : ' ';
+        panelRoot.querySelector('#zble-coexistence-before').textContent =
+          translate(locale, mode === 'detected' ? 'coexist.detectedBefore' : 'coexist.conditionalBefore') +
+          beforeSpace;
+        panelRoot.querySelector('#zble-coexistence-script').textContent = translate(locale, 'coexist.script');
+        panelRoot.querySelector('#zble-coexistence-after').textContent = afterSpace + afterText;
+        panelRoot.querySelector('#zble-coexistence-details').textContent = translate(locale, 'coexist.details');
+        panelRoot.querySelector('#zble-coexistence-dismiss').setAttribute('aria-label',
+          translate(locale, 'coexist.dismiss'));
+      }
+      if (pageKind === 'booklist') attachUiEnhanceButtonLinks(document,
+        translate(locale, 'coexist.link'), showCoexistenceDialog, coexistenceLinks);
+    }
+
     function refreshPanelLocale(nextLocale = locale) {
       locale = nextLocale;
       if (!panelRoot) return;
+      refreshCoexistence();
       for (const node of panelRoot.querySelectorAll('[data-i18n]')) {
         const value = translate(locale, node.dataset.i18n);
         if (node.textContent !== value) node.textContent = value;
@@ -1948,6 +2085,7 @@
     function refresh() {
       if (!panelRoot || disposed) return;
       if (!isCurrentRoute()) { onStale(); return; }
+      refreshCoexistence();
       attachObservers();
       if (pageKind !== 'booklist') {
         const active = effectiveSettings(settings, capabilities);
@@ -2096,6 +2234,7 @@
       const pageStyle = document.createElement('style');
       pageStyle.id = 'zble-page-style';
       pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden,#searchResultBox .resItemBoxBooks.zble-hidden,z-masonry > a.zble-hidden,[class*="RecommendationBlock__EndlessMasonry"] a.item.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
+      pageStyle.textContent += '.zble-ui-enhance-link{display:inline-block;margin:3px 6px;padding:2px;border:0;background:transparent;color:#a12f28;text-decoration:underline;cursor:pointer;font:12px/1.4 system-ui,sans-serif}.zble-ui-enhance-link:focus-visible{outline:2px solid #a12f28;outline-offset:2px}@media(prefers-color-scheme:dark){.zble-ui-enhance-link{color:#ffb0a3}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -2126,8 +2265,10 @@
           .automation-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}.automation-heading .configure{color:var(--zble-accent)}.automation-config .setting-label:first-of-type{margin-top:5px}.automation-config input[type=text]{margin-top:3px}.automation-config .row{font-weight:400}
           @media(forced-colors:active){.filter-row .configure{color:GrayText}.filter-row:has(input:checked) .configure,.automation-heading .configure{color:LinkText}}
         </style>
+        <style>.zble-coexistence{margin:8px 0 4px;color:var(--zble-error);font-size:12px;line-height:1.45;overflow-wrap:anywhere}.zble-coexistence a{color:inherit;text-decoration:underline}.zble-coexistence button{font:inherit;color:inherit;text-decoration:underline;padding:0 2px}.zble-coexistence .dismiss{text-decoration:none;font-weight:bold;float:right;padding:0 5px}.zble-coexistence button:focus-visible,.zble-coexistence a:focus-visible{outline:2px solid currentColor;outline-offset:2px}</style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 50 50" fill="currentColor" aria-hidden="true" focusable="false"><path d="M47.16,21.221l-5.91-0.966c-0.346-1.186-0.819-2.326-1.411-3.405l3.45-4.917c0.279-0.397,0.231-0.938-0.112-1.282l-3.889-3.887c-0.347-0.346-0.893-0.391-1.291-0.104l-4.843,3.481c-1.089-0.602-2.239-1.08-3.432-1.427l-1.031-5.886C28.607,2.35,28.192,2,27.706,2h-5.5c-0.49,0-0.908,0.355-0.987,0.839l-0.956,5.854c-1.2,0.345-2.352,0.818-3.437,1.412l-4.83-3.45c-0.399-0.285-0.942-0.239-1.289,0.106L6.82,10.648c-0.343,0.343-0.391,0.883-0.112,1.28l3.399,4.863c-0.605,1.095-1.087,2.254-1.438,3.46l-5.831,0.971c-0.482,0.08-0.836,0.498-0.836,0.986v5.5c0,0.485,0.348,0.9,0.825,0.985l5.831,1.034c0.349,1.203,0.831,2.362,1.438,3.46l-3.441,4.813c-0.284,0.397-0.239,0.942,0.106,1.289l3.888,3.891c0.343,0.343,0.884,0.391,1.281,0.112l4.87-3.411c1.093,0.601,2.248,1.078,3.445,1.424l0.976,5.861C21.3,47.647,21.717,48,22.206,48h5.5c0.485,0,0.9-0.348,0.984-0.825l1.045-5.89c1.199-0.353,2.348-0.833,3.43-1.435l4.905,3.441c0.398,0.281,0.938,0.232,1.282-0.111l3.888-3.891c0.346-0.347,0.391-0.894,0.104-1.292l-3.498-4.857c0.593-1.08,1.064-2.222,1.407-3.408l5.918-1.039c0.479-0.084,0.827-0.5,0.827-0.985v-5.5C47.999,21.718,47.644,21.3,47.16,21.221z M25,32c-3.866,0-7-3.134-7-7c0-3.866,3.134-7,7-7s7,3.134,7,7C32,28.866,28.866,32,25,32z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
+          <div id="zble-coexistence-notice" class="zble-coexistence" role="status" hidden><span id="zble-coexistence-before"></span><a id="zble-coexistence-script" href="https://greasyfork.org/scripts/497146-z-library-ui-enhance" target="_blank" rel="noopener noreferrer">UI Enhance 脚本</a><span id="zble-coexistence-after"></span> <button id="zble-coexistence-details" type="button">了解详情</button><button id="zble-coexistence-dismiss" class="dismiss" type="button" aria-label="关闭提示">×</button></div>
           <div id="zble-content">
           <div class="group"><div class="group-title" data-i18n="section.filters">筛选器</div>
             <div class="filter-row"><label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label><button id="zble-configure-format" class="configure" type="button" aria-controls="zble-format-config" aria-expanded="false" aria-label="配置文件格式筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div>
@@ -2162,10 +2303,21 @@
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
-            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div></div>
+            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div><button id="zble-coexistence-about" class="reset-link" type="button" data-i18n="coexist.about">兼容性说明</button></div>
           </div>
           </div>
         </div>`;
+
+      const coexistenceDetails = panelRoot.querySelector('#zble-coexistence-details');
+      coexistenceDetails.addEventListener('click', () => showCoexistenceDialog(coexistenceDetails));
+      panelRoot.querySelector('#zble-coexistence-dismiss').addEventListener('click', () => {
+        coexistenceDismissed = true;
+        try { window.sessionStorage?.setItem(coexistenceDismissKey, '1'); }
+        catch { /* Keep the in-document dismissal. */ }
+        refreshCoexistence();
+      });
+      const coexistenceAbout = panelRoot.querySelector('#zble-coexistence-about');
+      coexistenceAbout.addEventListener('click', () => showCoexistenceDialog(coexistenceAbout));
 
       for (const [name, expanded] of [['filters', true], ['info', false], ['automation', false]]) {
         const title = [...panelRoot.querySelectorAll('[data-i18n]')]
@@ -2581,6 +2733,16 @@
       syncShowMoreControls();
       startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentRoute()) onStale(); });
       startupObserver.observe(document.documentElement, { childList: true, subtree: true });
+      if (pageKind === 'search') {
+        let scans = 0;
+        searchCoexistenceTimer = setInterval(() => {
+          if (++scans >= 30 || coexistenceNoticeMode(document, pageKind) === 'detected') {
+            clearInterval(searchCoexistenceTimer);
+            searchCoexistenceTimer = null;
+          }
+          refreshCoexistence();
+        }, 500);
+      }
       attachObservers();
       scheduleRefresh();
       const library = siteLibrary();
@@ -2597,6 +2759,9 @@
       if (disposed) return;
       disposed = true;
       automationAbort.abort();
+      clearInterval(searchCoexistenceTimer);
+      for (const link of coexistenceLinks) link.remove();
+      coexistenceLinks.clear();
       showMoreTracker?.dispose();
       initialMain?.removeEventListener?.('click', onNativeShowMoreClick, true);
       document.removeEventListener?.('DOMContentLoaded', init);
