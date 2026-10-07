@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.0.5
+// @version      4.1.0
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -128,6 +128,7 @@
     showFullAuthor: false,
     showCoverTitle: false,
     showCoverAuthor: false,
+    showMasonryLastRow: false,
     filterYear: false,
     yearMin: '',
     yearMax: '',
@@ -152,6 +153,7 @@
     'hint.booklistOnly': ['Only available on booklist pages', '仅书单页面可用', '僅書單頁面可用', 'Disponible uniquement sur les pages de listes de livres', 'Nur auf Bücherlistenseiten verfügbar', 'Доступно только на страницах списков книг', '書籍リストのページでのみ利用できます', '책 목록 페이지에서만 사용할 수 있습니다', 'Solo disponible en páginas de listas de libros', 'Disponível apenas em páginas de listas de livros'],
     'hint.cardPagesOnly': ['Available on booklists and cover lists', '仅书单和封面列表可用', '僅書單和封面清單可用', 'Disponible dans les listes de livres et de couvertures', 'Nur in Bücher- und Coverlisten verfügbar', 'Доступно в списках книг и обложек', '書籍リストと表紙一覧で利用できます', '책 목록과 표지 목록에서 사용할 수 있습니다', 'Disponible en listas de libros y de portadas', 'Disponível em listas de livros e capas'],
     'hint.coverDisplayLimited': ['Only summary, title and author options apply to this cover list.', '此封面列表仅支持统计卡片、显示标题和显示作者名。', '此封面清單僅支援統計卡片、顯示書名和顯示作者。', 'Seules les options de résumé, de titre et d’auteur s’appliquent à cette liste de couvertures.', 'Für diese Coverliste gelten nur die Optionen für Statistik, Titel und Autor.', 'Для этого списка обложек доступны только статистика, названия и авторы.', 'この表紙一覧では集計カード、書名、著者名のみ設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름만 설정할 수 있습니다.', 'En esta lista de portadas solo se aplican el resumen, el título y el autor.', 'Nesta lista de capas, só se aplicam as opções de resumo, título e autor.'],
+    'hint.masonryDisplayLimited': ['This cover list supports summary, title, author, and full last-row display.', '此封面列表支持统计卡片、显示书名、显示作者名和不裁剪最后一行。', '此封面清單支援統計卡片、顯示書名、顯示作者及不裁剪最後一行。', 'Cette liste de couvertures prend en charge le résumé, les titres, les auteurs et l’affichage complet de la dernière rangée.', 'Diese Coverliste unterstützt Statistik, Titel, Autoren und die vollständige Anzeige der letzten Reihe.', 'Для этого списка обложек доступны статистика, названия, авторы и полное отображение последнего ряда.', 'この表紙一覧では集計カード、書名、著者名、最終行の完全表示を設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름, 마지막 줄 전체 표시를 설정할 수 있습니다.', 'Esta lista de portadas permite mostrar el resumen, los títulos, los autores y la última fila completa.', 'Esta lista de capas permite exibir o resumo, os títulos, os autores e a última linha inteira.'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
     'about.description': ['Enhance booklists and filter search results; filter recommendations and popular books by download status.', '增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。', '增強書單並篩選搜尋結果；推薦與熱門書籍可依下載狀態篩選。', 'Améliorez les listes de livres et filtrez les résultats de recherche; filtrez les recommandations et les livres populaires selon leur état de téléchargement.', 'Bücherlisten verbessern und Suchergebnisse filtern; Empfehlungen und beliebte Bücher nach Downloadstatus filtern.', 'Улучшайте списки книг и фильтруйте результаты поиска; рекомендации и популярные книги фильтруйте по статусу загрузки.', '書籍リストを便利にし、検索結果を絞り込めます。推薦・人気の本はダウンロード状態で絞り込めます。', '책 목록을 개선하고 검색 결과를 필터링합니다. 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.', 'Mejora las listas de libros y filtra los resultados de búsqueda; filtra recomendaciones y libros populares por estado de descarga.', 'Melhore as listas de livros e filtre resultados de busca; filtre recomendações e livros populares pelo status de download.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
@@ -167,6 +169,7 @@
     'control.fullAuthor': ['Show full author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を省略せず表示', '긴 저자 이름 전체 표시', 'Mostrar los nombres completos de los autores', 'Mostrar os nomes completos dos autores'],
     'control.coverTitle': ['Show book titles', '显示书名', '顯示書名', 'Afficher les titres', 'Buchtitel anzeigen', 'Показывать названия книг', '書名を表示', '책 제목 표시', 'Mostrar títulos', 'Mostrar títulos'],
     'control.coverAuthor': ['Show author names', '显示作者名', '顯示作者姓名', 'Afficher les noms d’auteur', 'Autorennamen anzeigen', 'Показывать имена авторов', '著者名を表示', '저자 이름 표시', 'Mostrar nombres de autores', 'Mostrar nomes dos autores'],
+    'control.unclipMasonry': ["Don't crop the last row", '不裁剪列表最后一行', '不裁剪清單最後一行', 'Ne pas couper la dernière rangée', 'Letzte Reihe nicht abschneiden', 'Не обрезать последний ряд списка', '最後の行を切り取らずに表示', '목록의 마지막 줄을 자르지 않기', 'No recortar la última fila', 'Não cortar a última linha'],
     'control.filterFormat': ['Show only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '選択したファイル形式だけを表示', '선택한 파일 형식만 표시', 'Mostrar solo los formatos de archivo seleccionados', 'Mostrar apenas os formatos de arquivo selecionados'],
     'control.filterSize': ['Show only selected file sizes', '只显示指定文件大小', '只顯示指定檔案大小', 'Afficher seulement les tailles de fichier choisies', 'Nur ausgewählte Dateigrößen anzeigen', 'Показывать только выбранные размеры файлов', '選択したファイルサイズだけを表示', '선택한 파일 크기만 표시', 'Mostrar solo los tamaños de archivo seleccionados', 'Mostrar apenas os tamanhos de arquivo selecionados'],
     'control.filterDownload': ['Filter by download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Filtrer selon l’état de téléchargement', 'Nach Downloadstatus filtern', 'Фильтровать по статусу скачивания', 'ダウンロード状態で絞り込む', '다운로드 상태로 필터링', 'Filtrar por estado de descarga', 'Filtrar por status de download'],
@@ -218,6 +221,7 @@
     'auto.showMore': ['Click Show more {count} times', '连点 {count} 次 Show more', '連點 {count} 次 Show more', 'Cliquer {count} fois sur Show more', 'Show more {count}-mal anklicken', 'Нажать Show more {count} раз', 'Show more を {count} 回クリック', 'Show more를 {count}번 클릭', 'Pulsar Show more {count} veces', 'Clicar em Show more {count} vezes'],
     'auto.showMoreOne': ['Click Show more once', '连点 1 次 Show more', '連點 1 次 Show more', 'Cliquer une fois sur Show more', 'Show more 1-mal anklicken', 'Нажать Show more 1 раз', 'Show more を 1 回クリック', 'Show more를 1번 클릭', 'Pulsar Show more 1 vez', 'Clicar em Show more 1 vez'],
     'auto.continuous': ['Keep clicking Show more until the whole booklist is displayed', '持续连点 Show more，直到书单显示完毕', '持續連點 Show more，直到書單顯示完畢', 'Cliquer sur Show more jusqu’à afficher toute la liste de livres', 'Show more anklicken, bis die gesamte Bücherliste angezeigt wird', 'Нажимать Show more, пока не отобразится весь список книг', '書籍リスト全体が表示されるまで Show more を繰り返しクリック', '전체 도서 목록이 표시될 때까지 Show more 계속 클릭', 'Pulsar Show more hasta que se muestre toda la lista de libros', 'Clicar em Show more até que toda a lista de livros seja exibida'],
+    'auto.loadContinuous': ['Keep clicking Load more until the whole list is displayed', '持续连点 Load more，直到列表显示完毕', '持續連點 Load more，直到列表顯示完畢', 'Cliquer sur Load more jusqu’à afficher toute la liste', 'Load more anklicken, bis die gesamte Liste angezeigt wird', 'Нажимать Load more, пока не отобразится весь список', 'リスト全体が表示されるまで Load more を繰り返しクリック', '전체 목록이 표시될 때까지 Load more 계속 클릭', 'Pulsar Load more hasta que se muestre toda la lista', 'Clicar em Load more até que toda a lista seja exibida'],
     'auto.showMoreProgress': ['Attempts: {clicked}; remaining: {remaining}', '已点 {clicked} 次，剩余 {remaining} 次', '已點 {clicked} 次，剩餘 {remaining} 次', 'Tentatives : {clicked} ; restantes : {remaining}', 'Versuche: {clicked}; verbleibend: {remaining}', 'Попыток: {clicked}; осталось: {remaining}', '試行：{clicked}回、残り：{remaining}回', '시도: {clicked}회, 남음: {remaining}회', 'Intentos: {clicked}; restantes: {remaining}', 'Tentativas: {clicked}; restantes: {remaining}'],
     'auto.continuousProgress': ['Attempts: {clicked}', '已点 {clicked} 次', '已點 {clicked} 次', 'Tentatives : {clicked}', 'Versuche: {clicked}', 'Попыток: {clicked}', '試行：{clicked}回', '시도: {clicked}회', 'Intentos: {clicked}', 'Tentativas: {clicked}'],
     'auto.countInvalid': ['Enter a whole number from 1 to 50. Using the default: {default} clicks.', '请输入 1–50 的整数；当前使用默认 {default} 次。', '請輸入 1–50 的整數；目前使用預設的 {default} 次。', 'Saisissez un entier de 1 à 50 ; la valeur par défaut de {default} clics est utilisée.', 'Ganze Zahl von 1 bis 50 eingeben; derzeit gelten die voreingestellten {default} Klicks.', 'Введите целое число от 1 до 50; пока используется значение по умолчанию: {default}.', '1～50 の整数を入力してください。現在は既定の {default} 回で実行します。', '1~50의 정수를 입력하세요. 현재 기본값 {default}회로 실행합니다.', 'Introduce un número entero del 1 al 50; se usa el valor predeterminado de {default} clics.', 'Digite um número inteiro de 1 a 50; o padrão de {default} cliques está em uso.'],
@@ -228,12 +232,9 @@
     'auto.stop': ['Stop clicking', '停止连点', '停止連點', 'Arrêter les clics', 'Klicken stoppen', 'Остановить нажатия', '連続クリックを停止', '연속 클릭 중지', 'Detener los clics', 'Parar os cliques'],
     'auto.cancelled': ['Stopped by you.', '已手动停止。', '已手動停止。', 'Arrêté à votre demande.', 'Von Ihnen gestoppt.', 'Остановлено вами.', '手動で停止しました。', '사용자가 중지했습니다.', 'Detenido por ti.', 'Interrompido por você.'],
     'auto.running': ['Running: {action}', '[运行中] {action}', '[執行中] {action}', 'En cours : {action}', 'Wird ausgeführt: {action}', 'Выполняется: {action}', '実行中：{action}', '실행 중: {action}', 'En curso: {action}', 'Em execução: {action}'],
-    'auto.warning': ['No new books yet; stopping in {seconds}s: {action}', '[可能失败，{seconds} 秒后停止] {action}', '[可能失敗，{seconds} 秒後停止] {action}', 'Aucun nouveau livre ; arrêt dans {seconds} s : {action}', 'Noch keine neuen Bücher; Stopp in {seconds} s: {action}', 'Новых книг пока нет; остановка через {seconds} с: {action}', '新しい本が追加されていません。{seconds}秒後に停止します：{action}', '새 책이 아직 추가되지 않았습니다. {seconds}초 후 중지: {action}', 'Aún no hay libros nuevos; se detendrá en {seconds} s: {action}', 'Ainda não há novos livros; parada em {seconds} s: {action}'],
+    'auto.warning': ['This batch is still loading; stopping in {seconds}s: {action}', '[本轮尚未完成，{seconds} 秒后停止] {action}', '[本輪尚未完成，{seconds} 秒後停止] {action}', 'Chargement de ce lot en cours ; arrêt dans {seconds} s : {action}', 'Dieser Ladevorgang läuft noch; Stopp in {seconds} s: {action}', 'Загрузка этой группы не завершена; остановка через {seconds} с: {action}', 'この回の読み込みが完了していません。{seconds}秒後に停止します：{action}', '이번 불러오기가 완료되지 않았습니다. {seconds}초 후 중지: {action}', 'Esta carga sigue en curso; se detendrá en {seconds} s: {action}', 'Este carregamento ainda não terminou; parada em {seconds} s: {action}'],
     'auto.clicked': ['{action} (clicks attempted: {attempted})', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} (clics tentés : {attempted})', '{action} (Klickversuche: {attempted})', '{action} (попыток нажатия: {attempted})', '{action}（クリック試行：{attempted}回）', '{action}(클릭 시도: {attempted}회)', '{action} (clics intentados: {attempted})', '{action} (cliques tentados: {attempted})'],
     'auto.clickedFailed': ['{action} (attempted: {attempted}; failed: {failed})', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} (tentatives : {attempted} ; échecs : {failed})', '{action} (Versuche: {attempted}; fehlgeschlagen: {failed})', '{action} (попыток: {attempted}; ошибок: {failed})', '{action}（試行：{attempted}回、失敗：{failed}回）', '{action}(시도: {attempted}회, 실패: {failed}회)', '{action} (intentos: {attempted}; fallos: {failed})', '{action} (tentativas: {attempted}; falhas: {failed})'],
-    'auto.resetShowMore': ['Reset Show more availability', '重置 Show more 按钮可用性', '重設 Show more 按鈕可用性', 'Rétablir le bouton Show more', 'Show-more-Schaltfläche zurücksetzen', 'Восстановить кнопку Show more', 'Show more ボタンを再有効化', 'Show more 버튼 사용 가능 상태 재설정', 'Restablecer botón Show more', 'Restaurar botão Show more'],
-    'auto.resetCaution': ["Reset only tries to clear the button's disabled or aria-disabled state. We cannot confirm whether the site will accept further Show more requests. If the button still does not work, refresh this page.", "“重置”只会尝试清除按钮的 disabled 或 aria-disabled 状态，无法确认站点是否会继续接收show more 请求，如果重置后按钮依然无法使用，请刷新本页面。", "「重設」只會嘗試清除按鈕的 disabled 或 aria-disabled 狀態，無法確認網站是否會繼續接收 Show more 請求；如果重設後按鈕仍無法使用，請重新整理本頁面。", "La réinitialisation essaie seulement de supprimer l’état disabled ou aria-disabled du bouton. Impossible de confirmer que le site acceptera d’autres demandes Show more. Si le bouton ne fonctionne toujours pas, actualisez cette page.", "Das Zurücksetzen versucht nur, disabled oder aria-disabled von der Schaltfläche zu entfernen. Ob die Website weitere Show more-Anfragen annimmt, lässt sich nicht bestätigen. Falls die Schaltfläche weiterhin nicht funktioniert, laden Sie diese Seite neu.", "Сброс только пытается убрать у кнопки состояние disabled или aria-disabled. Нельзя подтвердить, что сайт примет следующие запросы Show more. Если кнопка по-прежнему не работает, обновите страницу.", "リセットではボタンの disabled または aria-disabled 状態の解除だけを試みます。サイトが今後も Show more のリクエストを受け付けるかは確認できません。ボタンがまだ使えない場合は、このページを再読み込みしてください。", "재설정은 버튼의 disabled 또는 aria-disabled 상태를 해제하려고 시도할 뿐입니다. 사이트가 이후 Show more 요청을 받는지는 확인할 수 없습니다. 버튼이 여전히 작동하지 않으면 이 페이지를 새로고침하세요.", "El restablecimiento solo intenta quitar el estado disabled o aria-disabled del botón. No podemos confirmar si el sitio aceptará más solicitudes de Show more. Si el botón sigue sin funcionar, actualiza esta página.", "A redefinição apenas tenta remover o estado disabled ou aria-disabled do botão. Não é possível confirmar se o site aceitará novas solicitações de Show more. Se o botão continuar sem funcionar, atualize esta página."],
-    'auto.resetFailed': ["Reset failed. Could not restore Show more. Refresh this page.", "重置失败：无法恢复 Show more，请刷新本页面。", "重設失敗：無法恢復 Show more，請重新整理本頁面。", "Échec de la réinitialisation : impossible de rétablir Show more. Actualisez cette page.", "Zurücksetzen fehlgeschlagen: Show more konnte nicht wiederhergestellt werden. Laden Sie diese Seite neu.", "Сброс не удался: не удалось восстановить Show more. Обновите страницу.", "リセットに失敗しました。Show more を復元できません。このページを再読み込みしてください。", "재설정에 실패했습니다. Show more를 복구하지 못했습니다. 이 페이지를 새로고침하세요.", "Error al restablecer: no se pudo recuperar Show more. Actualiza esta página.", "Falha ao redefinir: não foi possível restaurar Show more. Atualize esta página."],
     'auto.openAll': ['Open all currently visible book pages', '打开当前显示的所有图书页面', '開啟目前顯示的所有圖書頁面', 'Ouvrir les pages de tous les livres actuellement visibles', 'Seiten aller derzeit sichtbaren Bücher öffnen', 'Открыть страницы всех видимых сейчас книг', '現在表示中の本のページをすべて開く', '현재 표시된 모든 책의 페이지 열기', 'Abrir las páginas de todos los libros visibles', 'Abrir as páginas de todos os livros visíveis'],
     'auto.favorite': ['Add all books on this page to favorites', '本页全部加入收藏', '本頁全部加入收藏', 'Ajouter tous les livres de cette page aux favoris', 'Alle Bücher auf dieser Seite zu Favoriten hinzufügen', 'Добавить все книги на этой странице в избранное', 'このページの全書籍をお気に入りに追加', '이 페이지의 모든 책을 즐겨찾기에 추가', 'Añadir todos los libros de esta página a favoritos', 'Adicionar todos os livros desta página aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
@@ -244,7 +245,8 @@
     'auto.continue': ['Continue', '继续', '繼續', 'Continuer', 'Weiter', 'Продолжить', '続行', '계속', 'Continuar', 'Continuar'],
     'auto.close': ['Close', '关闭', '關閉', 'Fermer', 'Schließen', 'Закрыть', '閉じる', '닫기', 'Cerrar', 'Fechar'],
     'auto.showMoreEnd': ['The whole booklist is displayed.', '书单显示完毕。', '書單顯示完畢。', 'Toute la liste de livres est affichée.', 'Die gesamte Bücherliste wird angezeigt.', 'Весь список книг показан.', '書籍リストの表示が完了しました。', '전체 도서 목록이 표시되었습니다.', 'Se muestra toda la lista de libros.', 'A lista inteira de livros foi exibida.'],
-    'auto.showMoreTimeout': ['Stopped: no new books for 10 seconds.', '已停止：连续 10 秒没有新增书籍。', '已停止：連續 10 秒沒有新增書籍。', 'Arrêt : aucun nouveau livre depuis 10 secondes.', 'Gestoppt: 10 Sekunden lang keine neuen Bücher.', 'Остановлено: новые книги не появлялись 10 секунд.', '停止：10 秒間、新しい本が追加されませんでした。', '중지: 10초 동안 새 책이 추가되지 않았습니다.', 'Detenido: 10 segundos sin libros nuevos.', 'Parou: 10 segundos sem novos livros.'],
+    'auto.loadMoreEnd': ['The whole list is displayed.', '列表显示完毕。', '列表顯示完畢。', 'Toute la liste est affichée.', 'Die gesamte Liste wird angezeigt.', 'Весь список показан.', 'リストの表示が完了しました。', '전체 목록이 표시되었습니다.', 'Se muestra toda la lista.', 'A lista inteira foi exibida.'],
+    'auto.showMoreTimeout': ['Stopped: this batch did not finish after 10 seconds without progress.', '已停止：本轮连续 10 秒未完成加载。', '已停止：本輪連續 10 秒未完成載入。', 'Arrêt : ce lot ne s’est pas chargé après 10 secondes sans progrès.', 'Gestoppt: Dieser Ladevorgang wurde nach 10 Sekunden ohne Fortschritt nicht abgeschlossen.', 'Остановлено: загрузка этой группы не завершилась после 10 секунд без прогресса.', '停止：この回の読み込みが10秒間進まず、完了しませんでした。', '중지: 이번 불러오기가 10초 동안 진행되지 않아 완료되지 않았습니다.', 'Detenido: esta carga no terminó tras 10 segundos sin progreso.', 'Parou: este carregamento não terminou após 10 segundos sem progresso.'],
     'auto.showMoreUnavailable': ['Show more is unavailable.', 'Show more 不可用。', 'Show more 無法使用。', 'Show more est indisponible.', 'Show more ist nicht verfügbar.', 'Кнопка Show more недоступна.', 'Show more が利用できません。', 'Show more를 사용할 수 없습니다.', 'Show more no está disponible.', 'Show more está indisponível.'],
     'auto.showMoreError': ['Stopped after an error.', '发生错误，已停止。', '發生錯誤，已停止。', 'Arrêt après une erreur.', 'Nach Fehler gestoppt.', 'Остановлено из-за ошибки.', 'エラーで停止しました。', '오류로 중지했습니다.', 'Se detuvo por un error.', 'Parou após um erro.'],
     'auto.bulkDisabled': ['Enable bulk opening for this site in Automation settings.', '请先在自动化设置中启用本站批量打开。', '請先在自動化設定中啟用本站批次開啟。', 'Activez l’ouverture groupée pour ce site dans les réglages de l’automatisation.', 'Öffnen mehrerer Buchseiten für diese Website in den Automatisierungseinstellungen aktivieren.', 'Разрешите открытие нескольких страниц книг для этого сайта в настройках автоматизации.', '自動操作の設定で、このサイトで書籍ページをまとめて開く機能を有効にしてください。', '자동화 설정에서 이 사이트의 책 페이지 한꺼번에 열기를 사용 설정하세요.', 'Activa la apertura masiva para este sitio en la configuración de automatización.', 'Ative a abertura de várias páginas para este site nas configurações da automação.'],
@@ -333,6 +335,13 @@
     });
   }
 
+  function translateMore(locale, key, kind = 'booklist', params = {}) {
+    if (kind === 'booklist') return translate(locale, key, params);
+    if (key === 'auto.continuous') return translate(locale, 'auto.loadContinuous', params);
+    if (key === 'auto.showMoreEnd') return translate(locale, 'auto.loadMoreEnd', params);
+    return translate(locale, key, params).replaceAll('Show more', 'Load more');
+  }
+
   function sanitizeSitePrefs(saved) {
     const result = Object.create(null);
     if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return result;
@@ -401,6 +410,8 @@
       showFullAuthor: typeof input.showFullAuthor === 'boolean' ? input.showFullAuthor : DEFAULT_SETTINGS.showFullAuthor,
       showCoverTitle: typeof input.showCoverTitle === 'boolean' ? input.showCoverTitle : DEFAULT_SETTINGS.showCoverTitle,
       showCoverAuthor: typeof input.showCoverAuthor === 'boolean' ? input.showCoverAuthor : DEFAULT_SETTINGS.showCoverAuthor,
+      showMasonryLastRow: typeof input.showMasonryLastRow === 'boolean'
+        ? input.showMasonryLastRow : DEFAULT_SETTINGS.showMasonryLastRow,
       filterYear: typeof input.filterYear === 'boolean' ? input.filterYear : DEFAULT_SETTINGS.filterYear,
       yearMin: typeof input.yearMin === 'string' ? input.yearMin.slice(0, 20) : '',
       yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
@@ -585,6 +596,15 @@
     return selectors[kind] ? [...root.querySelectorAll(selectors[kind])] : [];
   }
 
+  function findNativeMore(container, kind) {
+    if (!container) return null;
+    if (kind === 'booklist') return container.querySelector('.page-load-more');
+    if (!['home-recommend', 'detail-recommend', 'zrecommended', 'popular'].includes(kind)) return null;
+    const selector = 'z-more.load-more, .load-more';
+    return container.shadowRoot?.querySelector(selector) || container.querySelector(selector) ||
+      (kind === 'zrecommended' ? container.parentElement?.querySelector(selector) : null);
+  }
+
   function setPageEntryHidden(entry, kind, hidden) {
     const target = kind === 'search' || (MASONRY_PAGE_KINDS.has(kind) && entry.parentElement?.classList?.contains('item'))
       ? entry.parentElement : entry;
@@ -596,7 +616,8 @@
     if (!root) return null;
     const style = container.ownerDocument.createElement('style');
     style.id = 'zble-masonry-filter-style';
-    style.textContent = `.item.zble-hidden,a.zble-hidden{display:none!important}${COVER_DISPLAY_CSS}`;
+    const baseCss = `.item.zble-hidden,a.zble-hidden{display:none!important}${COVER_DISPLAY_CSS}`;
+    style.textContent = baseCss;
     root.append(style);
     const observer = new Observer(records => {
       const rebuilt = style.parentNode !== root;
@@ -604,8 +625,14 @@
       if (rebuilt || !records || mutationNeedsRefresh(records)) onChange();
     });
     observer.observe(root, { childList: true, subtree: true, attributes: true,
-      attributeFilter: ['title', 'author'] });
-    return { dispose() { observer.disconnect(); style.remove(); } };
+      attributeFilter: ['title', 'author', 'class', 'disabled', 'aria-disabled', 'style'] });
+    return {
+      setUnclip(enabled) {
+        const nextCss = baseCss + (enabled ? '.masonry-endless{margin-bottom:0!important}' : '');
+        if (style.textContent !== nextCss) style.textContent = nextCss;
+      },
+      dispose() { observer.disconnect(); style.remove(); },
+    };
   }
 
   function ensureMasonryShadowWatch(kind, container, current, onChange, Observer = MutationObserver) {
@@ -620,7 +647,8 @@
     const coverText = ['home-recommend', 'detail-recommend', 'zrecommended', 'popular'].includes(kind);
     return { format: supported, size: supported, download: true, year: supported,
       information: booklist || coverText, summary: booklist || coverText, coverText,
-      booklistAutomation: booklist, bulkOpen: true };
+      booklistAutomation: booklist, moreAutomation: booklist || coverText,
+      masonryUnclip: MASONRY_PAGE_KINDS.has(kind), bulkOpen: true };
   }
 
   function coexistenceNoticeMode(root, kind) {
@@ -703,6 +731,7 @@
       ['#zble-author-switch', kind === 'booklist'],
       ['#zble-cover-title-switch', capabilities.coverText],
       ['#zble-cover-author-switch', capabilities.coverText],
+      ['#zble-unclip-masonry-switch', capabilities.masonryUnclip],
     ]) {
       const input = panel.querySelector(selector);
       if (input) {
@@ -712,12 +741,17 @@
     }
     const limited = panel.querySelector('#zble-info-hint');
     if (limited && capabilities.coverText) {
-      limited.textContent = translate(locale, 'hint.coverDisplayLimited');
+      limited.textContent = translate(locale, capabilities.masonryUnclip
+        ? 'hint.masonryDisplayLimited' : 'hint.coverDisplayLimited');
       limited.classList?.remove('error');
     }
-    if (!capabilities.booklistAutomation) {
+    if (capabilities.coverText) {
+      const favorite = panel.querySelector('#zble-favorite');
+      if (favorite) favorite.hidden = true;
+    }
+    if (!capabilities.moreAutomation) {
       for (const selector of ['#zble-show-more-1', '#zble-show-more-2',
-        '#zble-show-more-continuous', '#zble-reset-show-more', '#zble-reset-hint',
+        '#zble-show-more-continuous',
         '#zble-show-more-status', '#zble-show-more-availability', '#zble-favorite',
         '#zble-show-more-count-1', '#zble-show-more-count-2',
         '#zble-show-more-error-1', '#zble-show-more-error-2',
@@ -750,13 +784,6 @@
     return true;
   }
 
-  function classifyBatchProgress({ before, now, buttonExists, quietMs, elapsedMs }) {
-    if (quietMs < 750) return 'wait';
-    if (!buttonExists) return 'end';
-    if (now - before >= PAGE_SIZE) return 'next';
-    return quietMs >= 10000 ? 'timeout' : 'wait';
-  }
-
   function classifyShowMoreIdle(idleMs) {
     if (idleMs >= 10000) return { phase: 'timeout', seconds: null };
     if (idleMs >= 5000) return { phase: 'warning', seconds: Math.max(1, Math.ceil((10000 - idleMs) / 1000)) };
@@ -764,19 +791,19 @@
   }
 
   function formatShowMoreAction(locale, { maxClicks = 5, phase = null, seconds = null,
-    attempted = 0, failed = 0, currentAttempted = 0 } = {}) {
-    const action = maxClicks === null ? translate(locale, 'auto.continuous')
-      : maxClicks === 1 ? translate(locale, 'auto.showMoreOne')
-        : translate(locale, 'auto.showMore', { count: maxClicks });
+    attempted = 0, failed = 0, currentAttempted = 0, kind = 'booklist' } = {}) {
+    const actionLabel = maxClicks === null ? translateMore(locale, 'auto.continuous', kind)
+      : maxClicks === 1 ? translateMore(locale, 'auto.showMoreOne', kind)
+        : translateMore(locale, 'auto.showMore', kind, { count: maxClicks });
     const clicked = Math.max(0, maxClicks === null ? currentAttempted : Math.min(maxClicks, currentAttempted));
     const detail = maxClicks === null ? translate(locale, 'auto.continuousProgress', { clicked })
       : translate(locale, 'auto.showMoreProgress', { clicked, remaining: maxClicks - clicked });
-    const progress = locale.startsWith('zh') ? `${action}（${detail}）` : `${action} (${detail})`;
+    const progress = locale.startsWith('zh') ? `${actionLabel}（${detail}）` : `${actionLabel} (${detail})`;
     if (phase === 'running') return translate(locale, 'auto.running', { action: progress });
     if (phase === 'warning') return translate(locale, 'auto.warning', { action: progress, seconds });
-    if (failed > 0) return translate(locale, 'auto.clickedFailed', { action, attempted, failed });
-    if (attempted > 0) return translate(locale, 'auto.clicked', { action, attempted });
-    return action;
+    if (failed > 0) return translate(locale, 'auto.clickedFailed', { action: actionLabel, attempted, failed });
+    if (attempted > 0) return translate(locale, 'auto.clicked', { action: actionLabel, attempted });
+    return actionLabel;
   }
 
   async function runShowMore({ maxClicks, getCards, findButton, observe, clock = {
@@ -795,13 +822,14 @@
       const button = findButton();
       if (!button && attempted > 0) return result('end');
       if (isNativeShowMoreUnavailable(button)) return result('button-unavailable');
-      const beforeCards = new Set(getCards());
+      const beforeCount = getCards().length;
       const startedAt = clock.now();
       const outcome = await new Promise(resolve => {
         let timer = null;
         let unsubscribe = null;
         let finished = false;
         let seenNew = 0;
+        let seenUnavailable = false;
         let changedAt = startedAt;
         function finish(reason) {
           if (finished) return;
@@ -818,20 +846,22 @@
           if (signal?.aborted) { finish(abortReason()); return; }
           if (!isSourceAlive()) { finish('source-gone'); return; }
           const now = clock.now();
-          const newCount = getCards().filter(card => !beforeCards.has(card)).length;
+          const newCount = Math.max(0, getCards().length - beforeCount);
           if (newCount > seenNew) { seenNew = newCount; changedAt = now; }
-          const buttonExists = !!findButton();
+          const currentButton = findButton();
+          const buttonExists = !!currentButton;
+          const unavailable = buttonExists && isNativeShowMoreUnavailable(currentButton);
+          if (unavailable) seenUnavailable = true;
           const quietMs = now - changedAt;
-          const elapsedMs = now - startedAt;
-          const state = classifyBatchProgress({ before: 0, now: newCount, buttonExists, quietMs, elapsedMs });
+          const state = !buttonExists ? 'end'
+            : !unavailable && (newCount > 0 || seenUnavailable) ? 'next'
+              : quietMs >= 10000 ? 'timeout' : 'wait';
           if (state !== 'wait') { finish(state); return; }
           const idle = classifyShowMoreIdle(quietMs);
           onProgress({ ...result('running'), ...idle });
           if (timer !== null) clock.clearTimeout(timer);
           const untilDeadline = Math.max(1, (quietMs < 5000 ? 5000 : Math.min(10000, Math.ceil((quietMs + 1) / 1000) * 1000)) - quietMs);
-          const untilQuiet = Math.max(1, 750 - quietMs);
-          timer = clock.setTimeout(check, newCount >= PAGE_SIZE || !buttonExists
-            ? Math.min(untilQuiet, untilDeadline) : untilDeadline);
+          timer = clock.setTimeout(check, untilDeadline);
         }
         try {
           unsubscribe = observe(check);
@@ -868,7 +898,9 @@
 
   function isNativeShowMoreUnavailable(button) {
     if (!button || button.hidden || ('isConnected' in button && !button.isConnected) ||
-        isNativeShowMoreDisabled(button) || button.style?.pointerEvents === 'none' ||
+        isNativeShowMoreDisabled(button) || button.classList?.contains('loading') ||
+        (button.tagName === 'Z-MORE' && !button.classList?.contains('ready')) ||
+        button.style?.pointerEvents === 'none' ||
         (button.getClientRects && button.getClientRects().length === 0)) return true;
     try {
       if (typeof getComputedStyle !== 'function') return false;
@@ -878,64 +910,8 @@
     catch { return false; }
   }
 
-  function showMoreControlState({ nativeButton = null, resetEligible = false, busy = false, bulkBusy = false }) {
-    return { autoDisabled: busy || bulkBusy || isNativeShowMoreUnavailable(nativeButton),
-      resetDisabled: busy || bulkBusy || !resetEligible };
-  }
-
-  function createShowMoreStallTracker({ clock = {
-    now: () => Date.now(), setTimeout: (callback, delay) => setTimeout(callback, delay),
-    clearTimeout: id => clearTimeout(id),
-  }, getCards, getButton, onState = () => {} }) {
-    let attempt = null;
-    let timer = null;
-    let disposed = false;
-    function clearTimer() { if (timer !== null) clock.clearTimeout(timer); timer = null; }
-    function check() {
-      clearTimer();
-      const button = getButton();
-      if (disposed || !attempt || !button || button !== attempt.button || button.hidden ||
-          ('isConnected' in button && !button.isConnected)) attempt = null;
-      if (attempt) {
-        const count = getCards().length;
-        if (count > attempt.count) { attempt.count = count; attempt.changedAt = clock.now(); }
-        if (isNativeShowMoreDisabled(button)) attempt.sawUnavailable = true;
-        else if (attempt.sawUnavailable || clock.now() - attempt.changedAt >= 10000) attempt = null;
-      }
-      const idleMs = attempt ? Math.max(0, clock.now() - attempt.changedAt) : 0;
-      const resetEligible = !!attempt && idleMs >= 10000 && isNativeShowMoreDisabled(button);
-      const state = { resetEligible, idleMs, buttonUnavailable: isNativeShowMoreDisabled(button) };
-      if (attempt && !resetEligible) timer = clock.setTimeout(check, Math.max(1, 10000 - idleMs));
-      onState(state);
-      return state;
-    }
-    function noteClick(button) {
-      if (disposed || !button || button !== getButton() || isNativeShowMoreDisabled(button)) return;
-      attempt = { button, count: getCards().length, changedAt: clock.now(), sawUnavailable: false,
-        baseline: { disabled: button.disabled === true, ariaDisabled: button.getAttribute?.('aria-disabled') ?? null } };
-      check();
-    }
-    return {
-      noteManualClick: noteClick, noteToolClick: noteClick, check,
-      baseline: () => attempt?.baseline ?? null,
-      consumeReset() { attempt = null; check(); },
-      dispose() { disposed = true; attempt = null; clearTimer(); },
-    };
-  }
-
-  function attemptShowMoreReset({ button, baseline, stillEligible }) {
-    if (!button || !baseline || !stillEligible()) return { attempted: false, interactive: false };
-    if (baseline.disabled === false && button.disabled === true) button.disabled = false;
-    if (button.getAttribute?.('aria-disabled') === 'true' && baseline.ariaDisabled !== 'true') {
-      if (baseline.ariaDisabled === null) button.removeAttribute?.('aria-disabled');
-      else button.setAttribute?.('aria-disabled', baseline.ariaDisabled);
-    }
-    return { attempted: true, interactive: !isNativeShowMoreUnavailable(button) };
-  }
-
-  function classifyResetVerification(pending, button, cardCount, buttonUnavailable) {
-    if (!pending || button !== pending.button || cardCount > pending.cardCount) return 'clear';
-    return buttonUnavailable ? 'failed' : 'pending';
+  function showMoreControlState({ nativeButton = null, busy = false, bulkBusy = false }) {
+    return { autoDisabled: busy || bulkBusy || isNativeShowMoreUnavailable(nativeButton) };
   }
 
   function modalTabDestination(step, shiftKey, activeElement, cancel, confirm) {
@@ -1576,7 +1552,7 @@
       sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
       parseBookTotal, parseBookTotalLabel, parseProgressTotal, computeStats, classifyDownload, createDownloadGate,
       getActiveCards, hasBooklistFingerprint, sameBooklistContainer,
-      detectListPage, getPageEntries, setPageEntryHidden,
+      detectListPage, getPageEntries, findNativeMore, setPageEntryHidden,
       watchMasonryShadow, ensureMasonryShadowWatch,
       pageCapabilities, effectiveSettings, applyPanelCapabilities, coexistenceNoticeMode,
       attachUiEnhanceButtonLinks,
@@ -1588,11 +1564,10 @@
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
-      resolveLocale, translate, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
+      resolveLocale, translate, translateMore, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
       createExclusiveDisclosure, bindSectionToggle,
-      classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
+      classifyPage, noticeRemainingSeconds, shouldShowNotice,
       classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
-      createShowMoreStallTracker, attemptShowMoreReset, classifyResetVerification,
       modalTabDestination, showMoreControlState,
       collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll,
     };
@@ -1728,18 +1703,12 @@
     let activeShowMoreLimit = null;
     let showMoreDialogPending = false;
     let showMoreBusy = false;
-    let showMoreTracker = null;
-    let stallState = { resetEligible: false };
     let autoStatus = null;
     let autoLastFailed = false;
     let bulkBusy = false;
     let bulkStatus = null;
     let bulkLastFailed = false;
     let bulkMessageKey = '';
-    let resetMessageKey = '';
-    let resetVerification = null;
-    let resetDialogFailure = null;
-    let pendingResetFailureDialog = false;
     let bulkDialogPromise = null;
     let refreshAutomationDialog = null;
     let hasOpenedOnThisPage = false;
@@ -1753,8 +1722,8 @@
         detectListPage(document, window.location?.hostname, initialPathname)?.container === initialContainer;
     }
 
-    function isCurrentBooklist() {
-      return pageKind === 'booklist' && isCurrentRoute();
+    function isCurrentMorePage() {
+      return capabilities.moreAutomation && isCurrentRoute();
     }
 
     function saveSettings() {
@@ -1850,16 +1819,23 @@
         const value = describeShowMoreCountInput(locale, input.value, index === 1 ? 5 : 10);
         setText(`#zble-show-more-error-${index}`, value.error);
         input.setAttribute('aria-invalid', String(!!value.error));
-        return value;
+        const label = panelRoot.querySelector(`label[for="zble-show-more-count-${index}"]`);
+        if (label) label.textContent = translateMore(locale, `setting.showMoreCount${index}`, pageKind);
+        return { ...value, label: pageKind === 'booklist' ? value.label
+          : value.label.replaceAll('Show more', 'Load more') };
       });
+      const continuousCopy = panelRoot.querySelector('#zble-allow-continuous')?.nextElementSibling;
+      if (continuousCopy) continuousCopy.textContent = translateMore(locale,
+        'setting.continuousEnabled', pageKind);
       for (const [index, id] of [1, 2, 'continuous'].entries()) {
         const button = panelRoot.querySelector(`#zble-show-more-${id}`);
         const running = activeShowMoreId === id && showMoreBusy;
-        const label = id === 'continuous' ? translate(locale, 'auto.continuous') : descriptions[index].label;
+        const label = id === 'continuous' ? translateMore(locale, 'auto.continuous', pageKind)
+          : descriptions[index].label;
         button.textContent = running
           ? `${formatShowMoreAction(locale, { maxClicks: activeShowMoreLimit,
             phase: autoStatus?.phase || 'running', seconds: autoStatus?.seconds,
-            currentAttempted: autoStatus?.attempted ?? 0 })} · ${translate(locale, 'auto.stop')}`
+            currentAttempted: autoStatus?.attempted ?? 0, kind: pageKind })} · ${translate(locale, 'auto.stop')}`
           : label;
         button.dataset.state = running ? 'running' : activeShowMoreId === id && autoLastFailed ? 'failed' : '';
       }
@@ -1870,38 +1846,27 @@
             : reason === 'button-unavailable' ? 'auto.showMoreUnavailable'
               : ['error', 'source-gone'].includes(reason) ? 'auto.showMoreError' : '';
       const message = autoStatus?.noticeKey
-        ? translate(locale, autoStatus.noticeKey, autoStatus) : messageKey ? translate(locale, messageKey)
+        ? translate(locale, autoStatus.noticeKey, autoStatus) : messageKey
+          ? translateMore(locale, messageKey, pageKind)
           : reason === 'complete' ? formatShowMoreAction(locale, { maxClicks: activeShowMoreLimit,
-            attempted: autoStatus.attempted, failed: autoStatus.failed }) : '';
+            attempted: autoStatus.attempted, failed: autoStatus.failed, kind: pageKind }) : '';
       panelRoot.querySelector('#zble-show-more-status').classList.toggle('error', !!autoStatus?.noticeKey);
       setText('#zble-show-more-status', message);
     }
 
     function syncShowMoreControls() {
       if (!panelRoot) return;
-      const nativeButton = isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null;
+      const nativeButton = isCurrentMorePage() ? findNativeMore(initialContainer, pageKind) : null;
       const state = showMoreControlState({ nativeButton,
-        resetEligible: stallState.resetEligible, busy: showMoreBusy || !!bulkDialogPromise, bulkBusy });
-      setText('#zble-show-more-availability', !showMoreBusy && isCurrentBooklist() &&
+        busy: showMoreBusy || !!bulkDialogPromise, bulkBusy });
+      setText('#zble-show-more-availability', !showMoreBusy && autoStatus?.reason !== 'end' && isCurrentMorePage() &&
         isNativeShowMoreUnavailable(nativeButton)
-        ? translate(locale, 'auto.showMoreUnavailable') : '');
+        ? translateMore(locale, 'auto.showMoreUnavailable', pageKind) : '');
       for (const id of [1, 2, 'continuous']) {
         const button = panelRoot.querySelector(`#zble-show-more-${id}`);
         button.disabled = showMoreBusy ? activeShowMoreId !== id
-          : bulkBusy || showMoreDialogPending || !!bulkDialogPromise || !isCurrentBooklist() ||
+          : bulkBusy || showMoreDialogPending || !!bulkDialogPromise || !isCurrentMorePage() ||
             (id !== 'continuous' || sitePrefs[currentHost]?.continuousEnabled === true) && state.autoDisabled;
-      }
-      panelRoot.querySelector('#zble-reset-show-more').disabled = state.resetDisabled;
-    }
-
-    function onNativeShowMoreClick(event) {
-      if (!event.isTrusted || !isCurrentBooklist()) return;
-      const button = event.target?.closest?.('.page-load-more');
-      if (button && button === initialMain?.querySelector('.page-load-more')) {
-        resetVerification = null;
-        resetMessageKey = '';
-        setText('#zble-reset-hint', '');
-        showMoreTracker?.noteManualClick(button);
       }
     }
 
@@ -1956,16 +1921,7 @@
     }
 
     function showAutomationDialog(action, step, { count = 0, repeat = false } = {}) {
-      if (bulkDialogPromise) {
-        if (action === 'reset' && step === 1) {
-          if (resetDialogFailure !== null) {
-            resetDialogFailure = true;
-            refreshAutomationDialog?.();
-          } else pendingResetFailureDialog = true;
-        }
-        return bulkDialogPromise;
-      }
-      if (action === 'reset') resetDialogFailure = step === 1;
+      if (bulkDialogPromise) return bulkDialogPromise;
       bulkDialogPromise = new Promise(resolve => {
         if (automationAbort.signal.aborted || !isCurrentRoute()) { resolve(false); return; }
         const previousFocus = panelRoot?.activeElement || document.activeElement;
@@ -1982,17 +1938,16 @@
         const cancel = root.querySelector('#zble-bulk-cancel');
         const confirm = root.querySelector('#zble-bulk-confirm');
         function renderDialog() {
-          root.querySelector('#zble-bulk-title').textContent = translate(locale,
-            action === 'reset' ? 'auto.resetShowMore'
-              : action === 'continuous' ? 'auto.continuous' : 'auto.openAll');
+          root.querySelector('#zble-bulk-title').textContent = action === 'continuous'
+            ? translateMore(locale, 'auto.continuous', pageKind) : translate(locale, 'auto.openAll');
           root.querySelector('#zble-bulk-message').textContent = action === 'continuous'
-            ? translate(locale, step === 0 ? 'auto.continuousDisabled' : 'auto.continuousWarning')
-            : action === 'reset' ? translate(locale, resetDialogFailure ? 'auto.resetFailed' : 'auto.resetCaution')
-              : step === 0 ? translate(locale, 'auto.bulkDisabled') : step === 1
+            ? translateMore(locale, step === 0 ? 'auto.continuousDisabled'
+              : 'auto.continuousWarning', pageKind)
+            : step === 0 ? translate(locale, 'auto.bulkDisabled') : step === 1
               ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
               : translate(locale, 'auto.secondWarning');
-          cancel.textContent = translate(locale, action === 'reset' || step === 0 ? 'auto.close' : 'auto.cancel');
-          confirm.hidden = action === 'reset' || step === 0;
+          cancel.textContent = translate(locale, step === 0 ? 'auto.close' : 'auto.cancel');
+          confirm.hidden = step === 0;
           confirm.textContent = translate(locale, 'auto.continue');
         }
         refreshAutomationDialog = renderDialog;
@@ -2007,12 +1962,8 @@
           previousFocus?.focus?.();
           bulkDialogPromise = null;
           refreshAutomationDialog = null;
-          resetDialogFailure = null;
-          const showPendingResetFailure = pendingResetFailureDialog;
-          pendingResetFailureDialog = false;
           resolve(value);
           syncShowMoreControls();
-          if (showPendingResetFailure && !disposed) void showAutomationDialog('reset', 1);
         }
         function abort() { finish(false); }
         cancel.addEventListener('click', () => finish(false));
@@ -2020,7 +1971,7 @@
         root.addEventListener('keydown', event => {
           if (event.key === 'Escape') { event.preventDefault(); finish(false); }
           if (event.key === 'Tab') {
-            const next = modalTabDestination(action === 'reset' ? 0 : step,
+            const next = modalTabDestination(step,
               event.shiftKey, root.activeElement, cancel, confirm);
             if (next) { event.preventDefault(); next.focus(); }
           }
@@ -2153,7 +2104,6 @@
       }
       renderAutoStatus();
       refreshAutomationDialog?.();
-      setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
       renderBulkStatus();
       syncBulkControl();
       syncShowMoreControls();
@@ -2166,6 +2116,7 @@
       if (!isCurrentRoute()) { onStale(); return; }
       refreshCoexistence();
       attachObservers();
+      masonryWatch?.setUnclip(settings.showMasonryLastRow);
       if (pageKind !== 'booklist') {
         const active = effectiveSettings(settings, capabilities);
         const library = siteLibrary();
@@ -2278,7 +2229,6 @@
       renderPanelState(context, unknownCards, shownUnavailable);
       lastPanelData = { context, unknownCards, unavailable: shownUnavailable, stats, activeFilter, list, main, totalLabel };
       syncBulkControl();
-      showMoreTracker?.check();
       syncShowMoreControls();
       if (pendingShadow && shadowRetries < 20 && !retryId) {
         shadowRetries++;
@@ -2308,7 +2258,6 @@
         startupObserver = null;
       }
       mainObserver = new MutationObserver(records => {
-        if (pageKind === 'booklist') showMoreTracker?.check();
         if (mutationNeedsRefresh(records)) scheduleRefresh();
       });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
@@ -2371,7 +2320,7 @@
           @media(max-width:600px){:host{display:block;position:relative;right:auto;top:auto;width:calc(100% - 20px);max-height:70vh;margin:10px auto 14px}}
           *{box-sizing:border-box}[hidden]{display:none!important}.body{padding:10px 12px}.head{display:flex;align-items:center;justify-content:space-between;touch-action:none;cursor:grab;user-select:none}.title{font-weight:700;font-size:14px}.head-actions{display:flex;align-items:center;gap:2px}
           button{background:transparent;border:0;border-radius:6px;color:inherit;cursor:pointer;font-size:20px;padding:2px 6px}button[aria-expanded="true"]{background:var(--zble-accent-bg);color:var(--zble-accent)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--zble-accent);outline-offset:2px}.chevron{display:block;width:18px;height:18px;transition:transform .15s ease}#zble-collapse[aria-expanded="false"] .chevron{transform:rotate(180deg)}@media(prefers-reduced-motion:reduce){.chevron{transition:none}}
-          .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.section-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:2px 0;border:0;background:transparent;text-align:left;cursor:pointer}.section-toggle[aria-expanded="true"]{background:transparent;color:var(--zble-group)}.section-toggle svg{width:14px;height:14px;flex:none;transition:transform .15s ease}.section-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}.automation-heading .section-toggle{flex:1}@media(prefers-reduced-motion:reduce){.section-toggle svg{transition:none}}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.62;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
+          .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.section-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:2px 0;border:0;background:transparent;text-align:left;cursor:pointer}.section-toggle[aria-expanded="true"]{background:transparent;color:var(--zble-group)}.section-toggle svg{width:14px;height:14px;flex:none;transition:transform .15s ease}.section-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}.automation-heading .section-toggle{flex:1}@media(prefers-reduced-motion:reduce){.section-toggle svg{transition:none}}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.35;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
           .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.filter-row .configure{font-size:14px;line-height:1;padding:5px;flex:none;color:var(--zble-muted)}.filter-row:has(input:checked) .configure{color:var(--zble-accent)}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
           input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.reset-link{display:block;font:inherit;font-size:11px;color:var(--zble-accent);text-decoration:underline;text-align:left;padding:1px 0;margin:0 0 7px}.reset-link:disabled{color:var(--zble-muted);cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.configure{color:GrayText}.filter-row:has(input:checked) .configure,.reset-link:not(:disabled){color:LinkText}.configure circle{fill:Canvas}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
@@ -2408,9 +2357,10 @@
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
             <label class="row"><input id="zble-cover-title-switch" type="checkbox"><span data-i18n="control.coverTitle">显示书名</span></label>
             <label class="row"><input id="zble-cover-author-switch" type="checkbox"><span data-i18n="control.coverAuthor">显示作者名</span></label>
+            <label class="row"><input id="zble-unclip-masonry-switch" type="checkbox"><span data-i18n="control.unclipMasonry">不裁剪列表最后一行</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><button id="zble-reset-show-more" class="reset-link" type="button" data-i18n="auto.resetShowMore" disabled>重置 Show more 按钮可用性</button><div id="zble-reset-hint" class="hint" role="status"></div><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
+          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -2469,7 +2419,7 @@
       availabilityHint.className = 'hint';
       availabilityHint.setAttribute('role', 'status');
       panelRoot.querySelector('#zble-automation-actions').insertBefore(availabilityHint,
-        panelRoot.querySelector('#zble-reset-show-more'));
+        panelRoot.querySelector('#zble-show-more-status'));
 
       const immediate = [
         ['#zble-show-switch', 'showFormat'], ['#zble-size-switch', 'showSize'],
@@ -2478,6 +2428,7 @@
         ['#zble-year-show-switch', 'showYear'], ['#zble-title-switch', 'showFullTitle'],
         ['#zble-author-switch', 'showFullAuthor'],
         ['#zble-cover-title-switch', 'showCoverTitle'], ['#zble-cover-author-switch', 'showCoverAuthor'],
+        ['#zble-unclip-masonry-switch', 'showMasonryLastRow'],
         ['#zble-format-switch', 'filterFormat'], ['#zble-size-filter-switch', 'filterSize'],
         ['#zble-download-switch', 'filterDownload'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
@@ -2547,49 +2498,9 @@
           saveSettings(); scheduleRefresh();
         });
       }
-      showMoreTracker = createShowMoreStallTracker({ getCards: () => getActiveCards(document),
-        getButton: () => isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null,
-        onState(state) {
-          stallState = state;
-          if (resetVerification) {
-            const currentButton = initialMain?.querySelector('.page-load-more');
-            const verdict = classifyResetVerification(resetVerification,
-              currentButton, getActiveCards(document).length,
-              isNativeShowMoreUnavailable(currentButton));
-            if (verdict !== 'pending') {
-              resetVerification = null;
-              resetMessageKey = verdict === 'failed' ? 'auto.resetFailed' : '';
-              setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
-              if (verdict === 'failed') void showAutomationDialog('reset', 1);
-            }
-          }
-          syncShowMoreControls();
-        } });
-      initialMain?.addEventListener('click', onNativeShowMoreClick, true);
-      const resetButton = panelRoot.querySelector('#zble-reset-show-more');
-      resetButton.addEventListener('click', () => {
-        if (!isCurrentBooklist()) return;
-        const button = initialMain?.querySelector('.page-load-more');
-        let result;
-        try {
-          result = attemptShowMoreReset({ button, baseline: showMoreTracker.baseline(),
-            stillEligible: () => showMoreTracker.check().resetEligible });
-        } catch (error) {
-          console.error('Z-lib Booklist Enhancer: Show more reset failed', error);
-          result = { attempted: false, interactive: false };
-        }
-        if (result.attempted) showMoreTracker.consumeReset();
-        resetMessageKey = result.interactive ? 'auto.resetCaution' : 'auto.resetFailed';
-        resetVerification = result.interactive
-          ? { button, cardCount: getActiveCards(document).length } : null;
-        setText('#zble-reset-hint', translate(locale, resetMessageKey));
-        syncShowMoreControls();
-        void showAutomationDialog('reset', result.interactive ? 0 : 1);
-      });
-      showMoreTracker.check();
       function startShowMore(id, maxClicks) {
-        if (showMoreTask || bulkBusy || !isCurrentBooklist()) return;
-        const nativeButton = initialMain?.querySelector('.page-load-more');
+        if (showMoreTask || bulkBusy || !isCurrentMorePage()) return;
+        const nativeButton = findNativeMore(initialContainer, pageKind);
         if (isNativeShowMoreUnavailable(nativeButton)) { syncShowMoreControls(); return; }
         showMoreBusy = true;
         activeShowMoreId = id;
@@ -2603,32 +2514,29 @@
         renderAutoStatus();
         syncShowMoreControls();
         syncBulkControl();
-        const mainForTask = document.querySelector('.booklist-main.active');
-        const listForTask = mainForTask?.querySelector('.readlist-view');
+        const mainForTask = initialContainer;
         showMoreTask = runShowMore({ maxClicks,
-          getCards: () => listForTask ? [...listForTask.querySelectorAll(':scope > z-bookcard')] : [],
-          findButton: () => mainForTask?.querySelector('.page-load-more'),
+          getCards: () => getPageEntries(document, pageKind),
+          findButton: () => findNativeMore(mainForTask, pageKind),
           observe(callback) {
             const observer = new MutationObserver(callback);
-            observer.observe(mainForTask, { childList: true, subtree: true });
+            observer.observe(mainForTask, { childList: true, subtree: true,
+              attributes: true, attributeFilter: ['class', 'disabled', 'aria-disabled', 'style'] });
+            if (mainForTask.shadowRoot) observer.observe(mainForTask.shadowRoot,
+              { childList: true, subtree: true, attributes: true,
+                attributeFilter: ['class', 'disabled', 'aria-disabled', 'style'] });
             return () => observer.disconnect();
           },
-          isSourceAlive: isCurrentBooklist,
+          isSourceAlive: isCurrentMorePage,
           signal: controller.signal,
-          onAttempt(button) {
-            resetVerification = null;
-            resetMessageKey = '';
-            setText('#zble-reset-hint', '');
-            showMoreTracker?.noteToolClick(button);
-          },
           onProgress(progress) { autoStatus = progress; renderAutoStatus(); },
         }).then(result => {
           autoLastFailed = result.failed > 0;
-          const loaded = getActiveCards(document).length;
+          const loaded = getPageEntries(document, pageKind).length;
           const totalText = document.querySelector('.booklist-header__tabs tab')?.textContent || '';
-          const expectedTotal = parseBookTotal(totalText);
-          const completion = classifyListCompletion({ reason: result.reason,
-            loadedCount: loaded, expectedTotal });
+          const expectedTotal = pageKind === 'booklist' ? parseBookTotal(totalText) : null;
+          const completion = pageKind === 'booklist' ? classifyListCompletion({ reason: result.reason,
+            loadedCount: loaded, expectedTotal }) : { noticeKey: null };
           autoStatus = { ...result, loaded, expected: parseBookTotalLabel(totalText) ?? expectedTotal,
             noticeKey: completion.noticeKey };
           renderAutoStatus();
@@ -2653,14 +2561,14 @@
         if (showMoreBusy && activeShowMoreId === 'continuous') {
           showMoreController?.abort('user-stop'); return;
         }
-        if (showMoreDialogPending || showMoreTask || bulkBusy || !isCurrentBooklist()) return;
+        if (showMoreDialogPending || showMoreTask || bulkBusy || !isCurrentMorePage()) return;
         const enabled = sitePrefs[currentHost]?.continuousEnabled === true;
         showMoreDialogPending = true;
         syncShowMoreControls();
         syncBulkControl();
         try {
           const approved = await showAutomationDialog('continuous', enabled ? 1 : 0);
-          if (!approved || !isCurrentBooklist() ||
+          if (!approved || !isCurrentMorePage() ||
             sitePrefs[currentHost]?.continuousEnabled !== true) return;
           startShowMore('continuous', null);
         } finally {
@@ -2878,8 +2786,6 @@
       clearInterval(searchCoexistenceTimer);
       for (const link of coexistenceLinks) link.remove();
       coexistenceLinks.clear();
-      showMoreTracker?.dispose();
-      initialMain?.removeEventListener?.('click', onNativeShowMoreClick, true);
       document.removeEventListener?.('DOMContentLoaded', init);
       document.removeEventListener('marksLoaded', onMarksLoaded);
       clearTimeout(timeoutId);

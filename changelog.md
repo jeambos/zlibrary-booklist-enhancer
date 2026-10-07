@@ -1,8 +1,17 @@
 # Changelog / 更新日志
 
-版本记录主要依据本仓库的提交历史。Git 历史从 `1.0.2-dev` 开始；更早的两个开发版本依据仓库内的历史测试记录补记。开发版本不代表完成了真实站点验收。
+## 4.1.0 — 2026-10-08
 
-Version notes are based mainly on this repository's commit history. Git history starts at `1.0.2-dev`; the two earlier development versions are reconstructed from the historical test record. Development versions were not fully validated on the live site.
+- You can now use “Load more” clickers on home recommendations, similar books, Z-Recommend results, and popular lists. Choose a number of clicks or keep loading until the list ends.
+- “Show more” and “Load more” clickers wait for the site's link to become available again before continuing. They also handle a final batch of fewer than 20 books.
+- If loading gets stuck, the clicker stops. The old “Reset Show more availability” control is gone; refresh the page after a site error before trying again.
+- The new “Don't crop the last row” display option can reveal the full final row on home recommendations, similar books, and popular lists. It is off by default.
+- Unavailable switches now look more faded, making them easier to distinguish from options you can use.
+- 首页推荐、图书详情页的相似推荐、Z-Recommend 结果和热门榜单现在也能连点「Load more」，可设置点击次数，或持续加载到列表末尾。
+- 「Show more」和「Load more」连点器会等网站链接恢复可用后再继续；最后一批不足 20 本时也能正常继续或结束。
+- 如果加载卡住，连点器会停止。已移除「重置 Show more 按钮可用性」；网站报错后请刷新页面再试。
+- 首页推荐、详情页相似推荐和热门榜单新增「不裁剪列表最后一行」选项，开启后可完整显示末行封面，默认关闭。
+- 不可用的开关文字更淡，更容易与可用选项区分。
 
 ## 4.0.5 — 2026-10-08
 
@@ -10,10 +19,6 @@ Version notes are based mainly on this repository's commit history. Git history 
 - Added independent, off-by-default title and author display switches for those lists. Display options now open there with controls enabled according to the page.
 - 为首页推荐、详情页相似推荐、Z-Recommend 结果和热门榜单增加筛选统计卡片，只显示已加载和筛选后数量，不推测站点总数。
 - 为这些封面列表增加默认关闭的书名、作者名独立开关；「信息显示」按页面启用适用选项。
-
-## 4.0.4
-
-Not found.
 
 ## 4.0.3 — 2026-10-07
 
