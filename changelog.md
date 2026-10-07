@@ -1,5 +1,10 @@
 # Changelog / 更新日志
 
+## 4.2.0 — 2026-10-08
+
+- Book detail pages can expand Related Booklists from a horizontal carousel into a grid. A title triangle changes only the current page; a saved Display options switch sets the default for all book pages.
+- 图书详情页可将 Related Booklists 从横向列表展开为网格。标题前的三角按钮只改变当前书页；「信息显示」中的开关保存所有书页的默认布局。
+
 ## 4.1.0 — 2026-10-08
 
 - You can now use “Load more” clickers on home recommendations, similar books, Z-Recommend results, and popular lists. Choose a number of clicks or keep loading until the list ends.

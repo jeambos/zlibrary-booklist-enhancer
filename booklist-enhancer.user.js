@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.1.0
+// @version      4.2.0
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -129,6 +129,7 @@
     showCoverTitle: false,
     showCoverAuthor: false,
     showMasonryLastRow: false,
+    showRelatedBooklistsGrid: false,
     filterYear: false,
     yearMin: '',
     yearMax: '',
@@ -170,6 +171,9 @@
     'control.coverTitle': ['Show book titles', '显示书名', '顯示書名', 'Afficher les titres', 'Buchtitel anzeigen', 'Показывать названия книг', '書名を表示', '책 제목 표시', 'Mostrar títulos', 'Mostrar títulos'],
     'control.coverAuthor': ['Show author names', '显示作者名', '顯示作者姓名', 'Afficher les noms d’auteur', 'Autorennamen anzeigen', 'Показывать имена авторов', '著者名を表示', '저자 이름 표시', 'Mostrar nombres de autores', 'Mostrar nomes dos autores'],
     'control.unclipMasonry': ["Don't crop the last row", '不裁剪列表最后一行', '不裁剪清單最後一行', 'Ne pas couper la dernière rangée', 'Letzte Reihe nicht abschneiden', 'Не обрезать последний ряд списка', '最後の行を切り取らずに表示', '목록의 마지막 줄을 자르지 않기', 'No recortar la última fila', 'Não cortar a última linha'],
+    'control.relatedBooklistsGrid': ['Show Related Booklists as a grid by default', '相关书单默认以网格显示', '相關書單預設以網格顯示', 'Afficher les listes associées en grille par défaut', 'Ähnliche Bücherlisten standardmäßig als Raster anzeigen', 'По умолчанию показывать связанные списки книг сеткой', '関連ブックリストを標準でグリッド表示', '관련 도서 목록을 기본적으로 격자로 표시', 'Mostrar las listas relacionadas en cuadrícula de forma predeterminada', 'Mostrar listas relacionadas em grade por padrão'],
+    'action.expandRelatedBooklists': ['Expand Related Booklists into a grid', '将相关书单展开为网格', '將相關書單展開為網格', 'Déployer les listes associées en grille', 'Ähnliche Bücherlisten als Raster anzeigen', 'Развернуть связанные списки книг в сетку', '関連ブックリストをグリッドに展開', '관련 도서 목록을 격자로 펼치기', 'Expandir las listas relacionadas en una cuadrícula', 'Expandir listas relacionadas em grade'],
+    'action.collapseRelatedBooklists': ['Return Related Booklists to the carousel', '将相关书单收回横向列表', '將相關書單收回橫向清單', 'Revenir au carrousel des listes associées', 'Ähnliche Bücherlisten wieder als Karussell anzeigen', 'Вернуть связанные списки книг в карусель', '関連ブックリストを横並びに戻す', '관련 도서 목록을 가로 목록으로 되돌리기', 'Volver al carrusel de listas relacionadas', 'Voltar ao carrossel de listas relacionadas'],
     'control.filterFormat': ['Show only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '選択したファイル形式だけを表示', '선택한 파일 형식만 표시', 'Mostrar solo los formatos de archivo seleccionados', 'Mostrar apenas os formatos de arquivo selecionados'],
     'control.filterSize': ['Show only selected file sizes', '只显示指定文件大小', '只顯示指定檔案大小', 'Afficher seulement les tailles de fichier choisies', 'Nur ausgewählte Dateigrößen anzeigen', 'Показывать только выбранные размеры файлов', '選択したファイルサイズだけを表示', '선택한 파일 크기만 표시', 'Mostrar solo los tamaños de archivo seleccionados', 'Mostrar apenas os tamanhos de arquivo selecionados'],
     'control.filterDownload': ['Filter by download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Filtrer selon l’état de téléchargement', 'Nach Downloadstatus filtern', 'Фильтровать по статусу скачивания', 'ダウンロード状態で絞り込む', '다운로드 상태로 필터링', 'Filtrar por estado de descarga', 'Filtrar por status de download'],
@@ -412,6 +416,8 @@
       showCoverAuthor: typeof input.showCoverAuthor === 'boolean' ? input.showCoverAuthor : DEFAULT_SETTINGS.showCoverAuthor,
       showMasonryLastRow: typeof input.showMasonryLastRow === 'boolean'
         ? input.showMasonryLastRow : DEFAULT_SETTINGS.showMasonryLastRow,
+      showRelatedBooklistsGrid: typeof input.showRelatedBooklistsGrid === 'boolean'
+        ? input.showRelatedBooklistsGrid : DEFAULT_SETTINGS.showRelatedBooklistsGrid,
       filterYear: typeof input.filterYear === 'boolean' ? input.filterYear : DEFAULT_SETTINGS.filterYear,
       yearMin: typeof input.yearMin === 'string' ? input.yearMin.slice(0, 20) : '',
       yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
@@ -648,7 +654,8 @@
     return { format: supported, size: supported, download: true, year: supported,
       information: booklist || coverText, summary: booklist || coverText, coverText,
       booklistAutomation: booklist, moreAutomation: booklist || coverText,
-      masonryUnclip: MASONRY_PAGE_KINDS.has(kind), bulkOpen: true };
+      masonryUnclip: MASONRY_PAGE_KINDS.has(kind),
+      relatedBooklistsGrid: kind === 'detail-recommend', bulkOpen: true };
   }
 
   function coexistenceNoticeMode(root, kind) {
@@ -732,6 +739,7 @@
       ['#zble-cover-title-switch', capabilities.coverText],
       ['#zble-cover-author-switch', capabilities.coverText],
       ['#zble-unclip-masonry-switch', capabilities.masonryUnclip],
+      ['#zble-related-booklists-grid-switch', capabilities.relatedBooklistsGrid],
     ]) {
       const input = panel.querySelector(selector);
       if (input) {
@@ -1546,6 +1554,112 @@
     return true;
   }
 
+  function createRelatedBooklistsLayout(root, globalExpanded, locale, Observer = MutationObserver) {
+    const gridCss = ':host([data-zble-booklists-grid]) .wrap,' +
+      ':host([data-zble-booklists-grid]) .carousel{overflow:visible!important}' +
+      ':host([data-zble-booklists-grid]) .reel{display:grid!important;' +
+      'grid-template-columns:repeat(auto-fill,minmax(min(100%,144px),1fr));' +
+      'gap:16px;white-space:normal!important;margin-left:0!important;transform:none!important}' +
+      ':host([data-zble-booklists-grid]) .reel>*{display:block!important;margin:0!important;max-width:144px}' +
+      ':host([data-zble-booklists-grid]) .left,' +
+      ':host([data-zble-booklists-grid]) .right{display:none!important}';
+    let savedExpanded = !!globalExpanded;
+    let pageExpanded = null;
+    let currentLocale = locale;
+    let heading = null;
+    let button = null;
+    let carousel = null;
+    let shadow = null;
+    let style = null;
+    let hostObserver = null;
+    let shadowObserver = null;
+    let disposed = false;
+
+    function render() {
+      const expanded = pageExpanded ?? savedExpanded;
+      if (carousel) {
+        if (expanded) carousel.setAttribute('data-zble-booklists-grid', '');
+        else carousel.removeAttribute('data-zble-booklists-grid');
+      }
+      if (button) {
+        button.setAttribute('aria-expanded', String(expanded));
+        const label = translate(currentLocale, expanded
+          ? 'action.collapseRelatedBooklists' : 'action.expandRelatedBooklists');
+        button.setAttribute('aria-label', label);
+        button.setAttribute('title', label);
+      }
+    }
+
+    function refresh() {
+      if (disposed) return;
+      const block = root.querySelector('.related-booklists-lazy .related-booklists-block');
+      const nextHeading = block?.querySelector('h2') || null;
+      const nextCarousel = block?.querySelector('z-carousel') || null;
+      if (heading !== nextHeading) {
+        button?.remove();
+        button = null;
+        heading = nextHeading;
+        if (heading) {
+          button = root.createElement('button');
+          button.type = 'button';
+          button.className = 'zble-related-booklists-toggle';
+          button.textContent = '▸';
+          button.addEventListener('click', () => {
+            pageExpanded = !(pageExpanded ?? savedExpanded);
+            render();
+          });
+          heading.prepend(button);
+        }
+      }
+      if (heading && button?.parentNode !== heading) heading.prepend(button);
+      if (carousel !== nextCarousel) {
+        carousel?.removeAttribute('data-zble-booklists-grid');
+        hostObserver?.disconnect();
+        hostObserver = null;
+        carousel = nextCarousel;
+        if (carousel) {
+          hostObserver = new Observer(refresh);
+          hostObserver.observe(carousel, { attributes: true, attributeFilter: ['class'] });
+        }
+      }
+      const nextShadow = carousel?.shadowRoot || null;
+      if (shadow !== nextShadow) {
+        shadowObserver?.disconnect();
+        style?.remove();
+        shadowObserver = null;
+        style = null;
+        shadow = nextShadow;
+      }
+      if (shadow && !style) {
+        style = root.createElement('style');
+        style.id = 'zble-related-booklists-grid-style';
+        style.textContent = gridCss;
+        shadow.append(style);
+        shadowObserver = new Observer(() => {
+          if (!disposed && style?.parentNode !== shadow) shadow.append(style);
+        });
+        shadowObserver.observe(shadow, { childList: true });
+      }
+      render();
+    }
+
+    refresh();
+    return {
+      refresh,
+      setGlobal(expanded) { savedExpanded = !!expanded; pageExpanded = null; refresh(); },
+      setLocale(nextLocale) { currentLocale = nextLocale; render(); },
+      dispose() {
+        if (disposed) return;
+        disposed = true;
+        hostObserver?.disconnect();
+        shadowObserver?.disconnect();
+        button?.remove();
+        style?.remove();
+        carousel?.removeAttribute('data-zble-booklists-grid');
+      },
+    };
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
@@ -1554,6 +1668,7 @@
       getActiveCards, hasBooklistFingerprint, sameBooklistContainer,
       detectListPage, getPageEntries, findNativeMore, setPageEntryHidden,
       watchMasonryShadow, ensureMasonryShadowWatch,
+      createRelatedBooklistsLayout,
       pageCapabilities, effectiveSettings, applyPanelCapabilities, coexistenceNoticeMode,
       attachUiEnhanceButtonLinks,
       readCardData, readPageEntry, compileFilters, evaluateCard, filterActiveCards, filterPageEntries,
@@ -1693,6 +1808,7 @@
     let searchCoexistenceTimer = null;
     let lastCardMetrics = null;
     let coverSummaryHost = null;
+    let relatedBooklistsLayout = null;
     let coverInfoEntries = new Set();
     let panelResize = null;
     let disposed = false;
@@ -2053,6 +2169,7 @@
 
     function refreshPanelLocale(nextLocale = locale) {
       locale = nextLocale;
+      relatedBooklistsLayout?.setLocale(locale);
       if (!panelRoot) return;
       refreshCoexistence();
       for (const node of panelRoot.querySelectorAll('[data-i18n]')) {
@@ -2114,6 +2231,7 @@
     function refresh() {
       if (!panelRoot || disposed) return;
       if (!isCurrentRoute()) { onStale(); return; }
+      relatedBooklistsLayout?.refresh();
       refreshCoexistence();
       attachObservers();
       masonryWatch?.setUnclip(settings.showMasonryLastRow);
@@ -2297,6 +2415,7 @@
       pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden,#searchResultBox .resItemBoxBooks.zble-hidden,z-masonry > a.zble-hidden,[class*="RecommendationBlock__EndlessMasonry"] a.item.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
       pageStyle.textContent += '.zble-ui-enhance-link{display:inline-block;margin:3px 6px;padding:2px;border:0;background:transparent;color:#a12f28;text-decoration:underline;cursor:pointer;font:12px/1.4 system-ui,sans-serif}.zble-ui-enhance-link:focus-visible{outline:2px solid #a12f28;outline-offset:2px}@media(prefers-color-scheme:dark){.zble-ui-enhance-link{color:#ffb0a3}}';
       pageStyle.textContent += COVER_DISPLAY_CSS;
+      pageStyle.textContent += '.zble-related-booklists-toggle{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;width:23px;height:23px;margin:0 6px 2px 0;padding:0;border:0;border-radius:4px;background:transparent;color:inherit;cursor:pointer;font:22px/1 system-ui,sans-serif;transition:transform .15s ease}.zble-related-booklists-toggle[aria-expanded="true"]{transform:rotate(90deg)}.zble-related-booklists-toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px}@media(prefers-reduced-motion:reduce){.zble-related-booklists-toggle{transition:none}}';
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -2358,6 +2477,7 @@
             <label class="row"><input id="zble-cover-title-switch" type="checkbox"><span data-i18n="control.coverTitle">显示书名</span></label>
             <label class="row"><input id="zble-cover-author-switch" type="checkbox"><span data-i18n="control.coverAuthor">显示作者名</span></label>
             <label class="row"><input id="zble-unclip-masonry-switch" type="checkbox"><span data-i18n="control.unclipMasonry">不裁剪列表最后一行</span></label>
+            <label class="row"><input id="zble-related-booklists-grid-switch" type="checkbox"><span data-i18n="control.relatedBooklistsGrid">相关书单默认以网格显示</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
           <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
@@ -2429,6 +2549,7 @@
         ['#zble-author-switch', 'showFullAuthor'],
         ['#zble-cover-title-switch', 'showCoverTitle'], ['#zble-cover-author-switch', 'showCoverAuthor'],
         ['#zble-unclip-masonry-switch', 'showMasonryLastRow'],
+        ['#zble-related-booklists-grid-switch', 'showRelatedBooklistsGrid'],
         ['#zble-format-switch', 'filterFormat'], ['#zble-size-filter-switch', 'filterSize'],
         ['#zble-download-switch', 'filterDownload'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
@@ -2436,7 +2557,12 @@
       for (const [selector, key] of immediate) {
         const input = panelRoot.querySelector(selector);
         input.checked = settings[key];
-        input.addEventListener('change', () => { settings[key] = input.checked; saveSettings(); scheduleRefresh(); });
+        input.addEventListener('change', () => {
+          settings[key] = input.checked;
+          if (key === 'showRelatedBooklistsGrid') relatedBooklistsLayout?.setGlobal(input.checked);
+          saveSettings();
+          scheduleRefresh();
+        });
       }
       const languageSelect = panelRoot.querySelector('#zble-ui-language');
       languageSelect.value = settings.uiLanguage;
@@ -2754,6 +2880,9 @@
     function init() {
       if (!document.body || disposed) return;
       createPanel();
+      if (pageKind === 'detail-recommend')
+        relatedBooklistsLayout = createRelatedBooklistsLayout(document,
+          settings.showRelatedBooklistsGrid, locale);
       syncShowMoreControls();
       startupObserver = new MutationObserver(() => { scheduleRefresh(); if (!isCurrentRoute()) onStale(); });
       startupObserver.observe(document.documentElement, { childList: true, subtree: true });
@@ -2791,6 +2920,7 @@
       clearTimeout(timeoutId);
       clearTimeout(retryId);
       startupObserver?.disconnect();
+      relatedBooklistsLayout?.dispose();
       mainObserver?.disconnect();
       masonryWatch?.dispose();
       parentObserver?.disconnect();
