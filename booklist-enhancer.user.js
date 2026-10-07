@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.0.1
+// @version      4.0.2
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -225,8 +225,8 @@
     'auto.clicked': ['{action} (clicks attempted: {attempted})', '{action} [已尝试 {attempted} 次]', '{action} [已嘗試 {attempted} 次]', '{action} (clics tentés : {attempted})', '{action} (Klickversuche: {attempted})', '{action} (попыток нажатия: {attempted})', '{action}（クリック試行：{attempted}回）', '{action}(클릭 시도: {attempted}회)', '{action} (clics intentados: {attempted})', '{action} (cliques tentados: {attempted})'],
     'auto.clickedFailed': ['{action} (attempted: {attempted}; failed: {failed})', '{action} [已尝试 {attempted} 次，失败 {failed} 次]', '{action} [已嘗試 {attempted} 次，失敗 {failed} 次]', '{action} (tentatives : {attempted} ; échecs : {failed})', '{action} (Versuche: {attempted}; fehlgeschlagen: {failed})', '{action} (попыток: {attempted}; ошибок: {failed})', '{action}（試行：{attempted}回、失敗：{failed}回）', '{action}(시도: {attempted}회, 실패: {failed}회)', '{action} (intentos: {attempted}; fallos: {failed})', '{action} (tentativas: {attempted}; falhas: {failed})'],
     'auto.resetShowMore': ['Reset Show more availability', '重置 Show more 按钮可用性', '重設 Show more 按鈕可用性', 'Rétablir le bouton Show more', 'Show-more-Schaltfläche zurücksetzen', 'Восстановить кнопку Show more', 'Show more ボタンを再有効化', 'Show more 버튼 사용 가능 상태 재설정', 'Restablecer botón Show more', 'Restaurar botão Show more'],
-    'auto.resetCaution': ['The button appears available again, but the original request may still be running. Clicking again may load duplicates.', '按钮现可点击，但原请求可能仍在处理；再次点击可能重复加载。', '按鈕目前可點擊，但原請求可能仍在處理；再次點擊可能重複載入。', 'Le bouton semble de nouveau utilisable, mais la requête initiale peut encore être en cours. Un nouveau clic peut charger des doublons.', 'Die Schaltfläche scheint wieder nutzbar, aber die ursprüngliche Anfrage könnte noch laufen. Erneutes Klicken kann Bücher doppelt laden.', 'Кнопка снова выглядит доступной, но исходный запрос может ещё выполняться. Повторное нажатие может загрузить дубли.', 'ボタンは再び押せる状態ですが、元の処理は継続中かもしれません。再クリックすると重複して読み込む可能性があります。', '버튼을 다시 누를 수 있지만 기존 요청이 진행 중일 수 있습니다. 다시 누르면 중복으로 로드될 수 있습니다.', 'El botón parece disponible de nuevo, pero la solicitud inicial puede seguir activa. Otro clic puede cargar duplicados.', 'O botão parece disponível novamente, mas a solicitação original pode continuar. Outro clique pode carregar itens duplicados.'],
-    'auto.resetFailed': ['Could not restore Show more. Refresh the page.', '无法恢复 Show more，请刷新页面。', '無法恢復 Show more，請重新整理頁面。', 'Impossible de rétablir Show more. Actualisez la page.', 'Show more konnte nicht wiederhergestellt werden. Seite neu laden.', 'Не удалось восстановить Show more. Обновите страницу.', 'Show more を復元できません。ページを再読み込みしてください。', 'Show more를 복구하지 못했습니다. 페이지를 새로고침하세요.', 'No se pudo restaurar Show more. Actualiza la página.', 'Não foi possível restaurar Show more. Atualize a página.'],
+    'auto.resetCaution': ["Reset only tries to clear the button's disabled or aria-disabled state. We cannot confirm whether the site will accept further Show more requests. If the button still does not work, refresh this page.", "“重置”只会尝试清除按钮的 disabled 或 aria-disabled 状态，无法确认站点是否会继续接收show more 请求，如果重置后按钮依然无法使用，请刷新本页面。", "「重設」只會嘗試清除按鈕的 disabled 或 aria-disabled 狀態，無法確認網站是否會繼續接收 Show more 請求；如果重設後按鈕仍無法使用，請重新整理本頁面。", "La réinitialisation essaie seulement de supprimer l’état disabled ou aria-disabled du bouton. Impossible de confirmer que le site acceptera d’autres demandes Show more. Si le bouton ne fonctionne toujours pas, actualisez cette page.", "Das Zurücksetzen versucht nur, disabled oder aria-disabled von der Schaltfläche zu entfernen. Ob die Website weitere Show more-Anfragen annimmt, lässt sich nicht bestätigen. Falls die Schaltfläche weiterhin nicht funktioniert, laden Sie diese Seite neu.", "Сброс только пытается убрать у кнопки состояние disabled или aria-disabled. Нельзя подтвердить, что сайт примет следующие запросы Show more. Если кнопка по-прежнему не работает, обновите страницу.", "リセットではボタンの disabled または aria-disabled 状態の解除だけを試みます。サイトが今後も Show more のリクエストを受け付けるかは確認できません。ボタンがまだ使えない場合は、このページを再読み込みしてください。", "재설정은 버튼의 disabled 또는 aria-disabled 상태를 해제하려고 시도할 뿐입니다. 사이트가 이후 Show more 요청을 받는지는 확인할 수 없습니다. 버튼이 여전히 작동하지 않으면 이 페이지를 새로고침하세요.", "El restablecimiento solo intenta quitar el estado disabled o aria-disabled del botón. No podemos confirmar si el sitio aceptará más solicitudes de Show more. Si el botón sigue sin funcionar, actualiza esta página.", "A redefinição apenas tenta remover o estado disabled ou aria-disabled do botão. Não é possível confirmar se o site aceitará novas solicitações de Show more. Se o botão continuar sem funcionar, atualize esta página."],
+    'auto.resetFailed': ["Reset failed. Could not restore Show more. Refresh this page.", "重置失败：无法恢复 Show more，请刷新本页面。", "重設失敗：無法恢復 Show more，請重新整理本頁面。", "Échec de la réinitialisation : impossible de rétablir Show more. Actualisez cette page.", "Zurücksetzen fehlgeschlagen: Show more konnte nicht wiederhergestellt werden. Laden Sie diese Seite neu.", "Сброс не удался: не удалось восстановить Show more. Обновите страницу.", "リセットに失敗しました。Show more を復元できません。このページを再読み込みしてください。", "재설정에 실패했습니다. Show more를 복구하지 못했습니다. 이 페이지를 새로고침하세요.", "Error al restablecer: no se pudo recuperar Show more. Actualiza esta página.", "Falha ao redefinir: não foi possível restaurar Show more. Atualize esta página."],
     'auto.openAll': ['Open all currently visible book pages', '打开当前显示的所有图书页面', '開啟目前顯示的所有圖書頁面', 'Ouvrir les pages de tous les livres actuellement visibles', 'Seiten aller derzeit sichtbaren Bücher öffnen', 'Открыть страницы всех видимых сейчас книг', '現在表示中の本のページをすべて開く', '현재 표시된 모든 책의 페이지 열기', 'Abrir las páginas de todos los libros visibles', 'Abrir as páginas de todos os livros visíveis'],
     'auto.favorite': ['Add all books on this page to favorites', '本页全部加入收藏', '本頁全部加入收藏', 'Ajouter tous les livres de cette page aux favoris', 'Alle Bücher auf dieser Seite zu Favoriten hinzufügen', 'Добавить все книги на этой странице в избранное', 'このページの全書籍をお気に入りに追加', '이 페이지의 모든 책을 즐겨찾기에 추가', 'Añadir todos los libros de esta página a favoritos', 'Adicionar todos os livros desta página aos favoritos'],
     'auto.dev': ['In development', '开发中', '開發中', 'En développement', 'In Entwicklung', 'В разработке', '開発中', '개발 중', 'En desarrollo', 'Em desenvolvimento'],
@@ -846,10 +846,6 @@
     return buttonUnavailable ? 'failed' : 'pending';
   }
 
-  function hasVerifiedResetAdapter(hostname, fixtureMarker) {
-    return (hostname === '127.0.0.1' || hostname === 'localhost') && fixtureMarker === true;
-  }
-
   function modalTabDestination(step, shiftKey, activeElement, cancel, confirm) {
     if (step === 0) return cancel;
     if (shiftKey && activeElement === cancel) return confirm;
@@ -1467,7 +1463,6 @@
       classifyPage, noticeRemainingSeconds, shouldShowNotice, classifyBatchProgress,
       classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
       createShowMoreStallTracker, attemptShowMoreReset, classifyResetVerification,
-      hasVerifiedResetAdapter,
       modalTabDestination, showMoreControlState,
       collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll,
     };
@@ -1602,10 +1597,10 @@
     let bulkMessageKey = '';
     let resetMessageKey = '';
     let resetVerification = null;
+    let resetDialogFailure = null;
+    let pendingResetFailureDialog = false;
     let bulkDialogPromise = null;
     let refreshAutomationDialog = null;
-    const verifiedResetAdapter = hasVerifiedResetAdapter(window.location.hostname,
-      document.documentElement?.hasAttribute?.('data-zble-reset-fixture'));
     let hasOpenedOnThisPage = false;
     const automationAbort = new AbortController();
 
@@ -1742,14 +1737,14 @@
       if (!panelRoot) return;
       const nativeButton = isCurrentBooklist() ? initialMain?.querySelector('.page-load-more') : null;
       const state = showMoreControlState({ nativeButton,
-      resetEligible: verifiedResetAdapter && stallState.resetEligible, busy: showMoreBusy, bulkBusy });
+        resetEligible: stallState.resetEligible, busy: showMoreBusy || !!bulkDialogPromise, bulkBusy });
       setText('#zble-show-more-availability', !showMoreBusy && isCurrentBooklist() &&
         isNativeShowMoreUnavailable(nativeButton)
         ? translate(locale, 'auto.showMoreUnavailable') : '');
       for (const id of [1, 2, 'continuous']) {
         const button = panelRoot.querySelector(`#zble-show-more-${id}`);
         button.disabled = showMoreBusy ? activeShowMoreId !== id
-          : bulkBusy || showMoreDialogPending || !isCurrentBooklist() ||
+          : bulkBusy || showMoreDialogPending || !!bulkDialogPromise || !isCurrentBooklist() ||
             (id !== 'continuous' || sitePrefs[currentHost]?.continuousEnabled === true) && state.autoDisabled;
       }
       panelRoot.querySelector('#zble-reset-show-more').disabled = state.resetDisabled;
@@ -1817,7 +1812,16 @@
     }
 
     function showAutomationDialog(action, step, { count = 0, repeat = false } = {}) {
-      if (bulkDialogPromise) return bulkDialogPromise;
+      if (bulkDialogPromise) {
+        if (action === 'reset' && step === 1) {
+          if (resetDialogFailure !== null) {
+            resetDialogFailure = true;
+            refreshAutomationDialog?.();
+          } else pendingResetFailureDialog = true;
+        }
+        return bulkDialogPromise;
+      }
+      if (action === 'reset') resetDialogFailure = step === 1;
       bulkDialogPromise = new Promise(resolve => {
         if (automationAbort.signal.aborted || !isCurrentRoute()) { resolve(false); return; }
         const previousFocus = panelRoot?.activeElement || document.activeElement;
@@ -1835,14 +1839,16 @@
         const confirm = root.querySelector('#zble-bulk-confirm');
         function renderDialog() {
           root.querySelector('#zble-bulk-title').textContent = translate(locale,
-            action === 'continuous' ? 'auto.continuous' : 'auto.openAll');
+            action === 'reset' ? 'auto.resetShowMore'
+              : action === 'continuous' ? 'auto.continuous' : 'auto.openAll');
           root.querySelector('#zble-bulk-message').textContent = action === 'continuous'
             ? translate(locale, step === 0 ? 'auto.continuousDisabled' : 'auto.continuousWarning')
-            : step === 0 ? translate(locale, 'auto.bulkDisabled') : step === 1
+            : action === 'reset' ? translate(locale, resetDialogFailure ? 'auto.resetFailed' : 'auto.resetCaution')
+              : step === 0 ? translate(locale, 'auto.bulkDisabled') : step === 1
               ? `${translate(locale, 'auto.firstWarning', { count })}${repeat ? `\n${translate(locale, 'auto.repeatWarning', { count })}` : ''}`
               : translate(locale, 'auto.secondWarning');
-          cancel.textContent = translate(locale, step === 0 ? 'auto.close' : 'auto.cancel');
-          confirm.hidden = step === 0;
+          cancel.textContent = translate(locale, action === 'reset' || step === 0 ? 'auto.close' : 'auto.cancel');
+          confirm.hidden = action === 'reset' || step === 0;
           confirm.textContent = translate(locale, 'auto.continue');
         }
         refreshAutomationDialog = renderDialog;
@@ -1857,7 +1863,12 @@
           previousFocus?.focus?.();
           bulkDialogPromise = null;
           refreshAutomationDialog = null;
+          resetDialogFailure = null;
+          const showPendingResetFailure = pendingResetFailureDialog;
+          pendingResetFailureDialog = false;
           resolve(value);
+          syncShowMoreControls();
+          if (showPendingResetFailure && !disposed) void showAutomationDialog('reset', 1);
         }
         function abort() { finish(false); }
         cancel.addEventListener('click', () => finish(false));
@@ -1865,13 +1876,15 @@
         root.addEventListener('keydown', event => {
           if (event.key === 'Escape') { event.preventDefault(); finish(false); }
           if (event.key === 'Tab') {
-            const next = modalTabDestination(step, event.shiftKey, root.activeElement, cancel, confirm);
+            const next = modalTabDestination(action === 'reset' ? 0 : step,
+              event.shiftKey, root.activeElement, cancel, confirm);
             if (next) { event.preventDefault(); next.focus(); }
           }
         });
         automationAbort.signal.addEventListener('abort', abort, { once: true });
         cancel.focus();
       });
+      syncShowMoreControls();
       return bulkDialogPromise;
     }
 
@@ -2279,28 +2292,31 @@
               resetVerification = null;
               resetMessageKey = verdict === 'failed' ? 'auto.resetFailed' : '';
               setText('#zble-reset-hint', resetMessageKey ? translate(locale, resetMessageKey) : '');
+              if (verdict === 'failed') void showAutomationDialog('reset', 1);
             }
-          }
-          if (!verifiedResetAdapter && state.resetEligible) {
-            resetMessageKey = 'auto.resetFailed';
-            setText('#zble-reset-hint', translate(locale, resetMessageKey));
           }
           syncShowMoreControls();
         } });
       initialMain?.addEventListener('click', onNativeShowMoreClick, true);
       const resetButton = panelRoot.querySelector('#zble-reset-show-more');
       resetButton.addEventListener('click', () => {
-        if (!verifiedResetAdapter || !isCurrentBooklist()) return;
+        if (!isCurrentBooklist()) return;
         const button = initialMain?.querySelector('.page-load-more');
-        const result = attemptShowMoreReset({ button, baseline: showMoreTracker.baseline(),
-          stillEligible: () => showMoreTracker.check().resetEligible });
-        if (!result.attempted) return;
-        showMoreTracker.consumeReset();
+        let result;
+        try {
+          result = attemptShowMoreReset({ button, baseline: showMoreTracker.baseline(),
+            stillEligible: () => showMoreTracker.check().resetEligible });
+        } catch (error) {
+          console.error('Z-lib Booklist Enhancer: Show more reset failed', error);
+          result = { attempted: false, interactive: false };
+        }
+        if (result.attempted) showMoreTracker.consumeReset();
         resetMessageKey = result.interactive ? 'auto.resetCaution' : 'auto.resetFailed';
         resetVerification = result.interactive
           ? { button, cardCount: getActiveCards(document).length } : null;
         setText('#zble-reset-hint', translate(locale, resetMessageKey));
         syncShowMoreControls();
+        void showAutomationDialog('reset', result.interactive ? 0 : 1);
       });
       showMoreTracker.check();
       function startShowMore(id, maxClicks) {

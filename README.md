@@ -44,10 +44,10 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 - 工具只处理**当前已加载**的书。筛选不会自动加载整份书单或跨页合并搜索结果；进度数字也不是访问历史或下次可恢复的阅读断点。
 - 书单与搜索结果的下载状态需要等待站点提供数据；状态未确认时筛选器会暂停。封面推荐列表直接使用网站显示的下载标记；封面尚未就绪时先保持可见，不把未知状态当成「未下载」。
 - 「批量加入收藏」仍在开发中，目前不能使用。
-- 如果真实站点的「Show more」卡住，工具目前不能安全地重置它；请刷新页面。
+- 如果点击「Show more」后 10 秒没有新增书籍，且原按钮仍处于 `disabled` 或 `aria-disabled` 状态，可在自动化栏目尝试「重置 Show more 按钮可用性」。重置只尝试清除这两种禁用状态，无法确认站点是否会继续接受请求；操作后会弹窗说明结果。若按钮仍无法使用，请刷新页面。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `4.0.1`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `4.0.2`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
@@ -99,10 +99,10 @@ Click the panel title bar to collapse or expand it, or drag the panel toward a s
 - The tool works with **books already loaded** on the page. Filtering does not load the whole booklist or append later search pages. Progress figures are not browsing history or a reading position you can resume later.
 - Download status on booklists and search results depends on site data; filtering pauses until that data is confirmed. Cover recommendation lists use the site's visible download mark directly. Covers that have not finished rendering remain visible, rather than being assumed “not downloaded.”
 - “Add to favorites in bulk” is still in development and cannot be used yet.
-- If “Show more” gets stuck on a real site, the tool cannot safely reset it yet; refresh the page.
+- If no books appear for 10 seconds after clicking “Show more” and the native button remains `disabled` or `aria-disabled`, you can try “Reset Show more availability” under Automation. The reset only clears those button states and cannot confirm that the site will accept another request; a dialog reports the result. Refresh the page if the button still does not work.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `4.0.1`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `4.0.2`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 
