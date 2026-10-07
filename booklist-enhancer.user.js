@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.0.3
+// @version      4.0.5
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -126,6 +126,8 @@
     showYear: true,
     showFullTitle: false,
     showFullAuthor: false,
+    showCoverTitle: false,
+    showCoverAuthor: false,
     filterYear: false,
     yearMin: '',
     yearMax: '',
@@ -135,6 +137,7 @@
     showMoreCount1: 5,
     showMoreCount2: 10,
   });
+  const COVER_DISPLAY_CSS = '.zble-cover-info{display:block;min-width:0;margin:6px 0 0;padding:0 2px;color:inherit;font:12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}.zble-cover-title,.zble-cover-author{display:block}.zble-cover-title{font-weight:650}.zble-cover-author{margin-top:2px;opacity:.8}.zble-summary-card{display:flex;flex-direction:column;justify-content:center;gap:12px;box-sizing:border-box;min-width:0;min-height:180px;padding:16px;border-radius:12px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}.zble-summary-metric{display:flex;flex-direction:column;gap:3px;border-bottom:1px solid #9baebf66;padding-bottom:8px}.zble-summary-label{font-size:11px;opacity:.8}.zble-summary-value{font-size:20px;line-height:1.2;font-weight:750}@media(prefers-color-scheme:dark){.zble-summary-card{background:#222e3c;color:#edf3f8;box-shadow:0 2px 10px #0006}}@media(forced-colors:active){.zble-summary-card{border:2px solid Highlight;box-shadow:none}.zble-summary-metric{border-bottom-color:CanvasText}}';
 
   const LOCALES = ['en', 'zh-CN', 'zh-TW', 'fr', 'de', 'ru', 'ja', 'ko', 'es', 'pt-BR'];
   // Entries are ordered as LOCALES. Keep one complete row per tool-owned message.
@@ -147,6 +150,8 @@
     'section.configuration': ['Filter settings', '筛选配置', '篩選配置', 'Paramètres du filtre', 'Filtereinstellungen', 'Настройки фильтра', 'フィルター設定', '필터 설정', 'Ajustes del filtro', 'Configurações do filtro'],
     'hint.siteMissing': ['Site does not provide this information', '站点未提供该信息', '網站未提供此資訊', 'Le site ne fournit pas cette information', 'Die Website stellt diese Information nicht bereit', 'Сайт не предоставляет эти сведения', 'サイトからこの情報は提供されていません', '사이트에서 이 정보를 제공하지 않습니다', 'El sitio no proporciona esta información', 'O site não fornece esta informação'],
     'hint.booklistOnly': ['Only available on booklist pages', '仅书单页面可用', '僅書單頁面可用', 'Disponible uniquement sur les pages de listes de livres', 'Nur auf Bücherlistenseiten verfügbar', 'Доступно только на страницах списков книг', '書籍リストのページでのみ利用できます', '책 목록 페이지에서만 사용할 수 있습니다', 'Solo disponible en páginas de listas de libros', 'Disponível apenas em páginas de listas de livros'],
+    'hint.cardPagesOnly': ['Available on booklists and cover lists', '仅书单和封面列表可用', '僅書單和封面清單可用', 'Disponible dans les listes de livres et de couvertures', 'Nur in Bücher- und Coverlisten verfügbar', 'Доступно в списках книг и обложек', '書籍リストと表紙一覧で利用できます', '책 목록과 표지 목록에서 사용할 수 있습니다', 'Disponible en listas de libros y de portadas', 'Disponível em listas de livros e capas'],
+    'hint.coverDisplayLimited': ['Only summary, title and author options apply to this cover list.', '此封面列表仅支持统计卡片、显示标题和显示作者名。', '此封面清單僅支援統計卡片、顯示書名和顯示作者。', 'Seules les options de résumé, de titre et d’auteur s’appliquent à cette liste de couvertures.', 'Für diese Coverliste gelten nur die Optionen für Statistik, Titel und Autor.', 'Для этого списка обложек доступны только статистика, названия и авторы.', 'この表紙一覧では集計カード、書名、著者名のみ設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름만 설정할 수 있습니다.', 'En esta lista de portadas solo se aplican el resumen, el título y el autor.', 'Nesta lista de capas, só se aplicam as opções de resumo, título e autor.'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
     'about.description': ['Enhance booklists and filter search results; filter recommendations and popular books by download status.', '增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。', '增強書單並篩選搜尋結果；推薦與熱門書籍可依下載狀態篩選。', 'Améliorez les listes de livres et filtrez les résultats de recherche; filtrez les recommandations et les livres populaires selon leur état de téléchargement.', 'Bücherlisten verbessern und Suchergebnisse filtern; Empfehlungen und beliebte Bücher nach Downloadstatus filtern.', 'Улучшайте списки книг и фильтруйте результаты поиска; рекомендации и популярные книги фильтруйте по статусу загрузки.', '書籍リストを便利にし、検索結果を絞り込めます。推薦・人気の本はダウンロード状態で絞り込めます。', '책 목록을 개선하고 검색 결과를 필터링합니다. 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.', 'Mejora las listas de libros y filtra los resultados de búsqueda; filtra recomendaciones y libros populares por estado de descarga.', 'Melhore as listas de livros e filtre resultados de busca; filtre recomendações e livros populares pelo status de download.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
@@ -160,6 +165,8 @@
     'control.year': ['Publication year (from site)', '出版年份（页面自带）', '出版年份（頁面自帶）', 'Année de publication (site)', 'Erscheinungsjahr (von der Seite)', 'Год издания (на странице)', '出版年（サイト表示）', '출판 연도(사이트 제공)', 'Año de publicación (del sitio)', 'Ano de publicação (do site)'],
     'control.fullTitle': ['Show full book titles', '完整显示超长书名', '完整顯示過長書名', 'Afficher les titres longs en entier', 'Lange Titel vollständig anzeigen', 'Показывать длинные названия полностью', '長い書名を省略せず表示', '긴 책 제목 전체 표시', 'Mostrar los títulos completos', 'Mostrar os títulos completos'],
     'control.fullAuthor': ['Show full author names', '完整显示超长作者名', '完整顯示過長作者名稱', 'Afficher les noms d’auteur longs en entier', 'Lange Autorennamen vollständig anzeigen', 'Показывать длинные имена авторов полностью', '長い著者名を省略せず表示', '긴 저자 이름 전체 표시', 'Mostrar los nombres completos de los autores', 'Mostrar os nomes completos dos autores'],
+    'control.coverTitle': ['Show book titles', '显示书名', '顯示書名', 'Afficher les titres', 'Buchtitel anzeigen', 'Показывать названия книг', '書名を表示', '책 제목 표시', 'Mostrar títulos', 'Mostrar títulos'],
+    'control.coverAuthor': ['Show author names', '显示作者名', '顯示作者姓名', 'Afficher les noms d’auteur', 'Autorennamen anzeigen', 'Показывать имена авторов', '著者名を表示', '저자 이름 표시', 'Mostrar nombres de autores', 'Mostrar nomes dos autores'],
     'control.filterFormat': ['Show only selected file formats', '只显示指定文件格式', '只顯示指定檔案格式', 'Afficher uniquement les formats choisis', 'Nur ausgewählte Dateiformate', 'Только выбранные форматы', '選択したファイル形式だけを表示', '선택한 파일 형식만 표시', 'Mostrar solo los formatos de archivo seleccionados', 'Mostrar apenas os formatos de arquivo selecionados'],
     'control.filterSize': ['Show only selected file sizes', '只显示指定文件大小', '只顯示指定檔案大小', 'Afficher seulement les tailles de fichier choisies', 'Nur ausgewählte Dateigrößen anzeigen', 'Показывать только выбранные размеры файлов', '選択したファイルサイズだけを表示', '선택한 파일 크기만 표시', 'Mostrar solo los tamaños de archivo seleccionados', 'Mostrar apenas os tamanhos de arquivo selecionados'],
     'control.filterDownload': ['Filter by download status', '只显示指定下载状态', '只顯示指定下載狀態', 'Filtrer selon l’état de téléchargement', 'Nach Downloadstatus filtern', 'Фильтровать по статусу скачивания', 'ダウンロード状態で絞り込む', '다운로드 상태로 필터링', 'Filtrar por estado de descarga', 'Filtrar por status de download'],
@@ -392,6 +399,8 @@
       showYear: typeof input.showYear === 'boolean' ? input.showYear : DEFAULT_SETTINGS.showYear,
       showFullTitle: typeof input.showFullTitle === 'boolean' ? input.showFullTitle : DEFAULT_SETTINGS.showFullTitle,
       showFullAuthor: typeof input.showFullAuthor === 'boolean' ? input.showFullAuthor : DEFAULT_SETTINGS.showFullAuthor,
+      showCoverTitle: typeof input.showCoverTitle === 'boolean' ? input.showCoverTitle : DEFAULT_SETTINGS.showCoverTitle,
+      showCoverAuthor: typeof input.showCoverAuthor === 'boolean' ? input.showCoverAuthor : DEFAULT_SETTINGS.showCoverAuthor,
       filterYear: typeof input.filterYear === 'boolean' ? input.filterYear : DEFAULT_SETTINGS.filterYear,
       yearMin: typeof input.yearMin === 'string' ? input.yearMin.slice(0, 20) : '',
       yearMax: typeof input.yearMax === 'string' ? input.yearMax.slice(0, 20) : '',
@@ -587,13 +596,15 @@
     if (!root) return null;
     const style = container.ownerDocument.createElement('style');
     style.id = 'zble-masonry-filter-style';
-    style.textContent = '.item.zble-hidden,a.zble-hidden{display:none!important}';
+    style.textContent = `.item.zble-hidden,a.zble-hidden{display:none!important}${COVER_DISPLAY_CSS}`;
     root.append(style);
-    const observer = new Observer(() => {
-      if (style.parentNode !== root) root.append(style);
-      onChange();
+    const observer = new Observer(records => {
+      const rebuilt = style.parentNode !== root;
+      if (rebuilt) root.append(style);
+      if (rebuilt || !records || mutationNeedsRefresh(records)) onChange();
     });
-    observer.observe(root, { childList: true, subtree: true });
+    observer.observe(root, { childList: true, subtree: true, attributes: true,
+      attributeFilter: ['title', 'author'] });
     return { dispose() { observer.disconnect(); style.remove(); } };
   }
 
@@ -606,8 +617,10 @@
     const booklist = kind === 'booklist';
     const search = kind === 'search';
     const supported = booklist || search;
+    const coverText = ['home-recommend', 'detail-recommend', 'zrecommended', 'popular'].includes(kind);
     return { format: supported, size: supported, download: true, year: supported,
-      information: booklist, booklistAutomation: booklist, bulkOpen: true };
+      information: booklist || coverText, summary: booklist || coverText, coverText,
+      booklistAutomation: booklist, bulkOpen: true };
   }
 
   function coexistenceNoticeMode(root, kind) {
@@ -678,7 +691,30 @@
     if (infoBody && !capabilities.information) infoBody.hidden = true;
     const infoHint = panel.querySelector('#zble-info-availability');
     if (infoHint) infoHint.textContent = capabilities.information ? ''
-      : `（${translate(locale, 'hint.booklistOnly')}）`;
+      : `（${translate(locale, 'hint.cardPagesOnly')}）`;
+    for (const [selector, supported] of [
+      ['#zble-show-switch', kind === 'booklist'],
+      ['#zble-size-switch', kind === 'booklist'],
+      ['#zble-progress-switch', kind === 'booklist'],
+      ['#zble-summary-switch', capabilities.summary],
+      ['#zble-language-switch', kind === 'booklist'],
+      ['#zble-year-show-switch', kind === 'booklist'],
+      ['#zble-title-switch', kind === 'booklist'],
+      ['#zble-author-switch', kind === 'booklist'],
+      ['#zble-cover-title-switch', capabilities.coverText],
+      ['#zble-cover-author-switch', capabilities.coverText],
+    ]) {
+      const input = panel.querySelector(selector);
+      if (input) {
+        input.disabled = !supported;
+        if (!supported) input.checked = false;
+      }
+    }
+    const limited = panel.querySelector('#zble-info-hint');
+    if (limited && capabilities.coverText) {
+      limited.textContent = translate(locale, 'hint.coverDisplayLimited');
+      limited.classList?.remove('error');
+    }
     if (!capabilities.booklistAutomation) {
       for (const selector of ['#zble-show-more-1', '#zble-show-more-2',
         '#zble-show-more-continuous', '#zble-reset-show-more', '#zble-reset-hint',
@@ -1066,6 +1102,38 @@
     };
   }
 
+  function coverSummaryList(entries, kind) {
+    if (!['home-recommend', 'detail-recommend', 'zrecommended', 'popular'].includes(kind)) return null;
+    const first = entries[0];
+    if (!first) return null;
+    const wrapper = first.parentElement;
+    return wrapper?.classList?.contains('item') ? wrapper.parentElement : wrapper;
+  }
+
+  function renderCoverInfo(entry, showTitle, showAuthor) {
+    const cover = entry.querySelector?.('z-cover');
+    const title = showTitle ? String(cover?.getAttribute('title') || '').trim() : '';
+    const author = showAuthor ? String(cover?.getAttribute('author') || '').trim() : '';
+    let info = entry.querySelector?.('.zble-cover-info');
+    if (!title && !author) { info?.remove(); return; }
+    if (!info) {
+      info = entry.ownerDocument.createElement('div');
+      info.className = 'zble-cover-info';
+      entry.append(info);
+    }
+    const rows = [];
+    for (const [value, className] of [[title, 'zble-cover-title'], [author, 'zble-cover-author']]) {
+      if (!value) continue;
+      const row = entry.ownerDocument.createElement('span');
+      row.className = className;
+      row.textContent = value;
+      rows.push(row);
+    }
+    if (info.children.length !== rows.length || rows.some((row, index) =>
+      info.children[index]?.className !== row.className || info.children[index]?.textContent !== row.textContent))
+      info.replaceChildren(...rows);
+  }
+
   function compileFilters(settings, downloadReady, lookup) {
     const selected = new Set(settings.formats);
     const sizeBands = new Set(settings.sizeBands);
@@ -1136,12 +1204,13 @@
   }
 
   function mutationNeedsRefresh(records) {
-    const toolNode = node => node?.classList?.contains('zble-summary-card') ||
-      node?.classList?.contains('zble-progress');
+    const toolNode = node => node?.id === 'zble-masonry-filter-style' ||
+      node?.classList?.contains('zble-summary-card') || node?.classList?.contains('zble-progress') ||
+      node?.classList?.contains('zble-cover-info');
     return records.some(record => {
       if (record.type !== 'childList') return !toolNode(record.target) &&
-        !record.target.closest?.('.zble-summary-card, .zble-progress');
-      if (record.target.closest?.('.zble-summary-card, .zble-progress')) return false;
+        !record.target.closest?.('.zble-summary-card, .zble-progress, .zble-cover-info');
+      if (record.target.closest?.('.zble-summary-card, .zble-progress, .zble-cover-info')) return false;
       return [...record.addedNodes, ...record.removedNodes].some(node => !toolNode(node));
     });
   }
@@ -1190,7 +1259,7 @@
 
   const summaryMessageCache = new WeakMap();
 
-  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN', totalLabel = null) {
+  function renderFilterSummary(list, stats, active, notices = [], cardMetrics = null, locale = 'zh-CN', totalLabel = null, includeTotal = true) {
     if (!list) return;
     let summary = list.querySelector('.zble-summary-card');
     if (!active) { summary?.remove(); return; }
@@ -1204,12 +1273,14 @@
     const total = siteTotal === null ? translate(locale, 'summary.unknown') : siteTotal;
     const unit = locale.startsWith('zh') ? ' 本' : '';
     const totalUnit = siteTotal === null ? '' : unit;
-    const message = `${translate(locale, 'summary.loaded')} ${stats.loaded}${unit}\n${translate(locale, 'summary.matched')} ${stats.matched}${unit}\n${translate(locale, 'summary.total')} ${total}${totalUnit}`;
+    const message = `${translate(locale, 'summary.loaded')} ${stats.loaded}${unit}\n${translate(locale, 'summary.matched')} ${stats.matched}${unit}` +
+      (includeTotal ? `\n${translate(locale, 'summary.total')} ${total}${totalUnit}` : '');
     const next = notices.length ? `${message}\n${notices.join(locale.startsWith('zh') ? '；' : '; ')}` : message;
     if (summaryMessageCache.get(summary) !== next) {
       if (typeof summary.replaceChildren === 'function') {
-        const values = [stats.loaded, stats.matched, siteTotal];
-        const keys = ['summary.loaded', 'summary.matched', 'summary.total'];
+        const values = includeTotal ? [stats.loaded, stats.matched, siteTotal] : [stats.loaded, stats.matched];
+        const keys = includeTotal ? ['summary.loaded', 'summary.matched', 'summary.total']
+          : ['summary.loaded', 'summary.matched'];
         const rows = keys.map((key, index) => {
           const row = list.ownerDocument.createElement('div');
           row.className = 'zble-summary-metric';
@@ -1510,6 +1581,7 @@
       pageCapabilities, effectiveSettings, applyPanelCapabilities, coexistenceNoticeMode,
       attachUiEnhanceButtonLinks,
       readCardData, readPageEntry, compileFilters, evaluateCard, filterActiveCards, filterPageEntries,
+      renderCoverInfo, coverSummaryList,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
       renderFormatBadge, parseFileSizeMb, classifyFileSize, renderCardMeta, renderFullTitle, renderFullAuthor,
       formatRuleSummary, bindDeferredTextInput,
@@ -1645,6 +1717,8 @@
     let coexistenceDialogHost = null;
     let searchCoexistenceTimer = null;
     let lastCardMetrics = null;
+    let coverSummaryHost = null;
+    let coverInfoEntries = new Set();
     let panelResize = null;
     let disposed = false;
     let lastPanelData = null;
@@ -2067,6 +2141,11 @@
           renderFilterSummary(list, stats, activeFilter && settings.showSummary,
             translatedNotices(context), lastCardMetrics, locale, totalLabel);
           renderShowMore(main, stats, locale, settings.showProgress);
+        } else if (capabilities.coverText) {
+          renderFilterSummary(list, stats, activeFilter && settings.showSummary,
+            [], lastCardMetrics, locale, null, false);
+          setText('#zble-download-summary', formatRuleSummary(settings, 'ready', context.yearRule, locale).download);
+          setText('#zble-download-hint', '');
         } else if (!capabilities.format) {
           setText('#zble-download-summary', formatRuleSummary(settings, 'ready', context.yearRule, locale).download);
           setText('#zble-download-hint', '');
@@ -2103,13 +2182,45 @@
           setPageEntryHidden(entry, pageKind, !result.visible);
           if (active.filterDownload && result.download === 'unknown') unknownCards++;
         }
+        const summaryHost = coverSummaryList(entries, pageKind);
+        if (coverSummaryHost && coverSummaryHost !== summaryHost)
+          coverSummaryHost.querySelector('.zble-summary-card')?.remove();
+        coverSummaryHost = summaryHost;
+        if (capabilities.coverText) {
+          const nextEntries = new Set(entries);
+          for (const entry of coverInfoEntries) {
+            if (!nextEntries.has(entry)) renderCoverInfo(entry, false, false);
+          }
+          coverInfoEntries = nextEntries;
+          for (const entry of entries) renderCoverInfo(entry, settings.showCoverTitle, settings.showCoverAuthor);
+        }
+        let coverMetrics = null;
+        if (summaryHost) {
+          for (let index = entries.length - 1; index >= 0; index--) {
+            if (!pass.results[index].visible) continue;
+            const entry = entries[index];
+            const card = entry.parentElement?.classList?.contains('item') ? entry.parentElement : entry;
+            const rect = card.getBoundingClientRect();
+            if (rect.width && rect.height) {
+              const style = getComputedStyle(card);
+              coverMetrics = { flex: style.flex, height: rect.height, width: rect.width, margin: style.margin };
+            }
+            break;
+          }
+        }
+        lastCardMetrics = coverMetrics;
+        const stats = { loaded: entries.length, matched: pass.matched, total: null };
+        const activeFilter = !!active.filterDownload;
+        renderFilterSummary(summaryHost, stats, activeFilter && settings.showSummary,
+          [], coverMetrics, locale, null, false);
         attachCoverObservers(entries);
         renderPanelState(context, unknownCards, { format: 0, meta: 0, title: 0, author: 0 });
         if (!capabilities.format) {
           setText('#zble-download-summary', formatRuleSummary(settings, 'ready', context.yearRule, locale).download);
           setText('#zble-download-hint', '');
         }
-        lastPanelData = { context, unknownCards, unavailable: { format: 0, meta: 0, title: 0, author: 0 } };
+        lastPanelData = { context, unknownCards, unavailable: { format: 0, meta: 0, title: 0, author: 0 },
+          stats, activeFilter, list: summaryHost };
         syncBulkControl();
         return;
       }
@@ -2201,7 +2312,8 @@
         if (mutationNeedsRefresh(records)) scheduleRefresh();
       });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
-        attributeFilter: ['extension', 'filesize', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
+        attributeFilter: ['extension', 'filesize', 'year', 'language', 'title', 'author',
+          'disabled', 'aria-disabled', 'class', 'style'] });
       masonryWatch = ensureMasonryShadowWatch(pageKind, main, masonryWatch, scheduleRefresh);
       if (pageKind !== 'booklist') return;
       if (main.parentElement) {
@@ -2235,6 +2347,7 @@
       pageStyle.id = 'zble-page-style';
       pageStyle.textContent = '.booklist-main.active .readlist-view > z-bookcard.zble-hidden,#searchResultBox .resItemBoxBooks.zble-hidden,z-masonry > a.zble-hidden,[class*="RecommendationBlock__EndlessMasonry"] a.item.zble-hidden{display:none!important}.booklist-main.active .readlist-view > .zble-summary-card{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px;box-sizing:border-box;flex:0 0 23%;max-width:100%;padding:25px 22px;border:0;border-radius:16px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.booklist-main.active .zble-summary-metric{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #9baebf66;padding-bottom:10px}.booklist-main.active .zble-summary-label{font-size:12px;opacity:.8}.booklist-main.active .zble-summary-value{font-size:23px;line-height:1.2;font-weight:750}.booklist-main.active .zble-summary-notice{font-size:12px;line-height:1.45;color:#a64b27}.booklist-main.active .page-load-more .zble-progress{display:block;font-size:12px;line-height:1.4;opacity:.82;white-space:normal}@media(prefers-color-scheme:dark){.booklist-main.active .readlist-view > .zble-summary-card{background:#222e3c;color:#edf3f8;border-color:#526b7f;border-top-color:#82bfff;box-shadow:0 2px 10px #0006}.booklist-main.active .zble-summary-notice{color:#ffbd93}}@media(forced-colors:active){.booklist-main.active .readlist-view > .zble-summary-card{border:2px solid Highlight;box-shadow:none}.booklist-main.active .zble-summary-metric{border-bottom-color:CanvasText}}';
       pageStyle.textContent += '.zble-ui-enhance-link{display:inline-block;margin:3px 6px;padding:2px;border:0;background:transparent;color:#a12f28;text-decoration:underline;cursor:pointer;font:12px/1.4 system-ui,sans-serif}.zble-ui-enhance-link:focus-visible{outline:2px solid #a12f28;outline-offset:2px}@media(prefers-color-scheme:dark){.zble-ui-enhance-link{color:#ffb0a3}}';
+      pageStyle.textContent += COVER_DISPLAY_CSS;
       (document.head || document.documentElement).append(pageStyle);
 
       const host = document.createElement('div');
@@ -2293,6 +2406,8 @@
             <label class="row"><input id="zble-year-show-switch" type="checkbox"><span data-i18n="control.year">出版年份（页面自带）</span></label>
             <label class="row"><input id="zble-title-switch" type="checkbox"><span data-i18n="control.fullTitle">完整显示超长书名</span></label>
             <label class="row"><input id="zble-author-switch" type="checkbox"><span data-i18n="control.fullAuthor">完整显示超长作者名</span></label>
+            <label class="row"><input id="zble-cover-title-switch" type="checkbox"><span data-i18n="control.coverTitle">显示书名</span></label>
+            <label class="row"><input id="zble-cover-author-switch" type="checkbox"><span data-i18n="control.coverAuthor">显示作者名</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
           <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><button id="zble-reset-show-more" class="reset-link" type="button" data-i18n="auto.resetShowMore" disabled>重置 Show more 按钮可用性</button><div id="zble-reset-hint" class="hint" role="status"></div><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
@@ -2362,6 +2477,7 @@
         ['#zble-language-switch', 'showLanguage'],
         ['#zble-year-show-switch', 'showYear'], ['#zble-title-switch', 'showFullTitle'],
         ['#zble-author-switch', 'showFullAuthor'],
+        ['#zble-cover-title-switch', 'showCoverTitle'], ['#zble-cover-author-switch', 'showCoverAuthor'],
         ['#zble-format-switch', 'filterFormat'], ['#zble-size-filter-switch', 'filterSize'],
         ['#zble-download-switch', 'filterDownload'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
@@ -2776,6 +2892,9 @@
       for (const observer of coverObservers.values()) observer.disconnect();
       if (panelResize) window.removeEventListener?.('resize', panelResize);
       for (const entry of getPageEntries(document, pageKind)) setPageEntryHidden(entry, pageKind, false);
+      for (const entry of coverInfoEntries) renderCoverInfo(entry, false, false);
+      coverInfoEntries.clear();
+      coverSummaryHost?.querySelector('.zble-summary-card')?.remove();
       for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
         card.classList.remove('zble-hidden');
         renderFormatBadge(card, card.getAttribute('extension'), false, locale, '', false);
