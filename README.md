@@ -47,7 +47,7 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 - 如果真实站点的「Show more」卡住，工具目前不能安全地重置它；请刷新页面。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `4.0`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `4.0.1`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
@@ -102,7 +102,7 @@ Click the panel title bar to collapse or expand it, or drag the panel toward a s
 - If “Show more” gets stuck on a real site, the tool cannot safely reset it yet; refresh the page.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `4.0`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `4.0.1`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 

@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.0
+// @version      4.0.1
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -106,6 +106,7 @@
 
   const KNOWN_FORMATS = new Set(['pdf', 'epub', 'azw3', 'mobi']);
   const KNOWN_HOSTS = new Set(['z-lib.sk', 'z-library.sk', '1lib.sk', 'libb.la', 'z-library.im', 'z-lib.fm']);
+  const MASONRY_PAGE_KINDS = new Set(['home-recommend', 'detail-recommend', 'popular']);
   const PAGE_SIZE = 20;
   const SETTING_FORMATS = new Set([...KNOWN_FORMATS, 'other', 'custom']);
   const SIZE_BANDS = new Set(['lt1', '1to10', '10to50', '50to100', 'gte100', 'unknown']);
@@ -532,6 +533,13 @@
   }
 
   function getPageEntries(root, kind) {
+    const masonrySource = kind === 'popular' ? 'mostpopular'
+      : kind === 'home-recommend' || kind === 'detail-recommend' ? 'recommend' : null;
+    if (masonrySource) {
+      const masonry = root.querySelector(`z-masonry[source="${masonrySource}"]`);
+      if (masonry?.shadowRoot)
+        return [...masonry.shadowRoot.querySelectorAll('a:has(> z-cover)')];
+    }
     const selectors = {
       booklist: '.booklist-main.active .readlist-view > z-bookcard',
       search: '#searchResultBox .resItemBoxBooks > z-bookcard',
@@ -541,6 +549,32 @@
       popular: 'z-masonry[source="mostpopular"] > a:has(> z-cover)',
     };
     return selectors[kind] ? [...root.querySelectorAll(selectors[kind])] : [];
+  }
+
+  function setPageEntryHidden(entry, kind, hidden) {
+    const target = kind === 'search' || (MASONRY_PAGE_KINDS.has(kind) && entry.parentElement?.classList?.contains('item'))
+      ? entry.parentElement : entry;
+    target?.classList?.toggle('zble-hidden', hidden);
+  }
+
+  function watchMasonryShadow(container, onChange, Observer = MutationObserver) {
+    const root = container?.shadowRoot;
+    if (!root) return null;
+    const style = container.ownerDocument.createElement('style');
+    style.id = 'zble-masonry-filter-style';
+    style.textContent = '.item.zble-hidden,a.zble-hidden{display:none!important}';
+    root.append(style);
+    const observer = new Observer(() => {
+      if (style.parentNode !== root) root.append(style);
+      onChange();
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    return { dispose() { observer.disconnect(); style.remove(); } };
+  }
+
+  function ensureMasonryShadowWatch(kind, container, current, onChange, Observer = MutationObserver) {
+    return current || (MASONRY_PAGE_KINDS.has(kind)
+      ? watchMasonryShadow(container, onChange, Observer) : null);
   }
 
   function pageCapabilities(kind) {
@@ -1418,7 +1452,8 @@
       normalizeExtension, parseCustomFormats, invalidCustomFormats, matchesFormat, hasEffectiveFormatRule,
       sanitizeSettings, parseShowMoreCount, describeShowMoreCountInput,
       parseBookTotal, parseBookTotalLabel, parseProgressTotal, computeStats, classifyDownload, createDownloadGate,
-      getActiveCards, hasBooklistFingerprint, detectListPage, getPageEntries,
+      getActiveCards, hasBooklistFingerprint, detectListPage, getPageEntries, setPageEntryHidden,
+      watchMasonryShadow, ensureMasonryShadowWatch,
       pageCapabilities, effectiveSettings, applyPanelCapabilities,
       readCardData, readPageEntry, compileFilters, evaluateCard, filterActiveCards, filterPageEntries,
       createRefreshScheduler, createPanelResizeHandler, mutationNeedsRefresh,
@@ -1542,6 +1577,7 @@
     let shadowRetries = 0;
     let observedMain = null;
     let mainObserver = null;
+    let masonryWatch = null;
     let parentObserver = null;
     let startupObserver = null;
     let classObservers = [];
@@ -1913,8 +1949,7 @@
         for (let index = 0; index < entries.length; index++) {
           const entry = entries[index];
           const result = pass.results[index];
-          const target = pageKind === 'search' ? entry.parentElement : entry;
-          target?.classList?.toggle('zble-hidden', !result.visible);
+          setPageEntryHidden(entry, pageKind, !result.visible);
           if (active.filterDownload && result.download === 'unknown') unknownCards++;
         }
         attachCoverObservers(entries);
@@ -1992,8 +2027,13 @@
     function attachObservers() {
       const main = pageKind === 'booklist' ? document.querySelector('.booklist-main.active')
         : detectListPage(document, window.location?.hostname, initialPathname)?.container;
-      if (main === observedMain) return;
+      if (main === observedMain) {
+        masonryWatch = ensureMasonryShadowWatch(pageKind, main, masonryWatch, scheduleRefresh);
+        return;
+      }
       mainObserver?.disconnect();
+      masonryWatch?.dispose();
+      masonryWatch = null;
       parentObserver?.disconnect();
       for (const observer of classObservers) observer.disconnect();
       classObservers = [];
@@ -2011,6 +2051,7 @@
       });
       mainObserver.observe(main, { childList: true, subtree: true, attributes: true,
         attributeFilter: ['extension', 'filesize', 'year', 'language', 'disabled', 'aria-disabled', 'class', 'style'] });
+      masonryWatch = ensureMasonryShadowWatch(pageKind, main, masonryWatch, scheduleRefresh);
       if (pageKind !== 'booklist') return;
       if (main.parentElement) {
         parentObserver = new MutationObserver(scheduleRefresh);
@@ -2548,14 +2589,12 @@
       clearTimeout(retryId);
       startupObserver?.disconnect();
       mainObserver?.disconnect();
+      masonryWatch?.dispose();
       parentObserver?.disconnect();
       for (const observer of classObservers) observer.disconnect();
       for (const observer of coverObservers.values()) observer.disconnect();
       if (panelResize) window.removeEventListener?.('resize', panelResize);
-      for (const entry of getPageEntries(document, pageKind)) {
-        if (pageKind === 'search') entry.parentElement?.classList?.remove('zble-hidden');
-        else entry.classList?.remove('zble-hidden');
-      }
+      for (const entry of getPageEntries(document, pageKind)) setPageEntryHidden(entry, pageKind, false);
       for (const card of initialMain?.querySelectorAll?.('.readlist-view > z-bookcard') || []) {
         card.classList.remove('zble-hidden');
         renderFormatBadge(card, card.getAttribute('extension'), false, locale, '', false);
