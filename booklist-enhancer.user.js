@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.2.0
+// @version      4.3.0
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -98,6 +98,10 @@
 // @grant        GM_setValue
 // @grant        unsafeWindow
 // @grant        GM_openInTab
+// @grant        GM_xmlhttpRequest
+// @grant        GM_setClipboard
+// @grant        GM_info
+// @connect      greasyfork.org
 // @grant        window.onurlchange
 // ==/UserScript==
 
@@ -138,6 +142,7 @@
     uiLanguage: 'auto',
     showMoreCount1: 5,
     showMoreCount2: 10,
+    humanizedOpen: false,
   });
   const COVER_DISPLAY_CSS = '.zble-cover-info{display:block;min-width:0;margin:6px 0 0;padding:0 2px;color:inherit;font:12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}.zble-cover-title,.zble-cover-author{display:block}.zble-cover-title{font-weight:650}.zble-cover-author{margin-top:2px;opacity:.8}.zble-summary-card{display:flex;flex-direction:column;justify-content:center;gap:12px;box-sizing:border-box;min-width:0;min-height:180px;padding:16px;border-radius:12px;background:var(--card-bg-color,#fff);box-shadow:var(--box-shadow,0 2px 6px #0001);color:var(--gray-9,#243747);font:12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}.zble-summary-metric{display:flex;flex-direction:column;gap:3px;border-bottom:1px solid #9baebf66;padding-bottom:8px}.zble-summary-label{font-size:11px;opacity:.8}.zble-summary-value{font-size:20px;line-height:1.2;font-weight:750}@media(prefers-color-scheme:dark){.zble-summary-card{background:#222e3c;color:#edf3f8;box-shadow:0 2px 10px #0006}}@media(forced-colors:active){.zble-summary-card{border:2px solid Highlight;box-shadow:none}.zble-summary-metric{border-bottom-color:CanvasText}}';
 
@@ -156,9 +161,24 @@
     'hint.coverDisplayLimited': ['Only summary, title and author options apply to this cover list.', '此封面列表仅支持统计卡片、显示标题和显示作者名。', '此封面清單僅支援統計卡片、顯示書名和顯示作者。', 'Seules les options de résumé, de titre et d’auteur s’appliquent à cette liste de couvertures.', 'Für diese Coverliste gelten nur die Optionen für Statistik, Titel und Autor.', 'Для этого списка обложек доступны только статистика, названия и авторы.', 'この表紙一覧では集計カード、書名、著者名のみ設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름만 설정할 수 있습니다.', 'En esta lista de portadas solo se aplican el resumen, el título y el autor.', 'Nesta lista de capas, só se aplicam as opções de resumo, título e autor.'],
     'hint.masonryDisplayLimited': ['This cover list supports summary, title, author, and full last-row display.', '此封面列表支持统计卡片、显示书名、显示作者名和不裁剪最后一行。', '此封面清單支援統計卡片、顯示書名、顯示作者及不裁剪最後一行。', 'Cette liste de couvertures prend en charge le résumé, les titres, les auteurs et l’affichage complet de la dernière rangée.', 'Diese Coverliste unterstützt Statistik, Titel, Autoren und die vollständige Anzeige der letzten Reihe.', 'Для этого списка обложек доступны статистика, названия, авторы и полное отображение последнего ряда.', 'この表紙一覧では集計カード、書名、著者名、最終行の完全表示を設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름, 마지막 줄 전체 표시를 설정할 수 있습니다.', 'Esta lista de portadas permite mostrar el resumen, los títulos, los autores y la última fila completa.', 'Esta lista de capas permite exibir o resumo, os títulos, os autores e a última linha inteira.'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
+    'share.name': ['Z-lib Booklist Enhancer', 'Z-Library 书单增强', 'Z-Library 書單增強', 'Listes de livres Z-Library améliorées', 'Z-Library: Erweiterte Bücherlisten', 'Улучшение списков книг Z-Library', 'Z-Library 書籍リスト拡張', 'Z-Library 책 목록 개선', 'Mejora de listas de libros de Z-Library', 'Melhorias para listas de livros da Z-Library'],
+    'share.recommendText': ['It makes Z-Library booklists easier to browse, filters search results, and helps open visible book pages.', '它让 Z-Library 书单更易浏览，可筛选搜索结果，还能批量打开当前可见的图书页面。', '它讓 Z-Library 書單更容易瀏覽，可篩選搜尋結果，也能批次開啟目前可見的書籍頁面。', 'Il facilite la consultation des listes Z-Library, filtre les résultats de recherche et ouvre les pages des livres visibles.', 'Es macht Z-Library-Bücherlisten übersichtlicher, filtert Suchergebnisse und öffnet sichtbare Buchseiten.', 'Упрощает просмотр списков Z-Library, фильтрует результаты поиска и открывает страницы видимых книг.', 'Z-Library の書籍リストを見やすくし、検索結果を絞り込み、表示中の本のページをまとめて開けます。', 'Z-Library 책 목록을 보기 쉽게 하고 검색 결과를 필터링하며 보이는 책 페이지를 한꺼번에 엽니다.', 'Facilita la lectura de listas de Z-Library, filtra búsquedas y abre las páginas de los libros visibles.', 'Facilita a leitura das listas da Z-Library, filtra buscas e abre as páginas dos livros visíveis.'],
     'about.description': ['Enhance booklists and filter search results; filter recommendations and popular books by download status.', '增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。', '增強書單並篩選搜尋結果；推薦與熱門書籍可依下載狀態篩選。', 'Améliorez les listes de livres et filtrez les résultats de recherche; filtrez les recommandations et les livres populaires selon leur état de téléchargement.', 'Bücherlisten verbessern und Suchergebnisse filtern; Empfehlungen und beliebte Bücher nach Downloadstatus filtern.', 'Улучшайте списки книг и фильтруйте результаты поиска; рекомендации и популярные книги фильтруйте по статусу загрузки.', '書籍リストを便利にし、検索結果を絞り込めます。推薦・人気の本はダウンロード状態で絞り込めます。', '책 목록을 개선하고 검색 결과를 필터링합니다. 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.', 'Mejora las listas de libros y filtra los resultados de búsqueda; filtra recomendaciones y libros populares por estado de descarga.', 'Melhore as listas de livros e filtre resultados de busca; filtre recomendações e livros populares pelo status de download.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
     'about.github': ['GitHub page', 'GitHub 页面', 'GitHub 頁面', 'Page GitHub', 'GitHub-Seite', 'Страница GitHub', 'GitHub ページ', 'GitHub 페이지', 'Página de GitHub', 'Página no GitHub'],
+    'update.available': ['New version {version} is available.', '发现新版本 {version}。', '發現新版本 {version}。', 'Nouvelle version {version} disponible.', 'Neue Version {version} verfügbar.', 'Доступна новая версия {version}.', '新しいバージョン {version} が公開されました。', '새 버전 {version}이 있습니다.', 'Hay una versión nueva: {version}.', 'Nova versão {version} disponível.'],
+    'update.link': ['Update', '前往更新', '前往更新', 'Mettre à jour', 'Aktualisieren', 'Обновить', '更新する', '업데이트', 'Actualizar', 'Atualizar'],
+    'mirror.title': ['Use this tool on another Z-lib mirror', '在其他Z-lib镜像站使用本工具', '在其他 Z-lib 鏡像站使用本工具', 'Utiliser cet outil sur un autre miroir Z-lib', 'Dieses Tool auf einem anderen Z-lib-Mirror verwenden', 'Использовать инструмент на другом зеркале Z-lib', '別の Z-lib ミラーでこのツールを使う', '다른 Z-lib 미러에서 이 도구 사용', 'Usar esta herramienta en otro espejo de Z-lib', 'Usar esta ferramenta em outro espelho Z-lib'],
+    'mirror.steps': ['In Tampermonkey, open this script’s Settings. Add an exact User matches rule for the mirror you trust, save it, then refresh that mirror’s booklist page.', '在 Tampermonkey 中打开本脚本的“设置”，将你信任的镜像站地址添加到“User matches”，保存后刷新该镜像的书单页面。', '在 Tampermonkey 中開啟本腳本的「設定」，將你信任的鏡像站網址加入「User matches」，儲存後重新整理該鏡像的書單頁面。', 'Dans les paramètres de ce script dans Tampermonkey, ajoutez une règle User matches précise pour un miroir fiable, enregistrez, puis rechargez sa page de liste.', 'Fügen Sie in den Tampermonkey-Einstellungen dieses Skripts eine genaue User-matches-Regel für einen vertrauenswürdigen Mirror hinzu, speichern Sie und laden Sie dessen Bücherliste neu.', 'В настройках этого скрипта в Tampermonkey добавьте точное правило User matches для доверенного зеркала, сохраните и обновите страницу списка книг.', 'Tampermonkey でこのスクリプトの設定を開き、信頼できるミラーの User matches を正確に追加して保存し、書籍リストを再読み込みしてください。', 'Tampermonkey에서 이 스크립트의 설정을 열고 신뢰하는 미러의 정확한 User matches 규칙을 추가해 저장한 뒤 책 목록 페이지를 새로고침하세요.', 'En la configuración de este script en Tampermonkey, añade una regla User matches precisa para un espejo de confianza, guarda y recarga su lista de libros.', 'Nas configurações deste script no Tampermonkey, adicione uma regra User matches exata para um espelho confiável, salve e recarregue a lista de livros.'],
+    'mirror.example': ['Example: https://your-mirror.example/booklist/* (replace the domain).', '例如：https://your-mirror.example/booklist/*（请替换为实际域名）。', '例如：https://your-mirror.example/booklist/*（請替換成實際網域）。', 'Exemple : https://your-mirror.example/booklist/* (remplacez le domaine).', 'Beispiel: https://your-mirror.example/booklist/* (Domain ersetzen).', 'Пример: https://your-mirror.example/booklist/* (замените домен).', '例: https://your-mirror.example/booklist/*（ドメインを置き換えてください）。', '예: https://your-mirror.example/booklist/* (도메인을 바꾸세요).', 'Ejemplo: https://your-mirror.example/booklist/* (sustituye el dominio).', 'Exemplo: https://your-mirror.example/booklist/* (substitua o domínio).'],
+    'mirror.caution': ['Check that the mirror is trustworthy before adding it. A matching page layout does not prove a mirror is safe.', '添加前请先核实镜像站是否可信；页面结构相似不代表镜像站安全。', '加入前請先確認鏡像站是否可信；頁面結構相似不代表鏡像站安全。', 'Vérifiez que le miroir est fiable avant de l’ajouter ; une mise en page semblable ne prouve pas sa sûreté.', 'Prüfen Sie den Mirror vor dem Hinzufügen. Ein ähnlicher Seitenaufbau beweist nicht, dass er sicher ist.', 'Проверьте надёжность зеркала до добавления: похожая структура страницы не гарантирует безопасность.', '追加前にミラーの信頼性を確認してください。表示が似ていても安全とは限りません。', '추가 전에 미러를 신뢰할 수 있는지 확인하세요. 페이지 구조가 비슷해도 안전하다는 뜻은 아닙니다.', 'Comprueba que el espejo sea fiable antes de añadirlo; un diseño parecido no demuestra que sea seguro.', 'Confira se o espelho é confiável antes de adicioná-lo; uma página parecida não comprova sua segurança.'],
+    'about.greasyFork': ['Greasy Fork script page', 'Greasy Fork 插件主页', 'Greasy Fork 腳本首頁', 'Page du script sur Greasy Fork', 'Skriptseite auf Greasy Fork', 'Страница скрипта на Greasy Fork', 'Greasy Fork のスクリプトページ', 'Greasy Fork 스크립트 페이지', 'Página del script en Greasy Fork', 'Página do script no Greasy Fork'],
+    'section.share': ['Share with friends', '分享给朋友', '分享給朋友', 'Partager avec des amis', 'Mit Freunden teilen', 'Поделиться с друзьями', '友人に共有', '친구와 공유', 'Compartir con amigos', 'Compartilhar com amigos'],
+    'share.install': ['Copy installation address', '复制安装地址', '複製安裝網址', 'Copier l’adresse d’installation', 'Installationsadresse kopieren', 'Скопировать адрес установки', 'インストール先をコピー', '설치 주소 복사', 'Copiar dirección de instalación', 'Copiar endereço de instalação'],
+    'share.recommend': ['Copy recommendation', '复制推荐文案', '複製推薦文案', 'Copier le texte de recommandation', 'Empfehlungstext kopieren', 'Скопировать текст рекомендации', '紹介文をコピー', '추천 문구 복사', 'Copiar texto de recomendación', 'Copiar texto de recomendação'],
+    'share.copied': ['Copied to clipboard.', '已复制到剪切板。', '已複製到剪貼簿。', 'Copié dans le presse-papiers.', 'In die Zwischenablage kopiert.', 'Скопировано в буфер обмена.', 'クリップボードにコピーしました。', '클립보드에 복사했습니다.', 'Copiado al portapapeles.', 'Copiado para a área de transferência.'],
+    'share.failed': ['Could not copy. Check clipboard permissions.', '复制失败，请检查剪切板权限。', '複製失敗，請檢查剪貼簿權限。', 'Copie impossible. Vérifiez les autorisations du presse-papiers.', 'Kopieren fehlgeschlagen. Prüfen Sie die Zwischenablage-Berechtigung.', 'Не удалось скопировать. Проверьте разрешение на доступ к буферу обмена.', 'コピーできませんでした。クリップボードの権限を確認してください。', '복사하지 못했습니다. 클립보드 권한을 확인하세요.', 'No se pudo copiar. Revisa los permisos del portapapeles.', 'Não foi possível copiar. Verifique as permissões da área de transferência.'],
+    'auto.bulkCancelled': ['Stopped after {attempted} attempts; {remaining} pages were not opened.', '已中止：已点 {attempted} 次，剩余 {remaining} 次未执行。', '已中止：已點 {attempted} 次，剩餘 {remaining} 次未執行。', 'Arrêt après {attempted} tentatives ; {remaining} pages non ouvertes.', 'Nach {attempted} Versuchen gestoppt; {remaining} Seiten nicht geöffnet.', 'Остановлено после {attempted} попыток; {remaining} страниц не открыто.', '{attempted} 回で中止しました。残り {remaining} ページは開いていません。', '{attempted}번 시도 후 중단했습니다. 남은 {remaining}개 페이지는 열지 않았습니다.', 'Detenido tras {attempted} intentos; no se abrieron {remaining} páginas.', 'Parou após {attempted} tentativas; {remaining} páginas não foram abertas.'],
     'about.placeholder': ['Not provided', '未提供', '未提供', 'Non renseigné', 'Nicht angegeben', 'Не указано', '未掲載', '제공되지 않음', 'No disponible', 'Não informado'],
     'control.formatBadge': ['File format badge', '文件格式标签', '檔案格式標籤', 'Étiquette du format', 'Dateiformat-Label', 'Метка формата файла', 'ファイル形式のラベル', '파일 형식 배지', 'Etiqueta de formato', 'Etiqueta do formato'],
     'control.sizeBadge': ['File size badge', '文件大小标签', '檔案大小標籤', 'Étiquette de taille du fichier', 'Dateigrößenetikett', 'Метка размера файла', 'ファイルサイズのラベル', '파일 크기 배지', 'Etiqueta del tamaño del archivo', 'Etiqueta do tamanho do arquivo'],
@@ -196,6 +216,7 @@
     'setting.yearRange': ['Publication year range (inclusive)', '出版年份范围（含端点）', '出版年份範圍（含端點）', 'Années de publication (bornes incluses)', 'Erscheinungsjahre (einschließlich Grenzen)', 'Годы издания (границы включены)', '出版年の範囲（開始年・終了年を含む）', '출판 연도 범위(시작·끝 연도 포함)', 'Años de publicación (límites incluidos)', 'Anos de publicação (limites incluídos)'],
     'setting.showMoreCount1': ['Show more clicks (first button)', '连点器 1 次数', '連點器 1 次數', 'Clics sur Show more (premier bouton)', 'Show-more-Klicks (erste Schaltfläche)', 'Нажатия Show more (первая кнопка)', 'Show more のクリック回数（1つ目のボタン）', 'Show more 클릭 횟수(첫 번째 버튼)', 'Clics en Show more (primer botón)', 'Cliques em Show more (primeiro botão)'],
     'setting.showMoreCount2': ['Show more clicks (second button)', '连点器 2 次数', '連點器 2 次數', 'Clics sur Show more (deuxième bouton)', 'Show-more-Klicks (zweite Schaltfläche)', 'Нажатия Show more (вторая кнопка)', 'Show more のクリック回数（2つ目のボタン）', 'Show more 클릭 횟수(두 번째 버튼)', 'Clics en Show more (segundo botón)', 'Cliques em Show more (segundo botão)'],
+    'setting.humanizedOpen': ['Human-like opening intervals (randomized)', '拟人化（随机延长打开间隔）', '擬人化（隨機延長開啟間隔）', 'Intervalles d’ouverture variables, comme une personne', 'Variable Öffnungsabstände wie bei einer Person', 'Случайные интервалы открытия, как у человека', '人が操作するように間隔をランダムに延ばす', '사람처럼 무작위 간격으로 페이지 열기', 'Intervalos de apertura variables, como una persona', 'Intervalos de abertura variáveis, como uma pessoa'],
     'setting.continuousEnabled': ['Enable continuous clicking on this site', '在本站启用持续连点', '在本站啟用持續連點', 'Activer les clics continus sur ce site', 'Fortlaufendes Klicken auf dieser Website aktivieren', 'Включить непрерывные нажатия на этом сайте', 'このサイトで Show more の連続クリックを有効にする', '이 사이트에서 Show more 연속 클릭 사용', 'Activar los clics continuos en este sitio', 'Ativar cliques contínuos neste site'],
     'setting.minYear': ['Start year', '起始年份', '起始年份', 'Année de début', 'Anfangsjahr', 'Начальный год', '開始年', '시작 연도', 'Año inicial', 'Ano inicial'],
     'setting.maxYear': ['End year', '截止年份', '截止年份', 'Année de fin', 'Endjahr', 'Конечный год', '終了年', '종료 연도', 'Año final', 'Ano final'],
@@ -203,7 +224,7 @@
     'setting.yearHint': ['Applies when you pause typing or press Enter. Either field may be blank.', '停顿后或按回车生效；可只填一端。', '停頓後或按 Enter 生效；可只填一端。', 'La modification s’applique après une pause dans la saisie ou avec Entrée. Vous pouvez laisser un champ vide.', 'Die Änderung wird nach einer Eingabepause oder mit Enter übernommen. Ein Feld kann leer bleiben.', 'Изменение применяется после паузы при вводе или нажатия Enter. Одно поле можно оставить пустым.', '入力を止めて少し待つか、Enter キーを押すと反映されます。片方は空欄でもかまいません。', '입력을 멈추고 잠시 기다리거나 Enter를 누르면 적용됩니다. 한쪽 칸은 비워 두어도 됩니다.', 'El cambio se aplica al dejar de escribir o pulsar Intro. Puedes dejar uno de los campos en blanco.', 'A alteração é aplicada quando você para de digitar ou pressiona Enter. Um dos campos pode ficar vazio.'],
     'setting.missingYear': ['Include books without a year', '显示年份缺失的书籍', '顯示缺少年份的書籍', 'Inclure les livres sans année', 'Bücher ohne Jahr einschließen', 'Включать книги без года', '出版年がない本も表示', '출판 연도가 없는 책도 표시', 'Incluir libros sin año', 'Incluir livros sem ano'],
     'setting.resetPosition': ['Reset panel position', '重置浮窗位置', '重設浮窗位置', 'Réinitialiser la position', 'Panelposition zurücksetzen', 'Сбросить положение панели', 'パネル位置をリセット', '패널 위치 초기화', 'Restablecer posición', 'Redefinir posição'],
-    'setting.userMatches': ['Other mirrors: add User matches in Tampermonkey.', '其他镜像：请在 Tampermonkey 中添加 User matches。', '其他鏡像：請在 Tampermonkey 中加入 User matches。', 'Autres miroirs : ajoutez des User matches dans Tampermonkey.', 'Weitere Mirrors: User matches in Tampermonkey hinzufügen.', 'Другие зеркала: добавьте User matches в Tampermonkey.', '他のミラーは Tampermonkey の User matches に追加してください。', '다른 미러는 Tampermonkey의 User matches에 추가하세요.', 'Otros sitios espejo: añade User matches en Tampermonkey.', 'Outros espelhos: adicione User matches no Tampermonkey.'],
+    'setting.userMatches': ['Use this tool on other Z-lib mirrors', '在其他Z-lib镜像站使用本工具', '在其他 Z-lib 鏡像站使用本工具', 'Utiliser cet outil sur d’autres miroirs Z-lib', 'Dieses Tool auf anderen Z-lib-Mirrors verwenden', 'Использовать инструмент на других зеркалах Z-lib', '別の Z-lib ミラーでこのツールを使う', '다른 Z-lib 미러에서 이 도구 사용', 'Usar esta herramienta en otros espejos de Z-lib', 'Usar esta ferramenta em outros espelhos Z-lib'],
     'setting.language': ['Interface language', '界面语言', '介面語言', 'Langue de l’interface', 'Oberflächensprache', 'Язык интерфейса', '表示言語', '인터페이스 언어', 'Idioma de la interfaz', 'Idioma da interface'],
     'setting.autoLanguage': ['Use browser or system language', '跟随浏览器/系统', '跟隨瀏覽器／系統', 'Utiliser la langue du navigateur ou du système', 'Browser- oder Systemsprache verwenden', 'Использовать язык браузера или системы', 'ブラウザーまたはシステムの言語を使用', '브라우저 또는 시스템 언어 사용', 'Usar el idioma del navegador o del sistema', 'Usar o idioma do navegador ou do sistema'],
     'setting.showNotice': ['Show welcome notice on this site', '在本站显示启动提示', '在本站顯示啟用提示', 'Afficher le message d’accueil sur ce site', 'Willkommenshinweis auf dieser Website anzeigen', 'Показывать приветственное уведомление на этом сайте', 'このサイトで案内を表示', '이 사이트에서 시작 안내 표시', 'Mostrar aviso de bienvenida en este sitio', 'Mostrar aviso de boas-vindas neste site'],
@@ -259,6 +280,7 @@
     'auto.bulkUnknown': ['Some download statuses are unknown; bulk opening is paused.', '部分下载状态未知，批量打开已暂停。', '部分下載狀態未知，批次開啟暫停。', 'Certains états de téléchargement sont inconnus ; ouverture en pause.', 'Einige Downloadstatus unbekannt; Öffnen pausiert.', 'Статус скачивания некоторых книг неизвестен; открытие страниц приостановлено.', '一部の本はダウンロード状態が不明なため、まとめて開く操作を一時停止しています。', '일부 책의 다운로드 상태를 알 수 없어 한꺼번에 열기를 일시 중지합니다.', 'Algunos estados son desconocidos; apertura en pausa.', 'O status de download de alguns livros é desconhecido; a abertura de páginas está pausada.'],
     'auto.bulkEmpty': ['No visible book pages are eligible to open.', '当前没有可打开的可见书籍链接。', '目前沒有可開啟的可見書籍連結。', 'Aucune page de livre visible ne peut être ouverte.', 'Keine sichtbaren Buchseiten können geöffnet werden.', 'Нет страниц видимых книг, которые можно открыть.', '現在表示中の本に、開けるページがありません。', '현재 표시된 책 중 열 수 있는 페이지가 없습니다.', 'No hay páginas de libros visibles que se puedan abrir.', 'Não há páginas de livros visíveis que possam ser abertas.'],
     'auto.bulkChanged': ['List or permission changed; nothing was opened.', '书单或权限已变化，本次没有打开页面。', '書單或權限已變更，本次未開啟頁面。', 'La liste ou l’autorisation a changé ; aucune page n’a été ouverte.', 'Die Liste oder Berechtigung hat sich geändert; es wurde keine Seite geöffnet.', 'Список или разрешение изменились; ни одна страница не открыта.', 'リストまたは許可設定が変わったため、ページは開きませんでした。', '목록이나 허용 설정이 바뀌어 페이지를 열지 않았습니다.', 'La lista o el permiso ha cambiado; no se ha abierto ninguna página.', 'A lista ou a permissão mudou; nenhuma página foi aberta.'],
+    'auto.bulkRunning': ['Clicked {attempted} times, {remaining} remaining; click to stop', '已点 {attempted} 次，还剩 {remaining} 次，点此中止', '已點 {attempted} 次，還剩 {remaining} 次，點此中止', '{attempted} clics, {remaining} restants ; cliquer pour arrêter', '{attempted} Mal geklickt, {remaining} verbleibend; zum Stoppen klicken', 'Нажато {attempted} раз, осталось {remaining}; нажмите, чтобы остановить', '{attempted} 回開きました。残り {remaining} 回。クリックして中止', '{attempted}번 열었고 {remaining}번 남음. 클릭하여 중단', '{attempted} clics, quedan {remaining}; haz clic para detener', '{attempted} cliques, faltam {remaining}; clique para parar'],
     'auto.bulkProgress': ['Attempted {attempted}; submitted {submitted}; failed {failed}. Submission does not mean loaded.', '已尝试 {attempted}；已提交打开 {submitted}；失败 {failed}。提交不等于加载成功。', '已嘗試 {attempted}；已提交開啟 {submitted}；失敗 {failed}。提交不等於載入成功。', 'Tentatives : {attempted} ; ouvertures demandées : {submitted} ; échecs : {failed}. Une demande ne garantit pas le chargement.', 'Versuche: {attempted}; Öffnungsanfragen: {submitted}; fehlgeschlagen: {failed}. Eine Anfrage garantiert nicht, dass die Seite geladen wurde.', 'Попыток: {attempted}; запросов на открытие: {submitted}; ошибок: {failed}. Отправка запроса не гарантирует загрузку страницы.', '試行：{attempted}件、開く要求：{submitted}件、失敗：{failed}件。要求を送っても、ページが読み込まれたとは限りません。', '시도: {attempted}건, 열기 요청: {submitted}건, 실패: {failed}건. 열기 요청을 보냈다고 해서 페이지가 로드된 것은 아닙니다.', 'Intentos: {attempted}; solicitudes enviadas: {submitted}; fallos: {failed}. Enviar una solicitud no garantiza que la página se cargue.', 'Tentativas: {attempted}; solicitações enviadas: {submitted}; falhas: {failed}. Enviar uma solicitação não garante que a página carregue.'],
     'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
     'rule.conflict': ['Invalid year range', '设置冲突', '設定衝突', 'Plage d’années invalide', 'Ungültiger Jahresbereich', 'Неверный диапазон лет', '年の範囲が無効です', '연도 범위가 올바르지 않음', 'Rango de años no válido', 'Intervalo de anos inválido'],
@@ -346,6 +368,88 @@
     return translate(locale, key, params).replaceAll('Show more', 'Load more');
   }
 
+  const GREASY_FORK_PAGE = 'https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer';
+
+  function isNewerVersion(latest, current) {
+    const parse = value => /^(\d+(?:\.\d+)*)(?:-([0-9A-Za-z.-]+))?$/.exec(String(value || ''));
+    const left = parse(latest);
+    const right = parse(current);
+    if (!left || !right) return false;
+    const leftParts = left[1].split('.').map(Number);
+    const rightParts = right[1].split('.').map(Number);
+    for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index++) {
+      const difference = (leftParts[index] || 0) - (rightParts[index] || 0);
+      if (difference) return difference > 0;
+    }
+    if (left[2] && !right[2]) return false;
+    if (!left[2] && right[2]) return true;
+    return !!left[2] && !!right[2] && left[2].localeCompare(right[2], 'en', { numeric: true }) > 0;
+  }
+
+  async function checkPublishedVersion({ currentVersion, now = new Date(), read, write, request }) {
+    const day = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'),
+      String(now.getDate()).padStart(2, '0')].join('-');
+    let saved;
+    try { saved = read() || {}; } catch { saved = {}; }
+    if (saved.checkedDay === day && typeof saved.latestVersion === 'string')
+      return { latestVersion: saved.latestVersion,
+        newer: isNewerVersion(saved.latestVersion, currentVersion) };
+    if (Number.isFinite(saved.retryAfter) && saved.retryAfter > now.getTime()) return null;
+    try {
+      const latestVersion = await request();
+      if (!/^\d+(?:\.\d+)*(?:-[0-9A-Za-z.-]+)?$/.test(latestVersion)) throw new Error('Invalid published version');
+      try { write({ checkedDay: day, latestVersion }); } catch { /* Show result for this page. */ }
+      return { latestVersion, newer: isNewerVersion(latestVersion, currentVersion) };
+    } catch {
+      try { write({ ...saved, retryAfter: now.getTime() + 60 * 60 * 1000 }); } catch { /* Retry on a later page. */ }
+      return null;
+    }
+  }
+
+  function fetchPublishedVersion(send) {
+    return new Promise((resolve, reject) => {
+      try {
+        send({ method: 'GET', url: 'https://greasyfork.org/scripts/598737.json', timeout: 8000,
+          onload(response) {
+            if (response.status !== 200) { reject(new Error('Greasy Fork request failed')); return; }
+            try {
+              const version = JSON.parse(response.responseText).version;
+              if (typeof version !== 'string') throw new Error('Missing version');
+              resolve(version);
+            } catch (error) { reject(error); }
+          },
+          onerror: reject, ontimeout: () => reject(new Error('Greasy Fork request timed out')),
+          onabort: () => reject(new Error('Greasy Fork request aborted')) });
+      } catch (error) { reject(error); }
+    });
+  }
+  function bulkProgressLabel(locale, attempted, total) {
+    return translate(locale, 'auto.bulkRunning',
+      { attempted, remaining: Math.max(0, total - attempted) });
+  }
+  function buildShareText(locale, kind) {
+    const install = translate(locale, 'share.name') + '\n' + GREASY_FORK_PAGE;
+    return kind === 'recommend' ? install + '\n\n' + translate(locale, 'share.recommendText') : install;
+  }
+  async function copyShareText(text, clipboard, fallback) {
+    try {
+      if (clipboard?.writeText) { await clipboard.writeText(text); return true; }
+    } catch { /* Try the userscript clipboard permission below. */ }
+    try {
+      if (typeof fallback === 'function') { await fallback(text); return true; }
+    } catch { /* Report failure inline. */ }
+    return false;
+  }
+
+  async function closeAnimatedDialog(host, focus, reducedMotion,
+    wait = ms => new Promise(resolve => setTimeout(resolve, ms))) {
+    if (!reducedMotion) {
+      host.classList.add('closing');
+      await wait(170);
+    }
+    host.remove();
+    focus?.focus?.();
+  }
   function sanitizeSitePrefs(saved) {
     const result = Object.create(null);
     if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return result;
@@ -429,6 +533,7 @@
       uiLanguage: LOCALES.includes(input.uiLanguage) ? input.uiLanguage : DEFAULT_SETTINGS.uiLanguage,
       showMoreCount1: Number.isInteger(input.showMoreCount1) && input.showMoreCount1 >= 1 && input.showMoreCount1 <= 50
         ? input.showMoreCount1 : DEFAULT_SETTINGS.showMoreCount1,
+      humanizedOpen: input.humanizedOpen === true,
       showMoreCount2: Number.isInteger(input.showMoreCount2) && input.showMoreCount2 >= 1 && input.showMoreCount2 <= 50
         ? input.showMoreCount2 : DEFAULT_SETTINGS.showMoreCount2,
     };
@@ -989,13 +1094,40 @@
     } catch { return false; }
   }
 
-  async function runOpenAll({ urls, openTab, delay = ms => new Promise(resolve => setTimeout(resolve, ms)),
-    isSourceAlive = () => true, onProgress = () => {} }) {
+  function humanizedDelayMs(draw) {
+    const value = Math.min(1, Math.max(0, Number(draw) || 0));
+    if (value < 0.1) return Math.round(500 + value / 0.1 * 500);
+    if (value < 0.9) return Math.round(1000 + (value - 0.1) / 0.8 * 1500);
+    return Math.round(2500 + (value - 0.9) / 0.1 * 2500);
+  }
+
+  function waitForBulkDelay(ms, signal, schedule = setTimeout, cancel = clearTimeout) {
+    if (signal?.aborted) return Promise.resolve(false);
+    return new Promise(resolve => {
+      let timer;
+      function finish(completed) {
+        cancel(timer);
+        signal?.removeEventListener?.('abort', onAbort);
+        resolve(completed);
+      }
+      function onAbort() { finish(false); }
+      timer = schedule(() => finish(true), ms);
+      signal?.addEventListener?.('abort', onAbort, { once: true });
+      if (signal?.aborted) onAbort();
+    });
+  }
+
+  async function runOpenAll({ urls, openTab, delay = waitForBulkDelay,
+    isSourceAlive = () => true, onProgress = () => {}, humanized = false,
+    random = Math.random, signal = null }) {
     const result = { attempted: 0, submitted: 0, failed: 0 };
     for (let index = 0; index < urls.length; index++) {
-      if (!isSourceAlive()) break;
-      if (index > 0) await delay(350);
-      if (!isSourceAlive()) break;
+      if (signal?.aborted || !isSourceAlive()) break;
+      if (index > 0) {
+        const completed = await delay(humanized ? humanizedDelayMs(random()) : 350, signal);
+        if (completed === false) break;
+      }
+      if (signal?.aborted || !isSourceAlive()) break;
       result.attempted++;
       try {
         await openTab(urls[index], { active: false });
@@ -1679,12 +1811,12 @@
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
-      resolveLocale, translate, translateMore, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS,
+      resolveLocale, translate, translateMore, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS, isNewerVersion, checkPublishedVersion, fetchPublishedVersion, buildShareText, copyShareText, closeAnimatedDialog, bulkProgressLabel,
       createExclusiveDisclosure, bindSectionToggle,
       classifyPage, noticeRemainingSeconds, shouldShowNotice,
       classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
       modalTabDestination, showMoreControlState,
-      collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll,
+      collectOpenTargets, canOpenAll, bulkClickDecision, confirmBulkOpen, runOpenAll, humanizedDelayMs, waitForBulkDelay,
     };
   }
 
@@ -1805,6 +1937,8 @@
     try { coexistenceDismissed = window.sessionStorage?.getItem(coexistenceDismissKey) === '1'; }
     catch { /* Keep dismissal within this document when storage is blocked. */ }
     let coexistenceDialogHost = null;
+    let mirrorDialogHost = null;
+    let updateNoticeVersion = null;
     let searchCoexistenceTimer = null;
     let lastCardMetrics = null;
     let coverSummaryHost = null;
@@ -1822,6 +1956,9 @@
     let autoStatus = null;
     let autoLastFailed = false;
     let bulkBusy = false;
+    let bulkOpening = false;
+    let bulkController = null;
+    let bulkTotal = 0;
     let bulkStatus = null;
     let bulkLastFailed = false;
     let bulkMessageKey = '';
@@ -2022,8 +2159,10 @@
       if (!button) return;
       const gateResult = currentBulkGate();
       const targets = gateResult.allowed ? currentOpenTargets() : [];
-      button.disabled = bulkBusy || showMoreBusy || !!showMoreTask || showMoreDialogPending || !isCurrentRoute();
-      button.dataset.state = bulkBusy ? 'running' : bulkLastFailed ? 'failed' : '';
+      button.disabled = (bulkBusy && !bulkOpening) || showMoreBusy || !!showMoreTask || showMoreDialogPending || !isCurrentRoute();
+      button.dataset.state = bulkOpening ? 'running' : bulkLastFailed ? 'failed' : '';
+      button.textContent = bulkOpening ? bulkProgressLabel(locale, bulkStatus?.attempted ?? 0, bulkTotal)
+        : translate(locale, 'auto.openAll');
       const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
         'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
       setText('#zble-open-hint', gateResult.allowed
@@ -2032,7 +2171,9 @@
     }
 
     function renderBulkStatus() {
-      setText('#zble-open-status', bulkMessageKey ? translate(locale, bulkMessageKey)
+      setText('#zble-open-status', bulkMessageKey ? translate(locale, bulkMessageKey,
+          { attempted: bulkStatus?.attempted ?? 0,
+            remaining: Math.max(0, bulkTotal - (bulkStatus?.attempted ?? 0)) })
         : bulkStatus ? translate(locale, 'auto.bulkProgress', bulkStatus) : '');
     }
 
@@ -2050,7 +2191,9 @@
           h2{font-size:17px;margin:0 0 12px}p{margin:0 0 18px}.actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px}button{font:inherit;padding:7px 12px;border:1px solid #6b99bc;border-radius:6px;background:#f0f6fb;color:#143a59;cursor:pointer}button:last-child{background:#1667a7;color:#fff;border-color:#1667a7}button:focus-visible{outline:3px solid #4da3ea;outline-offset:2px}
           @media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#74b4e7}button{background:#263d50;color:#eef3f8;border-color:#78a5c6}button:last-child{background:#1b6a9c}}
           @media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}button:focus-visible{outline-color:Highlight}}
-        </style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-bulk-title" aria-describedby="zble-bulk-message"><h2 id="zble-bulk-title"></h2><p id="zble-bulk-message"></p><div class="actions"><button id="zble-bulk-cancel" type="button"></button><button id="zble-bulk-confirm" type="button"></button></div></div>`;
+          :host{animation:zble-modal-in .17s ease-out both}:host(.closing){animation:zble-modal-out .17s ease-in both}.dialog{animation:zble-dialog-in .17s ease-out both}:host(.closing) .dialog{animation:zble-dialog-out .17s ease-in both}
+          @keyframes zble-modal-in{from{opacity:0}to{opacity:1}}@keyframes zble-modal-out{to{opacity:0}}@keyframes zble-dialog-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}@keyframes zble-dialog-out{to{opacity:0;transform:translateY(-6px) scale(.97)}}
+          @media(prefers-reduced-motion:reduce){:host,:host(.closing),.dialog,:host(.closing) .dialog{animation:none}}</style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-bulk-title" aria-describedby="zble-bulk-message"><h2 id="zble-bulk-title"></h2><p id="zble-bulk-message"></p><div class="actions"><button id="zble-bulk-cancel" type="button"></button><button id="zble-bulk-confirm" type="button"></button></div></div>`;
         const cancel = root.querySelector('#zble-bulk-cancel');
         const confirm = root.querySelector('#zble-bulk-confirm');
         function renderDialog() {
@@ -2070,12 +2213,12 @@
         renderDialog();
         document.body.append(host);
         let settled = false;
-        function finish(value) {
+        async function finish(value) {
           if (settled) return;
           settled = true;
           automationAbort.signal.removeEventListener('abort', abort);
-          host.remove();
-          previousFocus?.focus?.();
+          await closeAnimatedDialog(host, previousFocus,
+            automationAbort.signal.aborted || window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
           bulkDialogPromise = null;
           refreshAutomationDialog = null;
           resolve(value);
@@ -2112,7 +2255,9 @@
         *{box-sizing:border-box}.dialog{width:min(600px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #a33d32;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere}h2{font-size:18px;margin:0 0 10px}p{margin:8px 0}li{margin:8px 0}.signature{border-top:1px solid #b5c0ca;padding-top:10px}.actions{text-align:right}button{font:inherit;padding:6px 14px;border:1px solid #7e9bb0;border-radius:6px;background:#eef5fb;color:#173950;cursor:pointer}button:focus-visible{outline:3px solid #1878bd;outline-offset:2px}
         @media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#e28f83}button{background:#294357;color:#eef3f8;border-color:#759ab4}}
         @media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}}
-      </style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-coexistence-title"><h2 id="zble-coexistence-title"></h2><p id="zble-coexistence-intro"></p><ul id="zble-coexistence-list"></ul><p class="signature" id="zble-coexistence-signature"></p><div class="actions"><button id="zble-coexistence-close" type="button"></button></div></div>`;
+                :host{animation:zble-modal-in .17s ease-out both}:host(.closing){animation:zble-modal-out .17s ease-in both}.dialog{animation:zble-dialog-in .17s ease-out both}:host(.closing) .dialog{animation:zble-dialog-out .17s ease-in both}
+          @keyframes zble-modal-in{from{opacity:0}to{opacity:1}}@keyframes zble-modal-out{to{opacity:0}}@keyframes zble-dialog-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}@keyframes zble-dialog-out{to{opacity:0;transform:translateY(-6px) scale(.97)}}
+          @media(prefers-reduced-motion:reduce){:host,:host(.closing),.dialog,:host(.closing) .dialog{animation:none}}</style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-coexistence-title"><h2 id="zble-coexistence-title"></h2><p id="zble-coexistence-intro"></p><ul id="zble-coexistence-list"></ul><p class="signature" id="zble-coexistence-signature"></p><div class="actions"><button id="zble-coexistence-close" type="button"></button></div></div>`;
       root.querySelector('#zble-coexistence-title').textContent = translate(locale, 'coexist.title');
       root.querySelector('#zble-coexistence-intro').textContent = translate(locale, 'coexist.intro');
       const list = root.querySelector('#zble-coexistence-list');
@@ -2125,12 +2270,14 @@
       root.querySelector('#zble-coexistence-signature').textContent = translate(locale, 'coexist.signature');
       const close = root.querySelector('#zble-coexistence-close');
       close.textContent = translate(locale, 'coexist.close');
-      function finish() {
-        if (coexistenceDialogHost !== host) return;
+      let closing = false;
+      async function finish() {
+        if (coexistenceDialogHost !== host || closing) return;
+        closing = true;
         automationAbort.signal.removeEventListener('abort', finish);
+        await closeAnimatedDialog(host, previousFocus,
+          automationAbort.signal.aborted || window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
         coexistenceDialogHost = null;
-        host.remove();
-        previousFocus?.focus?.();
       }
       close.addEventListener('click', finish);
       root.addEventListener('keydown', event => {
@@ -2143,6 +2290,48 @@
       close.focus();
     }
 
+    function showMirrorDialog(trigger) {
+      if (mirrorDialogHost || disposed || !isCurrentRoute()) return;
+      const previousFocus = trigger || panelRoot?.activeElement || document.activeElement;
+      const host = document.createElement('div');
+      host.id = 'zble-mirror-dialog-host';
+      const root = host.attachShadow({ mode: 'open' });
+      root.innerHTML = '<style>:host{all:initial;position:fixed;inset:0;z-index:2147483003;display:grid;place-items:center;padding:16px;background:#0009;font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light;animation:zble-modal-in .17s ease-out both}:host(.closing){animation:zble-modal-out .17s ease-in both}*{box-sizing:border-box}.dialog{width:min(580px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px;border:2px solid #347aad;border-radius:10px;background:#fff;color:#172534;box-shadow:0 12px 36px #0006;overflow-wrap:anywhere;animation:zble-dialog-in .17s ease-out both}:host(.closing) .dialog{animation:zble-dialog-out .17s ease-in both}h2{font-size:18px;margin:0 0 10px}p{margin:9px 0}.actions{text-align:right}button{font:inherit;padding:6px 14px;border:1px solid #7e9bb0;border-radius:6px;background:#eef5fb;color:#173950;cursor:pointer}button:focus-visible{outline:3px solid #1878bd;outline-offset:2px}@keyframes zble-modal-in{from{opacity:0}to{opacity:1}}@keyframes zble-modal-out{to{opacity:0}}@keyframes zble-dialog-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}@keyframes zble-dialog-out{to{opacity:0;transform:translateY(-6px) scale(.97)}}@media(prefers-color-scheme:dark){:host{color-scheme:dark}.dialog{background:#1b2430;color:#eef3f8;border-color:#74b4e7}button{background:#294357;color:#eef3f8;border-color:#759ab4}}@media(prefers-reduced-motion:reduce){:host,:host(.closing),.dialog,:host(.closing) .dialog{animation:none}}@media(forced-colors:active){.dialog{border-color:Highlight;box-shadow:none}}</style><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="zble-mirror-title"><h2 id="zble-mirror-title"></h2><p id="zble-mirror-steps"></p><p id="zble-mirror-example"></p><p id="zble-mirror-caution"></p><div class="actions"><button id="zble-mirror-close" type="button"></button></div></div>';
+      for (const [id, key] of [['#zble-mirror-title', 'mirror.title'],
+        ['#zble-mirror-steps', 'mirror.steps'], ['#zble-mirror-example', 'mirror.example'],
+        ['#zble-mirror-caution', 'mirror.caution']])
+        root.querySelector(id).textContent = translate(locale, key);
+      const close = root.querySelector('#zble-mirror-close');
+      close.textContent = translate(locale, 'auto.close');
+      let closing = false;
+      async function finish() {
+        if (closing) return;
+        closing = true;
+        automationAbort.signal.removeEventListener('abort', finish);
+        await closeAnimatedDialog(host, previousFocus,
+          automationAbort.signal.aborted || window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+        mirrorDialogHost = null;
+      }
+      close.addEventListener('click', finish);
+      root.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); finish(); }
+        else if (event.key === 'Tab') { event.preventDefault(); close.focus(); }
+      });
+      automationAbort.signal.addEventListener('abort', finish, { once: true });
+      document.body.append(host);
+      mirrorDialogHost = host;
+      close.focus();
+    }
+    function renderUpdateNotice() {
+      if (!panelRoot) return;
+      const notice = panelRoot.querySelector('#zble-update-notice');
+      notice.hidden = !updateNoticeVersion;
+      if (!notice.hidden) {
+        panelRoot.querySelector('#zble-update-text').textContent =
+          translate(locale, 'update.available', { version: updateNoticeVersion });
+        panelRoot.querySelector('#zble-update-link').textContent = translate(locale, 'update.link');
+      }
+    }
     function refreshCoexistence() {
       if (!panelRoot || disposed) return;
       const mode = coexistenceNoticeMode(document, pageKind);
@@ -2220,6 +2409,7 @@
         }
       }
       renderAutoStatus();
+      renderUpdateNotice();
       refreshAutomationDialog?.();
       renderBulkStatus();
       syncBulkControl();
@@ -2442,14 +2632,14 @@
           .group{border-top:1px solid var(--zble-line);padding-top:7px;margin-top:7px}.group-title{font-weight:700;color:var(--zble-group);font-size:12px;letter-spacing:.02em}.section-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:2px 0;border:0;background:transparent;text-align:left;cursor:pointer}.section-toggle[aria-expanded="true"]{background:transparent;color:var(--zble-group)}.section-toggle svg{width:14px;height:14px;flex:none;transition:transform .15s ease}.section-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}.automation-heading .section-toggle{flex:1}@media(prefers-reduced-motion:reduce){.section-toggle svg{transition:none}}.row{display:flex;align-items:flex-start;gap:7px;margin:6px 0;cursor:pointer}.row input{margin-top:3px;flex:none}.row:has(input:disabled){opacity:.35;cursor:not-allowed}input[type=checkbox]{accent-color:var(--zble-accent)}.summary{color:var(--zble-muted);font-size:11px;margin-left:2px;overflow-wrap:anywhere}
           .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--zble-spinner);border-top-color:var(--zble-accent);border-radius:50%;animation:rotate .8s linear infinite;flex:none;margin-top:3px}@keyframes rotate{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spin{animation:none;border:0;width:auto;height:auto}.spin:after{content:'⏳'}}
           .settings{background:var(--zble-settings-bg);border:1px solid var(--zble-settings-border);border-radius:8px;margin-top:10px;padding:10px}.settings-title{font-weight:700;color:var(--zble-settings-title);margin-bottom:8px}.configuration{background:var(--zble-field-bg);border:1px solid var(--zble-accent);border-left:4px solid var(--zble-accent);border-radius:7px;margin:3px 0 10px;padding:8px}.configuration-title{font-weight:700;color:var(--zble-accent);font-size:11px}.filter-row{display:flex;align-items:center;gap:3px}.filter-row>.row{flex:1;min-width:0}.filter-row .configure{font-size:14px;line-height:1;padding:5px;flex:none;color:var(--zble-muted)}.filter-row:has(input:checked) .configure{color:var(--zble-accent)}.configure svg,.tool-icon{width:18px;height:18px;display:block}.setting-label{display:block;font-weight:600;margin-top:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.grid label{white-space:nowrap}
-          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.reset-link{display:block;font:inherit;font-size:11px;color:var(--zble-accent);text-decoration:underline;text-align:left;padding:1px 0;margin:0 0 7px}.reset-link:disabled{color:var(--zble-muted);cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.configure{color:GrayText}.filter-row:has(input:checked) .configure,.reset-link:not(:disabled){color:LinkText}.configure circle{fill:Canvas}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
+          input[type=text],select{width:100%;padding:5px;border:1px solid var(--zble-field-border);border-radius:5px;font:inherit;color:inherit;background:var(--zble-field-bg)}.year-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{font-size:11px;color:var(--zble-hint);margin:4px 0 7px;overflow-wrap:anywhere}.hint:empty{display:none}.hint a{color:var(--zble-accent)}.settings a{color:var(--zble-accent)}.error{color:var(--zble-error)}.reset-position{font-size:12px;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:4px 8px}.action-button{display:block;width:100%;font-size:12px;text-align:left;border:1px solid var(--zble-field-border);background:var(--zble-field-bg);margin:6px 0;padding:7px 9px}.action-button:disabled{opacity:.55;cursor:not-allowed}.reset-link{display:block;font:inherit;font-size:11px;color:var(--zble-accent);text-decoration:underline;text-align:left;padding:1px 0;margin:0 0 7px}.reset-link:disabled{color:var(--zble-muted);cursor:not-allowed}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#174f8c;color:#fff;border-color:#174f8c}.action-button[data-state="running"]:disabled{opacity:1;cursor:progress}.action-button[data-state="failed"]{color:#8b2e39;font-weight:700}.action-button[data-state="failed"]:active:not(:disabled){color:#fff}@media(prefers-color-scheme:dark){.action-button:active:not(:disabled),.action-button[data-state="running"]{background:#b6dcff;color:#112c43;border-color:#b6dcff}.action-button[data-state="failed"]{color:#ffb0ba}.action-button[data-state="failed"]:active:not(:disabled){color:#112c43}}@media(forced-colors:active){.configure{color:GrayText}.filter-row:has(input:checked) .configure,.reset-link:not(:disabled){color:LinkText}.configure circle{fill:Canvas}.action-button:active:not(:disabled),.action-button[data-state="running"]{background:Highlight;color:HighlightText;border-color:Highlight}.action-button[data-state="failed"]{color:Mark}.action-button[data-state="failed"]:active:not(:disabled){color:HighlightText}}
           .automation-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}.automation-heading .configure{color:var(--zble-accent)}.automation-config .setting-label:first-of-type{margin-top:5px}.automation-config input[type=text]{margin-top:3px}.automation-config .row{font-weight:400}
           @media(forced-colors:active){.filter-row .configure{color:GrayText}.filter-row:has(input:checked) .configure,.automation-heading .configure{color:LinkText}}
         </style>
         <style>.zble-coexistence{margin:8px 0 4px;color:var(--zble-error);font-size:12px;line-height:1.45;overflow-wrap:anywhere}.zble-coexistence a{color:inherit;text-decoration:underline}.zble-coexistence button{font:inherit;color:inherit;text-decoration:underline;padding:0 2px}.zble-coexistence .dismiss{text-decoration:none;font-weight:bold;float:right;padding:0 5px}.zble-coexistence button:focus-visible,.zble-coexistence a:focus-visible{outline:2px solid currentColor;outline-offset:2px}</style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 50 50" fill="currentColor" aria-hidden="true" focusable="false"><path d="M47.16,21.221l-5.91-0.966c-0.346-1.186-0.819-2.326-1.411-3.405l3.45-4.917c0.279-0.397,0.231-0.938-0.112-1.282l-3.889-3.887c-0.347-0.346-0.893-0.391-1.291-0.104l-4.843,3.481c-1.089-0.602-2.239-1.08-3.432-1.427l-1.031-5.886C28.607,2.35,28.192,2,27.706,2h-5.5c-0.49,0-0.908,0.355-0.987,0.839l-0.956,5.854c-1.2,0.345-2.352,0.818-3.437,1.412l-4.83-3.45c-0.399-0.285-0.942-0.239-1.289,0.106L6.82,10.648c-0.343,0.343-0.391,0.883-0.112,1.28l3.399,4.863c-0.605,1.095-1.087,2.254-1.438,3.46l-5.831,0.971c-0.482,0.08-0.836,0.498-0.836,0.986v5.5c0,0.485,0.348,0.9,0.825,0.985l5.831,1.034c0.349,1.203,0.831,2.362,1.438,3.46l-3.441,4.813c-0.284,0.397-0.239,0.942,0.106,1.289l3.888,3.891c0.343,0.343,0.884,0.391,1.281,0.112l4.87-3.411c1.093,0.601,2.248,1.078,3.445,1.424l0.976,5.861C21.3,47.647,21.717,48,22.206,48h5.5c0.485,0,0.9-0.348,0.984-0.825l1.045-5.89c1.199-0.353,2.348-0.833,3.43-1.435l4.905,3.441c0.398,0.281,0.938,0.232,1.282-0.111l3.888-3.891c0.346-0.347,0.391-0.894,0.104-1.292l-3.498-4.857c0.593-1.08,1.064-2.222,1.407-3.408l5.918-1.039c0.479-0.084,0.827-0.5,0.827-0.985v-5.5C47.999,21.718,47.644,21.3,47.16,21.221z M25,32c-3.866,0-7-3.134-7-7c0-3.866,3.134-7,7-7s7,3.134,7,7C32,28.866,28.866,32,25,32z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
-          <div id="zble-coexistence-notice" class="zble-coexistence" role="status" hidden><span id="zble-coexistence-before"></span><a id="zble-coexistence-script" href="https://greasyfork.org/scripts/497146-z-library-ui-enhance" target="_blank" rel="noopener noreferrer">UI Enhance 脚本</a><span id="zble-coexistence-after"></span> <button id="zble-coexistence-details" type="button">了解详情</button><button id="zble-coexistence-dismiss" class="dismiss" type="button" aria-label="关闭提示">×</button></div>
+          <div id="zble-update-notice" class="zble-coexistence" role="status" hidden><span id="zble-update-text"></span> <a id="zble-update-link" href="https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer" target="_blank" rel="noopener noreferrer"></a></div><div id="zble-coexistence-notice" class="zble-coexistence" role="status" hidden><span id="zble-coexistence-before"></span><a id="zble-coexistence-script" href="https://greasyfork.org/scripts/497146-z-library-ui-enhance" target="_blank" rel="noopener noreferrer">UI Enhance 脚本</a><span id="zble-coexistence-after"></span> <button id="zble-coexistence-details" type="button">了解详情</button><button id="zble-coexistence-dismiss" class="dismiss" type="button" aria-label="关闭提示">×</button></div>
           <div id="zble-content">
           <div class="group"><div class="group-title" data-i18n="section.filters">筛选器</div>
             <div class="filter-row"><label class="row"><input id="zble-format-switch" type="checkbox"><span><span data-i18n="control.filterFormat">只显示指定文件格式</span> <span id="zble-format-summary" class="summary"></span></span></label><button id="zble-configure-format" class="configure" type="button" aria-controls="zble-format-config" aria-expanded="false" aria-label="配置文件格式筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div>
@@ -2480,15 +2670,15 @@
             <label class="row"><input id="zble-related-booklists-grid-switch" type="checkbox"><span data-i18n="control.relatedBooklistsGrid">相关书单默认以网格显示</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
+          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label><label class="row"><input id="zble-humanized-open" type="checkbox"><span data-i18n="setting.humanizedOpen">拟人化（随机延长打开间隔）</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
             <select id="zble-ui-language"><option value="auto" data-i18n="setting.autoLanguage">跟随浏览器/系统</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="ru">Русский</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option><option value="pt-BR">Português (Brasil)</option></select>
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
-            <div class="hint" data-i18n="setting.userMatches">其他镜像：请在 Tampermonkey 中添加 User matches。</div>
-            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><span data-i18n="about.github">GitHub 页面</span>：<a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer">https://github.com/jeambos/zlibrary-booklist-enhancer</a></div><button id="zble-coexistence-about" class="reset-link" type="button" data-i18n="coexist.about">兼容性说明</button></div>
+            <button id="zble-other-mirror" class="reset-link" type="button" data-i18n="setting.userMatches">在其他Z-lib镜像站使用本工具</button>
+            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><a href="https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.greasyFork">Greasy Fork 插件主页</a></div><div class="hint"><a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.github">GitHub 页面</a></div><button id="zble-coexistence-about" class="reset-link" type="button" data-i18n="coexist.about">兼容性说明</button></div><div class="group"><div class="settings-title" data-i18n="section.share">分享给朋友</div><button id="zble-share-install" class="reset-link" type="button" data-i18n="share.install">复制安装地址</button><button id="zble-share-recommend" class="reset-link" type="button" data-i18n="share.recommend">复制推荐文案</button><div id="zble-share-status" class="hint" role="status" aria-live="polite"></div></div>
           </div>
           </div>
         </div>`;
@@ -2503,6 +2693,19 @@
       });
       const coexistenceAbout = panelRoot.querySelector('#zble-coexistence-about');
       coexistenceAbout.addEventListener('click', () => showCoexistenceDialog(coexistenceAbout));
+      const mirrorButton = panelRoot.querySelector('#zble-other-mirror');
+      mirrorButton.addEventListener('click', () => showMirrorDialog(mirrorButton));
+      for (const [selector, kind] of [['#zble-share-install', 'install'],
+        ['#zble-share-recommend', 'recommend']]) {
+        panelRoot.querySelector(selector).addEventListener('click', async () => {
+          const fallback = typeof GM_setClipboard === 'function'
+            ? value => GM_setClipboard(value, 'text') : null;
+          const copied = await copyShareText(buildShareText(locale, kind), navigator.clipboard, fallback);
+          const status = panelRoot.querySelector('#zble-share-status');
+          status.textContent = translate(locale, copied ? 'share.copied' : 'share.failed');
+          status.classList.toggle('error', !copied);
+        });
+      }
 
       for (const [name, expanded] of [['filters', true], ['info', false], ['automation', false]]) {
         const title = [...panelRoot.querySelectorAll('[data-i18n]')]
@@ -2551,7 +2754,7 @@
         ['#zble-unclip-masonry-switch', 'showMasonryLastRow'],
         ['#zble-related-booklists-grid-switch', 'showRelatedBooklistsGrid'],
         ['#zble-format-switch', 'filterFormat'], ['#zble-size-filter-switch', 'filterSize'],
-        ['#zble-download-switch', 'filterDownload'],
+        ['#zble-download-switch', 'filterDownload'], ['#zble-humanized-open', 'humanizedOpen'],
         ['#zble-year-filter-switch', 'filterYear'], ['#zble-missing-year', 'includeMissingYear'],
       ];
       for (const [selector, key] of immediate) {
@@ -2705,6 +2908,7 @@
       });
       const openAllButton = panelRoot.querySelector('#zble-open-all');
       openAllButton.addEventListener('click', async () => {
+        if (bulkOpening) { bulkController?.abort('user-stop'); return; }
         if (bulkBusy || showMoreBusy || showMoreTask || showMoreDialogPending || !isCurrentRoute()) return;
         const gate = currentBulkGate();
         const decision = bulkClickDecision({ enabled: sitePrefs[currentHost]?.bulkOpenEnabled === true,
@@ -2733,11 +2937,18 @@
             renderBulkStatus();
             return;
           }
+          bulkOpening = true;
+          bulkTotal = urls.length;
+          bulkStatus = { attempted: 0, submitted: 0, failed: 0 };
+          bulkController = new AbortController();
+          syncBulkControl();
           const result = await runOpenAll({ urls, openTab: (url, options) => GM_openInTab(url, options),
-            isSourceAlive: isCurrentRoute,
-            onProgress(progress) { bulkStatus = progress; renderBulkStatus(); } });
+            isSourceAlive: isCurrentRoute, humanized: settings.humanizedOpen,
+            signal: bulkController.signal,
+            onProgress(progress) { bulkStatus = progress; renderBulkStatus(); syncBulkControl(); } });
           if (result.attempted > 0) hasOpenedOnThisPage = true;
           bulkLastFailed = result.failed > 0;
+          if (bulkController.signal.aborted) bulkMessageKey = 'auto.bulkCancelled';
           bulkStatus = result;
           renderBulkStatus();
         } catch {
@@ -2745,6 +2956,8 @@
           bulkMessageKey = 'auto.showMoreError';
           renderBulkStatus();
         } finally {
+          bulkOpening = false;
+          bulkController = null;
           bulkBusy = false;
           if (!disposed) syncShowMoreControls();
           syncBulkControl();
@@ -2880,6 +3093,17 @@
     function init() {
       if (!document.body || disposed) return;
       createPanel();
+      const installedVersion = typeof GM_info === 'object' ? GM_info?.script?.version : '4.3.0';
+      void checkPublishedVersion({
+        currentVersion: installedVersion || '4.3.0',
+        read: () => GM_getValue('zble-version-check-v1', {}),
+        write: value => GM_setValue('zble-version-check-v1', value),
+        request: () => fetchPublishedVersion(GM_xmlhttpRequest),
+      }).then(result => {
+        if (disposed) return;
+        updateNoticeVersion = result?.newer ? result.latestVersion : null;
+        renderUpdateNotice();
+      });
       if (pageKind === 'detail-recommend')
         relatedBooklistsLayout = createRelatedBooklistsLayout(document,
           settings.showRelatedBooklistsGrid, locale);
@@ -2912,6 +3136,7 @@
       if (disposed) return;
       disposed = true;
       automationAbort.abort();
+      bulkController?.abort('source-gone');
       clearInterval(searchCoexistenceTimer);
       for (const link of coexistenceLinks) link.remove();
       coexistenceLinks.clear();

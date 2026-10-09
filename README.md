@@ -16,7 +16,7 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 2. 在 Tampermonkey 中新建用户脚本，打开 [booklist-enhancer.user.js](./booklist-enhancer.user.js)，复制**全部内容**并粘贴到新脚本中，保存。
 3. 打开或刷新下表中的 Z-Library 页面。若之前安装过旧版，请替换旧脚本，并停用重复的副本。
 
-脚本目前不会自动更新。以后更新时，请重新复制脚本的全部内容并保存；已有的显示和筛选偏好会保留。
+脚本每天首次加载时会查询 Greasy Fork 的已发布版本；如有新版，面板标题下方会以红字提示并提供更新链接。查询失败时会稍后重试。脚本不会自动更新；以后更新时，请重新复制脚本的全部内容并保存，已有的显示和筛选偏好会保留。
 
 脚本内置支持以下站点的 HTTPS 页面：`z-lib.sk`、`z-library.sk`、`1lib.sk`、`libb.la`、`z-library.im`、`z-lib.fm`。进入下表中的列表后会出现工具面板。在其他页面，你可能会看到一次可关闭的提示，带你前往书单入口。
 
@@ -38,9 +38,9 @@ Z-lib Booklist Enhancer 以书单增强为核心：它能筛选书单、改善�
 - **查看筛选统计：**书单和上述四处封面列表都有默认开启的「列表末尾统计卡片」开关；启用筛选器时，卡片显示当前已加载数量和本工具筛选后数量。书单还会显示站点给出的总数。仅书单提供「Show more」页码估算；它按每 20 本估算，文案中的「已点次数」由已加载书籍数推算，不是实际按钮点击记录。
 - **连点 Show more / Load more：**书单使用 Show more；首页推荐、详情页相似推荐、Z-Recommend 结果和热门榜单在列表末尾有链接时使用 Load more。「自动化（beta）」有两个定次连点器，默认分别点击 5 次和 10 次。点击标题旁的拉杆图标可在自动化设置中分别设为 1–50 次；只接受半角数字整数。输入不合法时会在输入框旁显示红字，本次按钮文案和运行次数使用该连点器的默认值（5 或 10），无效值不会保存。运行中按钮显示已点次数、剩余次数，点击「停止连点」可中止。本轮链接恢复可用时继续点击；链接消失则停止。若连续 10 秒未完成本轮加载，也会停止。每轮不要求固定新增 20 本。
 - **显示整份列表：**第三个按钮在书单上显示「持续连点 Show more，直到书单显示完毕」，在封面列表上显示相应的 Load more 文案。默认可点击，但会提示先在自动化设置中启用本站持续连点；启用后，每次执行前确认一次。只有原站加载链接消失才判定列表显示完毕，不受本工具筛选器隐藏条目的影响。仅书单会核对页面标出的总数：相差超过 10 本或无法读取总数时，会显示数量提示。链接仍可用时，即使数量接近总数也会继续点击。可随时手动停止。
-- **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再在自动化设置中手动启用该站点的批量打开功能。执行前仍需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。
+- **一次打开多本书的详情页：**先点击「打开当前显示的所有图书页面」查看说明，再在自动化设置中手动启用该站点的批量打开功能。执行前仍需确认两次。它只会尝试打开当前已加载、经过筛选且实际可见的书页。一次可能打开很多标签页，导致浏览器变慢或触发站点限流；建议先用少量书籍试验。执行时按钮显示已点次数与剩余次数，再次点击可中止后续打开操作，已打开的标签页不会关闭。自动化设置中还可开启默认关闭的「拟人化」：点击间隔随机取 500–5000 毫秒，其中约 80% 落在 1000–2500 毫秒，因此整个过程会更久。两个确认弹窗以及其他弹窗均有开关动画。
 
-面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。「筛选器」「信息显示」「自动化」三个栏目也可分别收起；初始只展开筛选器。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。书单总数若显示为 `1K`，本工具仅在 Show more 页数估算中按 999 本计算；统计卡片保留网站显示的 `1K`。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。
+面板可通过点击标题栏收起或展开，也可以拖动到屏幕边缘。「筛选器」「信息显示」「自动化」三个栏目也可分别收起；初始只展开筛选器。标题栏的齿轮用于界面语言等全局设置；筛选器和自动化标题旁的拉杆图标分别打开对应配置。书单总数若显示为 `1K`，本工具仅在 Show more 页数估算中按 999 本计算；统计卡片保留网站显示的 `1K`。界面默认跟随浏览器或系统语言，支持英语、简体中文、繁体中文、法语、德语、俄语、日语、韩语、西班牙语和巴西葡萄牙语。全局设置中的「关于」提供 Greasy Fork 插件主页与 GitHub 链接；「分享给朋友」可直接复制安装地址或附带简介的推荐文案，不会弹出对话框。「在其他Z-lib镜像站使用本工具」会打开添加 User matches 的说明。
 
 ### 与 UI Enhance 脚本并用
 
@@ -56,13 +56,13 @@ UI Enhance 的语言筛选或推荐过滤可能直接移除图书，本工具只
 - 如果网站的 Show more 或 Load more 卡在加载状态，连点器会停止；请刷新页面后再试。网站可能已经推进内部页码，单纯恢复链接外观无法保证重试失败的那一页，因此不提供按钮重置。
 - 批量打开没有数量上限，也不能批量撤回、自动重试或记录哪些书页已经打开。提交打开请求不代表书页已成功加载；同页再次执行可能重复打开。
 
-当前版本为 `4.2.0`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
+当前版本为 `4.3.0`。脚本已经过本地测试，但尚未完成 Chrome、Firefox、Edge 搭配 Tampermonkey 在真实站点的逐项验收。
 
 ### 技术细节
 
-这是一个无需构建的单文件用户脚本，使用 Tampermonkey 保存显示、筛选、连点次数、语言与面板位置偏好；启动提示、持续连点和批量打开许可按域名保存。它不保存书籍链接、下载记录映射、阅读断点或批量打开历史。
+这是一个无需构建的单文件用户脚本，使用 Tampermonkey 保存显示、筛选、连点次数、语言与面板位置偏好；启动提示、持续连点和批量打开许可按域名保存。它不保存书籍链接、下载记录映射、阅读断点或批量打开历史。每天的版本检查日期与结果保存在 Tampermonkey 的共享脚本存储中，可供同一浏览器配置下的标签页共用；午夜后首次加载会重新查询。
 
-如需在其他镜像使用，请先自行核实镜像可信性，再在 Tampermonkey 的本脚本设置中添加精确的 [User matches](https://www.tampermonkey.net/faq.php?q=Q103)，例如 `https://your-mirror.example/booklist/*`（替换为实际域名）。未知镜像只有在 `/booklist/…` 路径且页面结构符合书单特征时才会启动工具；页面结构匹配不能证明镜像安全。
+全局设置中的镜像按钮会弹出以下说明：如需在其他镜像使用，请先自行核实镜像可信性，再在 Tampermonkey 的本脚本设置中添加精确的 [User matches](https://www.tampermonkey.net/faq.php?q=Q103)，例如 `https://your-mirror.example/booklist/*`（替换为实际域名）。未知镜像只有在 `/booklist/…` 路径且页面结构符合书单特征时才会启动工具；页面结构匹配不能证明镜像安全。
 
 开发与验证记录不随此公开仓库发布。
 
@@ -80,7 +80,7 @@ It does not download books for you or change the contents of a booklist.
 2. Create a new userscript in Tampermonkey. Open [booklist-enhancer.user.js](./booklist-enhancer.user.js), copy its **entire contents**, paste them into the new script, and save.
 3. Open or refresh one of the Z-Library pages below. If you installed an older version, replace it and disable any duplicate copy.
 
-The script does not update automatically. For later updates, copy and save the entire script again. Your existing display and filter preferences will be kept.
+On its first load each day, the script checks the published version on Greasy Fork. If a newer version is available, a red notice and update link appear beneath the panel title. A failed check is retried later. The script does not update automatically; copy and save the entire script again to update. Your existing display and filter preferences will be kept.
 
 Built-in HTTPS site support covers `z-lib.sk`, `z-library.sk`, `1lib.sk`, `libb.la`, `z-library.im`, and `z-lib.fm`. The panel appears on these lists. On other pages, you may see a dismissible notice pointing you to the booklist area.
 
@@ -102,9 +102,9 @@ The same panel is used on every page. Filters for data unavailable on the curren
 - **View filter counts:** Booklists and all four cover lists have an on-by-default “Summary card at end of list” switch. While a filter is enabled, the card shows books currently loaded and books remaining after this tool's filters. Booklists also show the site's total. Only booklists have the “Show more” page estimate, which uses 20 books per page; its displayed click count is inferred from loaded books rather than a record of button presses.
 - **Click Show more / Load more a set number of times:** Booklists use Show more. Home recommendations, similar books, Z-Recommend results, and popular lists use Load more when that link is present at the end. “Automation (beta)” has two clickers, set to 5 and 10 clicks by default. Use the slider icon beside the heading to set each to 1–50 clicks. Only ASCII digit integers are accepted. Invalid input shows a red error beside the field, and that clicker displays and uses its default of 5 or 10; invalid input is not saved. While running, its button shows clicks made and remaining. Click “Stop clicking” to cancel. The next click follows when the native link becomes available again. A disappearing link or a batch that does not finish after 10 seconds without progress stops the task. No batch is required to contain exactly 20 books.
 - **Display the whole list:** The third button says “Keep clicking Show more until the whole booklist is displayed” on booklists and uses Load more wording on cover lists. It can be clicked by default and guides you to enable continuous clicking for this site in Automation settings. Once enabled, each run requires one confirmation. A list is considered fully displayed only when the site's loading link disappears, regardless of books hidden by this script's filters. Only booklists compare the displayed count with the site's total and show a notice if it differs by more than 10 or cannot be read. You can stop the clicker at any time.
-- **Open several book detail pages:** Click “Open all currently visible book pages” for an explanation, then enable bulk opening for that site in Automation settings. You must still confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first.
+- **Open several book detail pages:** Click “Open all currently visible book pages” for an explanation, then enable bulk opening for that site in Automation settings. You must still confirm twice before it runs. It only attempts to open book pages that are currently loaded, pass your filters, and are actually visible. Opening many tabs at once may slow your browser or trigger site rate limits; try a small set first. While it runs, the button shows opened and remaining counts; click it again to stop further openings. Tabs already opened stay open. Automation settings also offer an off-by-default Human-like timing option: randomized gaps of 500–5000 ms, with about 80% in the 1000–2500 ms range. This makes the whole run longer. The two confirmation dialogs, like the other dialogs, have opening and closing animations.
 
-Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. Filters, Display options, and Automation can also be collapsed independently; only Filters starts expanded. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. If a booklist total is shown as `1K`, the tool uses 999 only to estimate Show more page progress; the summary card keeps the site's `1K` label. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese.
+Click the panel title bar to collapse or expand it, or drag the panel toward a screen edge. Filters, Display options, and Automation can also be collapsed independently; only Filters starts expanded. The title-bar gear opens global settings such as interface language; the slider icons beside filters and Automation open their respective settings. If a booklist total is shown as `1K`, the tool uses 999 only to estimate Show more page progress; the summary card keeps the site's `1K` label. The interface follows your browser or system language by default and supports English, Simplified Chinese, Traditional Chinese, French, German, Russian, Japanese, Korean, Spanish, and Brazilian Portuguese. Global settings provide Greasy Fork and GitHub links under About. Share with friends copies either the install address or a recommendation with a short feature description, without a dialog. “Use this tool on other Z-lib mirrors” opens instructions for adding User matches.
 
 ### Using it with UI Enhance
 
@@ -120,12 +120,12 @@ UI Enhance may remove books through its language or recommendation filters. This
 - If the site's Show more or Load more control stays loading, the clicker stops; refresh the page before retrying. The site may already have advanced its internal page number, so changing the control's appearance alone cannot guarantee a retry of the failed page. There is no button reset.
 - Bulk opening has no book-count cap, bulk undo, automatic retry, or record of previously opened pages. Submitting an open request does not guarantee a page loaded; running it again on the same page may open duplicates.
 
-The current version is `4.2.0`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
+The current version is `4.3.0`. It has been tested locally, but feature-by-feature validation on real sites with Tampermonkey in Chrome, Firefox, and Edge is still incomplete.
 
 ### Technical details
 
-This is a single-file userscript with no build step. Tampermonkey stores display, filter, click-count, language, and panel-position preferences; welcome-notice, continuous-clicking, and bulk-opening choices are saved per domain. The script does not store book links, download-record mappings, reading positions, or bulk-opening history.
+This is a single-file userscript with no build step. Tampermonkey stores display, filter, click-count, language, and panel-position preferences; welcome-notice, continuous-clicking, and bulk-opening choices are saved per domain. The script does not store book links, download-record mappings, reading positions, or bulk-opening history. The daily version-check date and result use shared Tampermonkey storage, so tabs in the same browser profile can reuse them. The first load after local midnight starts a new check.
 
-To use another mirror, first assess its trustworthiness, then add a specific [User matches](https://www.tampermonkey.net/faq.php?q=Q103) rule in this script's Tampermonkey settings, such as `https://your-mirror.example/booklist/*` (replace the example domain). On an unknown mirror, the tools start only on a `/booklist/…` path with a matching booklist structure. A matching structure does not establish that a mirror is safe.
+The mirror button in global settings shows these instructions: To use another mirror, first assess its trustworthiness, then add a specific [User matches](https://www.tampermonkey.net/faq.php?q=Q103) rule in this script's Tampermonkey settings, such as `https://your-mirror.example/booklist/*` (replace the example domain). On an unknown mirror, the tools start only on a `/booklist/…` path with a matching booklist structure. A matching structure does not establish that a mirror is safe.
 
 Development and validation notes are not published with this repository.

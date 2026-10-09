@@ -1,5 +1,16 @@
 # Changelog / 更新日志
 
+## 4.3.0 — 2026-10-09
+
+- Check the published Greasy Fork version once per local day and show a red update link beside the compatibility notice when a newer version exists.
+- Animate dialog entry and exit. Bulk opening now shows progress on its button and can be stopped by clicking the button again.
+- Add optional Human-like timing for bulk opening: 500–5000 ms gaps, with 80% of draws between 1000 and 2500 ms.
+- Move other-mirror User matches guidance into a dialog. Add a Greasy Fork link to About and localized copy actions for the install address and recommendation text.
+- 每个本地日期首次加载时检查 Greasy Fork 已发布版本；发现新版时在兼容性提示附近以红字显示更新链接。
+- 为弹窗添加开关动画；批量打开时按钮显示进度，再次点击按钮可中止后续操作。
+- 批量打开新增可选的「拟人化」间隔：500–5000 毫秒，80% 的随机结果落在 1000–2500 毫秒。
+- 将其他镜像的 User matches 操作说明放入弹窗；「关于」新增 Greasy Fork 链接，并增加本地化的安装地址和推荐文案复制功能。
+
 ## 4.2.0 — 2026-10-08
 
 - Book detail pages can expand Related Booklists from a horizontal carousel into a grid. A title triangle changes only the current page; a saved Display options switch sets the default for all book pages.
