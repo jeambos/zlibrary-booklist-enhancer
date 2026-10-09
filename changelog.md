@@ -1,5 +1,12 @@
 # Changelog / 更新日志
 
+## 4.3.1 — 2026-10-09
+
+- Clarify that human-like timing applies only to bulk opening. Show a reminder beneath its button while a humanized run is active; changing the switch affects later openings in that run.
+- Replace the two sharing actions with one recommendation copy action and an unchecked URL-only option. Rewrite the recommendation in the user's voice across all supported languages.
+- 明确拟人化间隔仅用于批量打开；运行中开启时在按钮下方提示，切换设置会影响本轮后续打开。
+- 将两个分享操作改为一个推荐信息复制入口和默认关闭的纯 URL 复选框；所有支持语言的推荐文案改为第一人称。
+
 ## 4.3.0 — 2026-10-09
 
 - Check the published Greasy Fork version once per local day and show a red update link beside the compatibility notice when a newer version exists.

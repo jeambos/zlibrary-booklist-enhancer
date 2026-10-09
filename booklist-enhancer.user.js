@@ -43,7 +43,7 @@
 // @name:uk      Покращення списків книг Z-Library
 // @name:vi      Cải thiện danh sách sách Z-Library
 // @namespace    local.booklist-enhancer
-// @version      4.3.0
+// @version      4.3.1
 // @description      Enhances Z-Library booklists with clearer details, filters and Show more tools. Also filters search results; recommendations and popular books can be filtered by download status.
 // @description:zh-CN  增强 Z-Library 书单的信息显示、筛选及 Show more 操作；也可筛选搜索结果，并按下载状态筛选推荐和热门书籍。
 // @description:zh-TW  增強 Z-Library 書單的資訊顯示、篩選及 Show more 操作；也可篩選搜尋結果，並依下載狀態篩選推薦與熱門書籍。
@@ -162,7 +162,7 @@
     'hint.masonryDisplayLimited': ['This cover list supports summary, title, author, and full last-row display.', '此封面列表支持统计卡片、显示书名、显示作者名和不裁剪最后一行。', '此封面清單支援統計卡片、顯示書名、顯示作者及不裁剪最後一行。', 'Cette liste de couvertures prend en charge le résumé, les titres, les auteurs et l’affichage complet de la dernière rangée.', 'Diese Coverliste unterstützt Statistik, Titel, Autoren und die vollständige Anzeige der letzten Reihe.', 'Для этого списка обложек доступны статистика, названия, авторы и полное отображение последнего ряда.', 'この表紙一覧では集計カード、書名、著者名、最終行の完全表示を設定できます。', '이 표지 목록에서는 요약 카드, 제목, 저자 이름, 마지막 줄 전체 표시를 설정할 수 있습니다.', 'Esta lista de portadas permite mostrar el resumen, los títulos, los autores y la última fila completa.', 'Esta lista de capas permite exibir o resumo, os títulos, os autores e a última linha inteira.'],
     'section.about': ['About', '关于', '關於', 'À propos', 'Über', 'О проекте', 'このツールについて', '정보', 'Acerca de', 'Sobre'],
     'share.name': ['Z-lib Booklist Enhancer', 'Z-Library 书单增强', 'Z-Library 書單增強', 'Listes de livres Z-Library améliorées', 'Z-Library: Erweiterte Bücherlisten', 'Улучшение списков книг Z-Library', 'Z-Library 書籍リスト拡張', 'Z-Library 책 목록 개선', 'Mejora de listas de libros de Z-Library', 'Melhorias para listas de livros da Z-Library'],
-    'share.recommendText': ['It makes Z-Library booklists easier to browse, filters search results, and helps open visible book pages.', '它让 Z-Library 书单更易浏览，可筛选搜索结果，还能批量打开当前可见的图书页面。', '它讓 Z-Library 書單更容易瀏覽，可篩選搜尋結果，也能批次開啟目前可見的書籍頁面。', 'Il facilite la consultation des listes Z-Library, filtre les résultats de recherche et ouvre les pages des livres visibles.', 'Es macht Z-Library-Bücherlisten übersichtlicher, filtert Suchergebnisse und öffnet sichtbare Buchseiten.', 'Упрощает просмотр списков Z-Library, фильтрует результаты поиска и открывает страницы видимых книг.', 'Z-Library の書籍リストを見やすくし、検索結果を絞り込み、表示中の本のページをまとめて開けます。', 'Z-Library 책 목록을 보기 쉽게 하고 검색 결과를 필터링하며 보이는 책 페이지를 한꺼번에 엽니다.', 'Facilita la lectura de listas de Z-Library, filtra búsquedas y abre las páginas de los libros visibles.', 'Facilita a leitura das listas da Z-Library, filtra buscas e abre as páginas dos livros visíveis.'],
+    'share.recommendText': ['I found a handy Z-lib userscript that improves booklists and other listing pages. I can filter entries, have it click Show more / Load more for me, and open book pages in bulk. Thought you might like it:', '我发现一个 Z-lib 插件挺好用，它改造书单和列表界面，可以筛选条目，可以自动连点展开按钮，批量打开图书条目。分享给你：', '我發現一個 Z-lib 外掛挺好用，它改造書單和列表介面，可以篩選項目，可以自動連點展開按鈕，批次開啟書籍項目。分享給你：', 'J’ai trouvé un script Z-lib bien pratique qui améliore les listes de livres et les autres pages de résultats. Je peux filtrer les entrées, lui faire cliquer sur Show more / Load more à ma place et ouvrir plusieurs pages de livres à la fois. Je me suis dit que ça pourrait te plaire :', 'Ich habe ein praktisches Z-lib-Skript gefunden, das Bücherlisten und andere Listenseiten verbessert. Damit kann ich Einträge filtern, Show more / Load more automatisch anklicken lassen und Buchseiten gesammelt öffnen. Vielleicht gefällt es dir:', 'Я нашёл удобный скрипт для Z-lib: он улучшает списки книг и другие страницы со списками. Я могу фильтровать записи, поручить ему нажимать Show more / Load more и открывать страницы книг пачкой. Возможно, тебе понравится:', '便利な Z-lib の拡張機能を見つけました。書籍リストや一覧画面を使いやすくし、項目の絞り込み、展開ボタンの自動クリック、書籍ページの一括表示ができます。よかったら使ってみてください：', '쓸 만한 Z-lib 확장 기능을 찾았어요. 책 목록과 리스트 화면을 개선하고, 항목을 필터링하거나 펼치기 버튼을 자동으로 누르고 책 페이지를 한꺼번에 열 수 있어요. 공유할게요:', 'Encontré un script muy útil para Z-lib que mejora las listas de libros y otras páginas de resultados. Puedo filtrar entradas, dejar que pulse Show more / Load more por mí y abrir páginas de libros en lote. Quizá te guste:', 'Encontrei um script bem útil para o Z-lib que melhora as listas de livros e outras páginas de resultados. Posso filtrar itens, deixar que ele clique em Show more / Load more por mim e abrir páginas de livros em lote. Achei que você poderia gostar:'],
     'about.description': ['Enhance booklists and filter search results; filter recommendations and popular books by download status.', '增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。', '增強書單並篩選搜尋結果；推薦與熱門書籍可依下載狀態篩選。', 'Améliorez les listes de livres et filtrez les résultats de recherche; filtrez les recommandations et les livres populaires selon leur état de téléchargement.', 'Bücherlisten verbessern und Suchergebnisse filtern; Empfehlungen und beliebte Bücher nach Downloadstatus filtern.', 'Улучшайте списки книг и фильтруйте результаты поиска; рекомендации и популярные книги фильтруйте по статусу загрузки.', '書籍リストを便利にし、検索結果を絞り込めます。推薦・人気の本はダウンロード状態で絞り込めます。', '책 목록을 개선하고 검색 결과를 필터링합니다. 추천·인기 도서는 다운로드 상태로 필터링할 수 있습니다.', 'Mejora las listas de libros y filtra los resultados de búsqueda; filtra recomendaciones y libros populares por estado de descarga.', 'Melhore as listas de livros e filtre resultados de busca; filtre recomendações e livros populares pelo status de download.'],
     'about.developer': ['Developer', '开发者', '開發者', 'Développeur', 'Entwickler', 'Разработчик', '開発者', '개발자', 'Desarrollador', 'Desenvolvedor'],
     'about.github': ['GitHub page', 'GitHub 页面', 'GitHub 頁面', 'Page GitHub', 'GitHub-Seite', 'Страница GitHub', 'GitHub ページ', 'GitHub 페이지', 'Página de GitHub', 'Página no GitHub'],
@@ -174,8 +174,8 @@
     'mirror.caution': ['Check that the mirror is trustworthy before adding it. A matching page layout does not prove a mirror is safe.', '添加前请先核实镜像站是否可信；页面结构相似不代表镜像站安全。', '加入前請先確認鏡像站是否可信；頁面結構相似不代表鏡像站安全。', 'Vérifiez que le miroir est fiable avant de l’ajouter ; une mise en page semblable ne prouve pas sa sûreté.', 'Prüfen Sie den Mirror vor dem Hinzufügen. Ein ähnlicher Seitenaufbau beweist nicht, dass er sicher ist.', 'Проверьте надёжность зеркала до добавления: похожая структура страницы не гарантирует безопасность.', '追加前にミラーの信頼性を確認してください。表示が似ていても安全とは限りません。', '추가 전에 미러를 신뢰할 수 있는지 확인하세요. 페이지 구조가 비슷해도 안전하다는 뜻은 아닙니다.', 'Comprueba que el espejo sea fiable antes de añadirlo; un diseño parecido no demuestra que sea seguro.', 'Confira se o espelho é confiável antes de adicioná-lo; uma página parecida não comprova sua segurança.'],
     'about.greasyFork': ['Greasy Fork script page', 'Greasy Fork 插件主页', 'Greasy Fork 腳本首頁', 'Page du script sur Greasy Fork', 'Skriptseite auf Greasy Fork', 'Страница скрипта на Greasy Fork', 'Greasy Fork のスクリプトページ', 'Greasy Fork 스크립트 페이지', 'Página del script en Greasy Fork', 'Página do script no Greasy Fork'],
     'section.share': ['Share with friends', '分享给朋友', '分享給朋友', 'Partager avec des amis', 'Mit Freunden teilen', 'Поделиться с друзьями', '友人に共有', '친구와 공유', 'Compartir con amigos', 'Compartilhar com amigos'],
-    'share.install': ['Copy installation address', '复制安装地址', '複製安裝網址', 'Copier l’adresse d’installation', 'Installationsadresse kopieren', 'Скопировать адрес установки', 'インストール先をコピー', '설치 주소 복사', 'Copiar dirección de instalación', 'Copiar endereço de instalação'],
-    'share.recommend': ['Copy recommendation', '复制推荐文案', '複製推薦文案', 'Copier le texte de recommandation', 'Empfehlungstext kopieren', 'Скопировать текст рекомендации', '紹介文をコピー', '추천 문구 복사', 'Copiar texto de recomendación', 'Copiar texto de recomendação'],
+    'share.copy': ['Copy recommendation', '一键复制推荐信息', '一鍵複製推薦資訊', 'Copier la recommandation', 'Empfehlung kopieren', 'Скопировать рекомендацию', 'おすすめ情報をワンクリックでコピー', '추천 정보 한 번에 복사', 'Copiar recomendación', 'Copiar recomendação'],
+    'share.urlOnly': ['Installation link only', '只复制安装地址', '只複製安裝網址', 'Copier seulement le lien d’installation', 'Nur Installationslink kopieren', 'Только ссылка для установки', 'インストール先の URL のみコピー', '설치 주소만 복사', 'Solo enlace de instalación', 'Somente o link de instalação'],
     'share.copied': ['Copied to clipboard.', '已复制到剪切板。', '已複製到剪貼簿。', 'Copié dans le presse-papiers.', 'In die Zwischenablage kopiert.', 'Скопировано в буфер обмена.', 'クリップボードにコピーしました。', '클립보드에 복사했습니다.', 'Copiado al portapapeles.', 'Copiado para a área de transferência.'],
     'share.failed': ['Could not copy. Check clipboard permissions.', '复制失败，请检查剪切板权限。', '複製失敗，請檢查剪貼簿權限。', 'Copie impossible. Vérifiez les autorisations du presse-papiers.', 'Kopieren fehlgeschlagen. Prüfen Sie die Zwischenablage-Berechtigung.', 'Не удалось скопировать. Проверьте разрешение на доступ к буферу обмена.', 'コピーできませんでした。クリップボードの権限を確認してください。', '복사하지 못했습니다. 클립보드 권한을 확인하세요.', 'No se pudo copiar. Revisa los permisos del portapapeles.', 'Não foi possível copiar. Verifique as permissões da área de transferência.'],
     'auto.bulkCancelled': ['Stopped after {attempted} attempts; {remaining} pages were not opened.', '已中止：已点 {attempted} 次，剩余 {remaining} 次未执行。', '已中止：已點 {attempted} 次，剩餘 {remaining} 次未執行。', 'Arrêt après {attempted} tentatives ; {remaining} pages non ouvertes.', 'Nach {attempted} Versuchen gestoppt; {remaining} Seiten nicht geöffnet.', 'Остановлено после {attempted} попыток; {remaining} страниц не открыто.', '{attempted} 回で中止しました。残り {remaining} ページは開いていません。', '{attempted}번 시도 후 중단했습니다. 남은 {remaining}개 페이지는 열지 않았습니다.', 'Detenido tras {attempted} intentos; no se abrieron {remaining} páginas.', 'Parou após {attempted} tentativas; {remaining} páginas não foram abertas.'],
@@ -216,7 +216,7 @@
     'setting.yearRange': ['Publication year range (inclusive)', '出版年份范围（含端点）', '出版年份範圍（含端點）', 'Années de publication (bornes incluses)', 'Erscheinungsjahre (einschließlich Grenzen)', 'Годы издания (границы включены)', '出版年の範囲（開始年・終了年を含む）', '출판 연도 범위(시작·끝 연도 포함)', 'Años de publicación (límites incluidos)', 'Anos de publicação (limites incluídos)'],
     'setting.showMoreCount1': ['Show more clicks (first button)', '连点器 1 次数', '連點器 1 次數', 'Clics sur Show more (premier bouton)', 'Show-more-Klicks (erste Schaltfläche)', 'Нажатия Show more (первая кнопка)', 'Show more のクリック回数（1つ目のボタン）', 'Show more 클릭 횟수(첫 번째 버튼)', 'Clics en Show more (primer botón)', 'Cliques em Show more (primeiro botão)'],
     'setting.showMoreCount2': ['Show more clicks (second button)', '连点器 2 次数', '連點器 2 次數', 'Clics sur Show more (deuxième bouton)', 'Show-more-Klicks (zweite Schaltfläche)', 'Нажатия Show more (вторая кнопка)', 'Show more のクリック回数（2つ目のボタン）', 'Show more 클릭 횟수(두 번째 버튼)', 'Clics en Show more (segundo botón)', 'Cliques em Show more (segundo botão)'],
-    'setting.humanizedOpen': ['Human-like opening intervals (randomized)', '拟人化（随机延长打开间隔）', '擬人化（隨機延長開啟間隔）', 'Intervalles d’ouverture variables, comme une personne', 'Variable Öffnungsabstände wie bei einer Person', 'Случайные интервалы открытия, как у человека', '人が操作するように間隔をランダムに延ばす', '사람처럼 무작위 간격으로 페이지 열기', 'Intervalos de apertura variables, como una persona', 'Intervalos de abertura variáveis, como uma pessoa'],
+    'setting.humanizedOpen': ['Use human-like timing for bulk opening only (0.5–5 s)', '仅批量打开图书页面时使用拟人化间隔（0.5–5 秒）', '僅批次開啟書籍頁面時使用擬人化間隔（0.5–5 秒）', 'Utiliser des intervalles naturels uniquement pour l’ouverture groupée (0,5–5 s)', 'Menschenähnliche Abstände nur beim gebündelten Öffnen (0,5–5 Sek.)', 'Интервалы как при ручном открытии только для массового открытия страниц (0,5–5 с)', '書籍ページをまとめて開くときだけ、人間らしい間隔を使う（0.5～5 秒）', '책 페이지를 한꺼번에 열 때만 사람처럼 간격 조절(0.5~5초)', 'Usar intervalos naturales solo al abrir páginas en lote (0,5–5 s)', 'Usar intervalos naturais só ao abrir páginas em lote (0,5–5 s)'],
     'setting.continuousEnabled': ['Enable continuous clicking on this site', '在本站启用持续连点', '在本站啟用持續連點', 'Activer les clics continus sur ce site', 'Fortlaufendes Klicken auf dieser Website aktivieren', 'Включить непрерывные нажатия на этом сайте', 'このサイトで Show more の連続クリックを有効にする', '이 사이트에서 Show more 연속 클릭 사용', 'Activar los clics continuos en este sitio', 'Ativar cliques contínuos neste site'],
     'setting.minYear': ['Start year', '起始年份', '起始年份', 'Année de début', 'Anfangsjahr', 'Начальный год', '開始年', '시작 연도', 'Año inicial', 'Ano inicial'],
     'setting.maxYear': ['End year', '截止年份', '截止年份', 'Année de fin', 'Endjahr', 'Конечный год', '終了年', '종료 연도', 'Año final', 'Ano final'],
@@ -281,6 +281,7 @@
     'auto.bulkEmpty': ['No visible book pages are eligible to open.', '当前没有可打开的可见书籍链接。', '目前沒有可開啟的可見書籍連結。', 'Aucune page de livre visible ne peut être ouverte.', 'Keine sichtbaren Buchseiten können geöffnet werden.', 'Нет страниц видимых книг, которые можно открыть.', '現在表示中の本に、開けるページがありません。', '현재 표시된 책 중 열 수 있는 페이지가 없습니다.', 'No hay páginas de libros visibles que se puedan abrir.', 'Não há páginas de livros visíveis que possam ser abertas.'],
     'auto.bulkChanged': ['List or permission changed; nothing was opened.', '书单或权限已变化，本次没有打开页面。', '書單或權限已變更，本次未開啟頁面。', 'La liste ou l’autorisation a changé ; aucune page n’a été ouverte.', 'Die Liste oder Berechtigung hat sich geändert; es wurde keine Seite geöffnet.', 'Список или разрешение изменились; ни одна страница не открыта.', 'リストまたは許可設定が変わったため、ページは開きませんでした。', '목록이나 허용 설정이 바뀌어 페이지를 열지 않았습니다.', 'La lista o el permiso ha cambiado; no se ha abierto ninguna página.', 'A lista ou a permissão mudou; nenhuma página foi aberta.'],
     'auto.bulkRunning': ['Clicked {attempted} times, {remaining} remaining; click to stop', '已点 {attempted} 次，还剩 {remaining} 次，点此中止', '已點 {attempted} 次，還剩 {remaining} 次，點此中止', '{attempted} clics, {remaining} restants ; cliquer pour arrêter', '{attempted} Mal geklickt, {remaining} verbleibend; zum Stoppen klicken', 'Нажато {attempted} раз, осталось {remaining}; нажмите, чтобы остановить', '{attempted} 回開きました。残り {remaining} 回。クリックして中止', '{attempted}번 열었고 {remaining}번 남음. 클릭하여 중단', '{attempted} clics, quedan {remaining}; haz clic para detener', '{attempted} cliques, faltam {remaining}; clique para parar'],
+    'auto.humanizedRunning': ['Human-like timing is on. You can turn it off in Automation settings.', '拟人化已开启，可在自动化设置中关闭', '擬人化已開啟，可在自動化設定中關閉', 'Les intervalles naturels sont activés. Vous pouvez les désactiver dans les réglages de l’automatisation.', 'Menschenähnliche Abstände sind aktiviert. Sie können sie in den Automatisierungseinstellungen ausschalten.', 'Интервалы как при ручном открытии включены. Их можно отключить в настройках автоматизации.', '人間らしい間隔が有効です。自動化設定でオフにできます。', '사람처럼 간격 조절이 켜져 있습니다. 자동화 설정에서 끌 수 있습니다.', 'Los intervalos naturales están activados. Puedes desactivarlos en la configuración de automatización.', 'Os intervalos naturais estão ativados. Você pode desativá-los nas configurações de automação.'],
     'auto.bulkProgress': ['Attempted {attempted}; submitted {submitted}; failed {failed}. Submission does not mean loaded.', '已尝试 {attempted}；已提交打开 {submitted}；失败 {failed}。提交不等于加载成功。', '已嘗試 {attempted}；已提交開啟 {submitted}；失敗 {failed}。提交不等於載入成功。', 'Tentatives : {attempted} ; ouvertures demandées : {submitted} ; échecs : {failed}. Une demande ne garantit pas le chargement.', 'Versuche: {attempted}; Öffnungsanfragen: {submitted}; fehlgeschlagen: {failed}. Eine Anfrage garantiert nicht, dass die Seite geladen wurde.', 'Попыток: {attempted}; запросов на открытие: {submitted}; ошибок: {failed}. Отправка запроса не гарантирует загрузку страницы.', '試行：{attempted}件、開く要求：{submitted}件、失敗：{failed}件。要求を送っても、ページが読み込まれたとは限りません。', '시도: {attempted}건, 열기 요청: {submitted}건, 실패: {failed}건. 열기 요청을 보냈다고 해서 페이지가 로드된 것은 아닙니다.', 'Intentos: {attempted}; solicitudes enviadas: {submitted}; fallos: {failed}. Enviar una solicitud no garantiza que la página se cargue.', 'Tentativas: {attempted}; solicitações enviadas: {submitted}; falhas: {failed}. Enviar uma solicitação não garante que a página carregue.'],
     'rule.manual': ['Set a rule', '请手动设置', '請手動設定', 'Définir une règle', 'Regel festlegen', 'Задайте правило', '条件を設定', '규칙 설정', 'Configure una regla', 'Defina uma regra'],
     'rule.conflict': ['Invalid year range', '设置冲突', '設定衝突', 'Plage d’années invalide', 'Ungültiger Jahresbereich', 'Неверный диапазон лет', '年の範囲が無効です', '연도 범위가 올바르지 않음', 'Rango de años no válido', 'Intervalo de anos inválido'],
@@ -427,9 +428,17 @@
     return translate(locale, 'auto.bulkRunning',
       { attempted, remaining: Math.max(0, total - attempted) });
   }
-  function buildShareText(locale, kind) {
-    const install = translate(locale, 'share.name') + '\n' + GREASY_FORK_PAGE;
-    return kind === 'recommend' ? install + '\n\n' + translate(locale, 'share.recommendText') : install;
+  function bulkOpenHint(locale, running, humanized, gateResult, targetCount) {
+    if (running && humanized) return translate(locale, 'auto.humanizedRunning');
+    const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
+      'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
+    return gateResult.allowed ? (targetCount ? '' : translate(locale, 'auto.bulkEmpty'))
+      : gateResult.reason === 'disabled' ? '' : translate(locale, reasons[gateResult.reason]);
+  }
+  function buildShareText(locale, urlOnly = false) {
+    if (urlOnly) return GREASY_FORK_PAGE;
+    return translate(locale, 'share.recommendText') + '\n\n' +
+      translate(locale, 'share.name') + '\n' + GREASY_FORK_PAGE;
   }
   async function copyShareText(text, clipboard, fallback) {
     try {
@@ -1124,7 +1133,8 @@
     for (let index = 0; index < urls.length; index++) {
       if (signal?.aborted || !isSourceAlive()) break;
       if (index > 0) {
-        const completed = await delay(humanized ? humanizedDelayMs(random()) : 350, signal);
+        const useHumanized = typeof humanized === 'function' ? humanized() : humanized;
+        const completed = await delay(useHumanized ? humanizedDelayMs(random()) : 350, signal);
         if (completed === false) break;
       }
       if (signal?.aborted || !isSourceAlive()) break;
@@ -1811,7 +1821,7 @@
       renderFilterSummary, renderShowMore, formatProgressText,
       snapPanelPosition, clampPanelPosition, resetPanelDock, canStartPanelDrag, createPanelHeaderToggle,
       parseYearRule, matchesYear,
-      resolveLocale, translate, translateMore, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS, isNewerVersion, checkPublishedVersion, fetchPublishedVersion, buildShareText, copyShareText, closeAnimatedDialog, bulkProgressLabel,
+      resolveLocale, translate, translateMore, sanitizeSitePrefs, TRANSLATION_KEYS, TRANSLATIONS, isNewerVersion, checkPublishedVersion, fetchPublishedVersion, buildShareText, copyShareText, closeAnimatedDialog, bulkProgressLabel, bulkOpenHint,
       createExclusiveDisclosure, bindSectionToggle,
       classifyPage, noticeRemainingSeconds, shouldShowNotice,
       classifyShowMoreIdle, formatShowMoreAction, runShowMore, classifyListCompletion,
@@ -2163,11 +2173,8 @@
       button.dataset.state = bulkOpening ? 'running' : bulkLastFailed ? 'failed' : '';
       button.textContent = bulkOpening ? bulkProgressLabel(locale, bulkStatus?.attempted ?? 0, bulkTotal)
         : translate(locale, 'auto.openAll');
-      const reasons = { disabled: 'auto.bulkDisabled', 'api-unavailable': 'auto.bulkApi',
-        'filters-pending': 'auto.bulkFilters', 'unknown-downloads': 'auto.bulkUnknown' };
-      setText('#zble-open-hint', gateResult.allowed
-        ? (targets.length ? '' : translate(locale, 'auto.bulkEmpty'))
-        : gateResult.reason === 'disabled' ? '' : translate(locale, reasons[gateResult.reason]));
+      setText('#zble-open-hint', bulkOpenHint(locale, bulkOpening, settings.humanizedOpen,
+        gateResult, targets.length));
     }
 
     function renderBulkStatus() {
@@ -2636,7 +2643,7 @@
           .automation-heading{display:flex;align-items:center;justify-content:space-between;gap:6px}.automation-heading .configure{color:var(--zble-accent)}.automation-config .setting-label:first-of-type{margin-top:5px}.automation-config input[type=text]{margin-top:3px}.automation-config .row{font-weight:400}
           @media(forced-colors:active){.filter-row .configure{color:GrayText}.filter-row:has(input:checked) .configure,.automation-heading .configure{color:LinkText}}
         </style>
-        <style>.zble-coexistence{margin:8px 0 4px;color:var(--zble-error);font-size:12px;line-height:1.45;overflow-wrap:anywhere}.zble-coexistence a{color:inherit;text-decoration:underline}.zble-coexistence button{font:inherit;color:inherit;text-decoration:underline;padding:0 2px}.zble-coexistence .dismiss{text-decoration:none;font-weight:bold;float:right;padding:0 5px}.zble-coexistence button:focus-visible,.zble-coexistence a:focus-visible{outline:2px solid currentColor;outline-offset:2px}</style>
+        <style>.zble-coexistence{margin:8px 0 4px;color:var(--zble-error);font-size:12px;line-height:1.45;overflow-wrap:anywhere}.zble-coexistence a{color:inherit;text-decoration:underline}.zble-coexistence button{font:inherit;color:inherit;text-decoration:underline;padding:0 2px}.zble-coexistence .dismiss{text-decoration:none;font-weight:bold;float:right;padding:0 5px}.zble-coexistence button:focus-visible,.zble-coexistence a:focus-visible{outline:2px solid currentColor;outline-offset:2px}.share-actions{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:0 0 7px}.share-actions .reset-link{margin:0}.share-option{display:inline-flex;align-items:center;gap:4px;font-size:11px;cursor:pointer}.share-option input{margin:0}</style>
         <div class="body">
           <div class="head"><span class="title">Z-lib Booklist Enhancer</span><div class="head-actions"><button id="zble-gear" type="button" title="全局设置" aria-label="全局设置" aria-controls="zble-settings" aria-expanded="false"><svg class="tool-icon" viewBox="0 0 50 50" fill="currentColor" aria-hidden="true" focusable="false"><path d="M47.16,21.221l-5.91-0.966c-0.346-1.186-0.819-2.326-1.411-3.405l3.45-4.917c0.279-0.397,0.231-0.938-0.112-1.282l-3.889-3.887c-0.347-0.346-0.893-0.391-1.291-0.104l-4.843,3.481c-1.089-0.602-2.239-1.08-3.432-1.427l-1.031-5.886C28.607,2.35,28.192,2,27.706,2h-5.5c-0.49,0-0.908,0.355-0.987,0.839l-0.956,5.854c-1.2,0.345-2.352,0.818-3.437,1.412l-4.83-3.45c-0.399-0.285-0.942-0.239-1.289,0.106L6.82,10.648c-0.343,0.343-0.391,0.883-0.112,1.28l3.399,4.863c-0.605,1.095-1.087,2.254-1.438,3.46l-5.831,0.971c-0.482,0.08-0.836,0.498-0.836,0.986v5.5c0,0.485,0.348,0.9,0.825,0.985l5.831,1.034c0.349,1.203,0.831,2.362,1.438,3.46l-3.441,4.813c-0.284,0.397-0.239,0.942,0.106,1.289l3.888,3.891c0.343,0.343,0.884,0.391,1.281,0.112l4.87-3.411c1.093,0.601,2.248,1.078,3.445,1.424l0.976,5.861C21.3,47.647,21.717,48,22.206,48h5.5c0.485,0,0.9-0.348,0.984-0.825l1.045-5.89c1.199-0.353,2.348-0.833,3.43-1.435l4.905,3.441c0.398,0.281,0.938,0.232,1.282-0.111l3.888-3.891c0.346-0.347,0.391-0.894,0.104-1.292l-3.498-4.857c0.593-1.08,1.064-2.222,1.407-3.408l5.918-1.039c0.479-0.084,0.827-0.5,0.827-0.985v-5.5C47.999,21.718,47.644,21.3,47.16,21.221z M25,32c-3.866,0-7-3.134-7-7c0-3.866,3.134-7,7-7s7,3.134,7,7C32,28.866,28.866,32,25,32z"/></svg></button><button id="zble-collapse" type="button" title="折叠面板" aria-label="折叠面板" aria-controls="zble-content" aria-expanded="true"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14 L12 9 L20 14"/></svg></button></div></div>
           <div id="zble-update-notice" class="zble-coexistence" role="status" hidden><span id="zble-update-text"></span> <a id="zble-update-link" href="https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer" target="_blank" rel="noopener noreferrer"></a></div><div id="zble-coexistence-notice" class="zble-coexistence" role="status" hidden><span id="zble-coexistence-before"></span><a id="zble-coexistence-script" href="https://greasyfork.org/scripts/497146-z-library-ui-enhance" target="_blank" rel="noopener noreferrer">UI Enhance 脚本</a><span id="zble-coexistence-after"></span> <button id="zble-coexistence-details" type="button">了解详情</button><button id="zble-coexistence-dismiss" class="dismiss" type="button" aria-label="关闭提示">×</button></div>
@@ -2670,7 +2677,7 @@
             <label class="row"><input id="zble-related-booklists-grid-switch" type="checkbox"><span data-i18n="control.relatedBooklistsGrid">相关书单默认以网格显示</span></label>
             <div id="zble-info-hint" class="hint error" role="status"></div>
           </div>
-          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label><label class="row"><input id="zble-humanized-open" type="checkbox"><span data-i18n="setting.humanizedOpen">拟人化（随机延长打开间隔）</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
+          <div class="group"><div class="automation-heading"><div class="group-title" data-i18n="section.automation">自动化（beta）</div><button id="zble-configure-automation" class="configure" type="button" aria-controls="zble-automation-config" aria-expanded="false" aria-label="配置自动化"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--zble-bg)"/><circle cx="15" cy="12" r="2" fill="var(--zble-bg)"/><circle cx="7" cy="17" r="2" fill="var(--zble-bg)"/></svg></button></div><div id="zble-automation-config" class="configuration automation-config" hidden><div class="configuration-title" data-i18n="section.automationConfig">自动化设置</div><label class="setting-label" for="zble-show-more-count-1" data-i18n="setting.showMoreCount1">连点器 1 次数</label><input id="zble-show-more-count-1" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-1"><div id="zble-show-more-error-1" class="hint error" role="status"></div><label class="setting-label" for="zble-show-more-count-2" data-i18n="setting.showMoreCount2">连点器 2 次数</label><input id="zble-show-more-count-2" type="text" inputmode="numeric" aria-describedby="zble-show-more-error-2"><div id="zble-show-more-error-2" class="hint error" role="status"></div><label class="row"><input id="zble-allow-continuous" type="checkbox"><span data-i18n="setting.continuousEnabled">在本站启用持续连点</span></label><label class="row"><input id="zble-allow-bulk" type="checkbox"><span data-i18n="setting.allowBulk">在本站启用批量打开</span></label><label class="row"><input id="zble-humanized-open" type="checkbox"><span data-i18n="setting.humanizedOpen">仅批量打开图书页面时使用拟人化间隔（0.5–5 秒）</span></label></div><div id="zble-automation-actions"><button id="zble-show-more-1" class="action-button" type="button" aria-live="polite">连点 5 次 Show more</button><button id="zble-show-more-2" class="action-button" type="button" aria-live="polite">连点 10 次 Show more</button><button id="zble-show-more-continuous" class="action-button" type="button" aria-live="polite">持续连点 Show more，直到书单显示完毕</button><div id="zble-show-more-status" class="hint" role="status"></div><button id="zble-open-all" class="action-button" type="button" data-i18n="auto.openAll" disabled>打开当前显示的所有图书页面</button><div id="zble-open-hint" class="hint" role="status"></div><div id="zble-open-status" class="hint" role="status"></div><button id="zble-favorite" class="action-button" type="button" disabled>[<span data-i18n="auto.dev">开发中</span>] <span data-i18n="auto.favorite">本页全部加入收藏</span></button></div></div>
           <div id="zble-settings" class="settings" hidden>
             <div class="settings-title" data-i18n="action.globalSettings">全局设置</div>
             <label class="setting-label" for="zble-ui-language" data-i18n="setting.language">界面语言</label>
@@ -2678,7 +2685,7 @@
             <label class="row"><input id="zble-show-notice" type="checkbox"><span data-i18n="setting.showNotice">在本站显示启动提示</span></label>
             <button id="zble-reset-position" class="reset-position" type="button" data-i18n="setting.resetPosition">重置浮窗位置</button>
             <button id="zble-other-mirror" class="reset-link" type="button" data-i18n="setting.userMatches">在其他Z-lib镜像站使用本工具</button>
-            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><a href="https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.greasyFork">Greasy Fork 插件主页</a></div><div class="hint"><a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.github">GitHub 页面</a></div><button id="zble-coexistence-about" class="reset-link" type="button" data-i18n="coexist.about">兼容性说明</button></div><div class="group"><div class="settings-title" data-i18n="section.share">分享给朋友</div><button id="zble-share-install" class="reset-link" type="button" data-i18n="share.install">复制安装地址</button><button id="zble-share-recommend" class="reset-link" type="button" data-i18n="share.recommend">复制推荐文案</button><div id="zble-share-status" class="hint" role="status" aria-live="polite"></div></div>
+            <div class="group"><div class="settings-title" data-i18n="section.about">关于</div><div class="hint" data-i18n="about.description">增强书单并筛选搜索结果；推荐和热门书籍可按下载状态筛选。</div><div class="hint"><span data-i18n="about.developer">开发者</span>：<span>Jeambo</span></div><div class="hint"><a href="https://greasyfork.org/scripts/598737-z-lib-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.greasyFork">Greasy Fork 插件主页</a></div><div class="hint"><a href="https://github.com/jeambos/zlibrary-booklist-enhancer" target="_blank" rel="noopener noreferrer" data-i18n="about.github">GitHub 页面</a></div><button id="zble-coexistence-about" class="reset-link" type="button" data-i18n="coexist.about">兼容性说明</button></div><div class="group"><div class="settings-title" data-i18n="section.share">分享给朋友</div><div class="share-actions"><button id="zble-share-copy" class="reset-link" type="button" data-i18n="share.copy">一键复制推荐信息</button><label class="share-option"><input id="zble-share-only-url" type="checkbox"><span data-i18n="share.urlOnly">只复制安装地址</span></label></div><div id="zble-share-status" class="hint" role="status" aria-live="polite"></div></div>
           </div>
           </div>
         </div>`;
@@ -2695,17 +2702,20 @@
       coexistenceAbout.addEventListener('click', () => showCoexistenceDialog(coexistenceAbout));
       const mirrorButton = panelRoot.querySelector('#zble-other-mirror');
       mirrorButton.addEventListener('click', () => showMirrorDialog(mirrorButton));
-      for (const [selector, kind] of [['#zble-share-install', 'install'],
-        ['#zble-share-recommend', 'recommend']]) {
-        panelRoot.querySelector(selector).addEventListener('click', async () => {
-          const fallback = typeof GM_setClipboard === 'function'
-            ? value => GM_setClipboard(value, 'text') : null;
-          const copied = await copyShareText(buildShareText(locale, kind), navigator.clipboard, fallback);
-          const status = panelRoot.querySelector('#zble-share-status');
-          status.textContent = translate(locale, copied ? 'share.copied' : 'share.failed');
-          status.classList.toggle('error', !copied);
-        });
-      }
+      const shareOnlyUrl = panelRoot.querySelector('#zble-share-only-url');
+      const shareStatus = panelRoot.querySelector('#zble-share-status');
+      shareOnlyUrl.addEventListener('change', () => {
+        shareStatus.textContent = '';
+        shareStatus.classList.remove('error');
+      });
+      panelRoot.querySelector('#zble-share-copy').addEventListener('click', async () => {
+        const fallback = typeof GM_setClipboard === 'function'
+          ? value => GM_setClipboard(value, 'text') : null;
+        const copied = await copyShareText(buildShareText(locale, shareOnlyUrl.checked),
+          navigator.clipboard, fallback);
+        shareStatus.textContent = translate(locale, copied ? 'share.copied' : 'share.failed');
+        shareStatus.classList.toggle('error', !copied);
+      });
 
       for (const [name, expanded] of [['filters', true], ['info', false], ['automation', false]]) {
         const title = [...panelRoot.querySelectorAll('[data-i18n]')]
@@ -2764,6 +2774,7 @@
           settings[key] = input.checked;
           if (key === 'showRelatedBooklistsGrid') relatedBooklistsLayout?.setGlobal(input.checked);
           saveSettings();
+          if (key === 'humanizedOpen') syncBulkControl();
           scheduleRefresh();
         });
       }
@@ -2943,7 +2954,7 @@
           bulkController = new AbortController();
           syncBulkControl();
           const result = await runOpenAll({ urls, openTab: (url, options) => GM_openInTab(url, options),
-            isSourceAlive: isCurrentRoute, humanized: settings.humanizedOpen,
+            isSourceAlive: isCurrentRoute, humanized: () => settings.humanizedOpen,
             signal: bulkController.signal,
             onProgress(progress) { bulkStatus = progress; renderBulkStatus(); syncBulkControl(); } });
           if (result.attempted > 0) hasOpenedOnThisPage = true;
@@ -3093,9 +3104,9 @@
     function init() {
       if (!document.body || disposed) return;
       createPanel();
-      const installedVersion = typeof GM_info === 'object' ? GM_info?.script?.version : '4.3.0';
+      const installedVersion = typeof GM_info === 'object' ? GM_info?.script?.version : '4.3.1';
       void checkPublishedVersion({
-        currentVersion: installedVersion || '4.3.0',
+        currentVersion: installedVersion || '4.3.1',
         read: () => GM_getValue('zble-version-check-v1', {}),
         write: value => GM_setValue('zble-version-check-v1', value),
         request: () => fetchPublishedVersion(GM_xmlhttpRequest),
